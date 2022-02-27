@@ -1,9 +1,22 @@
 import React, { useState } from "react";
 import type { NextPage } from "next";
 import { useForm, SubmitHandler } from "react-hook-form";
-import styles from "./styles.module.css";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 
+import styles from "./styles.module.css";
 import { Fields } from "./types";
+
+const schema = yup.object({
+  firstName: yup.string()
+    .required()
+    .min(2, 'Must contain at least 2 characters')
+    .matches(/[a-zA-Z]/, 'Must only contain letters'),
+  lastName: yup.string()
+    .required()
+    .min(2, 'Must contain at least 2 characters')
+    .matches(/[a-zA-Z]/, 'Must only contain letters'),
+}).required();
 
 const SFV: NextPage = () => {
   const [results, setResults] = useState({});
@@ -19,6 +32,7 @@ const SFV: NextPage = () => {
       // middleName: "",
       lastName: "",
     },
+    resolver: yupResolver(schema)
   });
 
   const onSubmit: SubmitHandler<Fields> = (fieldValues) => {
@@ -47,7 +61,9 @@ const SFV: NextPage = () => {
               aria-describedby="field-1-errors"
             />
             <span id="field-1-errors" className={styles.errors}>
-              {Boolean(errors.firstName) && <span className="decoration-red-100">Field has errors</span>}
+              {Boolean(errors.firstName) && (
+                <span className="text-red-500	">Field has errors</span>
+              )}
               <pre>{errors.firstName?.message}</pre>
             </span>
           </label>
@@ -60,7 +76,9 @@ const SFV: NextPage = () => {
               aria-describedby="field-2-errors"
             />
             <span id="field-2-errors" className={styles.errors}>
-              {Boolean(errors.lastName) && <span className="decoration-red-100">Field has errors</span>}
+              {Boolean(errors.lastName) && (
+                <span className="text-red-500	">Field has errors</span>
+              )}
               <pre>{errors.lastName?.message}</pre>
             </span>
           </label>
@@ -72,7 +90,9 @@ const SFV: NextPage = () => {
           Send
         </button>
         <code className={`${styles.debug} h-25 bg-slate-100 overflow-y-auto`}>
-          {Boolean(Object.keys(results).length) && <pre>{JSON.stringify(results, null, 2)}</pre>}
+          {Boolean(Object.keys(results).length) && (
+            <pre>{JSON.stringify(results, null, 2)}</pre>
+          )}
         </code>
       </form>
     </article>
