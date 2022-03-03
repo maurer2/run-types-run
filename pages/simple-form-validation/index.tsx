@@ -24,12 +24,12 @@ const SFV: NextPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-    // watch,
+    watch,
   } = useForm<Fields>({
     defaultValues: {
       firstName: "",
-      // hasMiddleName: false,
-      // middleName: "",
+      hasMiddleName: false,
+      middleName: "",
       lastName: "",
     },
     resolver: yupResolver(schema)
@@ -53,7 +53,7 @@ const SFV: NextPage = () => {
         </legend>
         <fieldset className={styles.fieldset}>
           <label className={styles.label}>
-            <span className="label-text">First Name</span>
+            <span className="label-text">First name</span>
             <input
               {...register("firstName", { required: true })}
               type="text"
@@ -68,7 +68,31 @@ const SFV: NextPage = () => {
             </span>
           </label>
           <label className={styles.label}>
-            <span className="label-text">Last Name</span>
+            <span className="label-text">Has middle name</span>
+            <input
+              {...register("hasMiddleName")}
+              type="checkbox"
+            />
+          </label>
+          <label className={styles.label}>
+            <span className="label-text">Middle name</span>
+            <input
+              {...register("middleName")}
+              type="text"
+              aria-invalid={Boolean(errors.lastName)}
+              aria-describedby="field-3-errors"
+              disabled={!watch("hasMiddleName")}
+              className="disabled:opacity-25 disabled:cursor-not-allowed"
+            />
+            <span id="field-3-errors" className={styles.errors}>
+              {Boolean(errors.lastName) && (
+                <span className="text-red-500	">Field has errors</span>
+              )}
+              <pre>{errors.middleName?.message}</pre>
+            </span>
+          </label>
+          <label className={styles.label}>
+            <span className="label-text">Last name</span>
             <input
               {...register("lastName", { required: true })}
               type="text"
