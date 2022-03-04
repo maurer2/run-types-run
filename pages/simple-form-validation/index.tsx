@@ -9,11 +9,20 @@ import { Fields } from "./types";
 
 const schema = yup.object({
   firstName: yup.string()
-    .required()
+    .required('Field is required')
     .min(2, 'Must contain at least 2 characters')
     .matches(/[a-zA-Z]/, 'Must only contain letters'),
+  hasMiddleName: yup.boolean(),
+  middleName: yup.string()
+    .when("hasMiddleName", {
+      is: true,
+      then: yup.string()
+        .required('Field is required')
+        .min(2, 'Must contain at least 2 characters')
+        .matches(/[a-zA-Z]/, 'Must only contain letters'),
+    }),
   lastName: yup.string()
-    .required()
+    .required('Field is required')
     .min(2, 'Must contain at least 2 characters')
     .matches(/[a-zA-Z]/, 'Must only contain letters'),
 }).required();
