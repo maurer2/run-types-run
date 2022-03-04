@@ -59,10 +59,11 @@ const SFV: NextPage = () => {
               type="text"
               aria-invalid={Boolean(errors.firstName)}
               aria-describedby="field-1-errors"
+              className={`${errors.firstName ? "border-red-500" : ""}`}
             />
             <span id="field-1-errors" className={styles.errors}>
               {Boolean(errors.firstName) && (
-                <span className="text-red-500	">Field has errors</span>
+                <span className="text-red-500">Field has errors</span>
               )}
               <pre>{errors.firstName?.message}</pre>
             </span>
@@ -79,14 +80,14 @@ const SFV: NextPage = () => {
             <input
               {...register("middleName")}
               type="text"
-              aria-invalid={Boolean(errors.lastName)}
+              aria-invalid={Boolean(errors.middleName)}
               aria-describedby="field-3-errors"
               disabled={!watch("hasMiddleName")}
-              className="disabled:opacity-25 disabled:cursor-not-allowed"
+              className={`${errors.middleName ? "border-red-500" : ""} disabled:opacity-25 disabled:cursor-not-allowed`}
             />
             <span id="field-3-errors" className={styles.errors}>
-              {Boolean(errors.lastName) && (
-                <span className="text-red-500	">Field has errors</span>
+              {Boolean(errors.middleName) && (
+                <span className="text-red-500">Field has errors</span>
               )}
               <pre>{errors.middleName?.message}</pre>
             </span>
@@ -98,10 +99,11 @@ const SFV: NextPage = () => {
               type="text"
               aria-invalid={Boolean(errors.lastName)}
               aria-describedby="field-2-errors"
+              className={`${errors.firstName ? "border-red-500" : ""}`}
             />
             <span id="field-2-errors" className={styles.errors}>
               {Boolean(errors.lastName) && (
-                <span className="text-red-500	">Field has errors</span>
+                <span className="text-red-500">Field has errors</span>
               )}
               <pre>{errors.lastName?.message}</pre>
             </span>
