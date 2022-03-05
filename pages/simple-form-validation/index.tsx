@@ -1,31 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import type { NextPage } from "next";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import styles from "./styles.module.css";
 import { Fields } from "./types";
 
-const schema = yup.object({
-  firstName: yup.string()
-    .required('Field is required')
-    .min(2, 'Must contain at least 2 characters')
-    .matches(/[a-zA-Z]/, 'Must only contain letters'),
-  hasMiddleName: yup.boolean(),
-  middleName: yup.string()
-    .when("hasMiddleName", {
+const schema = yup
+  .object({
+    firstName: yup
+      .string()
+      .required("Field is required")
+      .min(2, "Must contain at least 2 characters")
+      .matches(/[a-zA-Z]/, "Must only contain letters"),
+    hasMiddleName: yup.boolean(),
+    middleName: yup.string().when("hasMiddleName", {
       is: true,
-      then: yup.string()
-        .required('Field is required')
-        .min(2, 'Must contain at least 2 characters')
-        .matches(/[a-zA-Z]/, 'Must only contain letters'),
+      then: yup
+        .string()
+        .required("Field is required")
+        .min(2, "Must contain at least 2 characters")
+        .matches(/[a-zA-Z]/, "Must only contain letters"),
     }),
-  lastName: yup.string()
-    .required('Field is required')
-    .min(2, 'Must contain at least 2 characters')
-    .matches(/[a-zA-Z]/, 'Must only contain letters'),
-}).required();
+    lastName: yup
+      .string()
+      .required("Field is required")
+      .min(2, "Must contain at least 2 characters")
+      .matches(/[a-zA-Z]/, "Must only contain letters"),
+  })
+  .required();
 
 const SFV: NextPage = () => {
   const [results, setResults] = useState({});
@@ -34,6 +38,8 @@ const SFV: NextPage = () => {
     handleSubmit,
     formState: { errors },
     watch,
+    getValues,
+    setValue
   } = useForm<Fields>({
     defaultValues: {
       firstName: "",
@@ -41,14 +47,25 @@ const SFV: NextPage = () => {
       middleName: "",
       lastName: "",
     },
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   });
+  const watchMiddleNameToggle = watch(["hasMiddleName"]);
 
   const onSubmit: SubmitHandler<Fields> = (fieldValues) => {
     setResults(fieldValues);
   };
 
-  // console.log(watch("middleName"));
+  useEffect(() => {
+    const hasMiddleName = getValues("hasMiddleName");
+
+    // reset middleName when field gets disabled
+    if (!hasMiddleName) {
+      setValue('middleName', '');
+
+    }
+  }, [watchMiddleNameToggle]);
+
+  // console.log(watch("hasMiddleName", false));
 
   return (
     <article className="container grid mx-auto h-screen">
@@ -79,10 +96,7 @@ const SFV: NextPage = () => {
           </label>
           <label className={styles.label}>
             <span className="label-text">Has middle name</span>
-            <input
-              {...register("hasMiddleName")}
-              type="checkbox"
-            />
+            <input {...register("hasMiddleName")} type="checkbox" />
           </label>
           <label className={styles.label}>
             <span className="label-text">Middle name</span>
@@ -92,7 +106,9 @@ const SFV: NextPage = () => {
               aria-invalid={Boolean(errors.middleName)}
               aria-describedby="field-3-errors"
               disabled={!watch("hasMiddleName")}
-              className={`${errors.middleName ? "border-red-500" : ""} disabled:opacity-25 disabled:cursor-not-allowed`}
+              className={`${
+                errors.middleName ? "border-red-500" : ""
+              } disabled:opacity-25 disabled:cursor-not-allowed`}
             />
             <span id="field-3-errors" className={styles.errors}>
               {Boolean(errors.middleName) && (
