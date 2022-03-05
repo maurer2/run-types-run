@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import type { NextPage } from "next";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -34,12 +34,12 @@ const schema = yup
 const SFV: NextPage = () => {
   const [results, setResults] = useState({});
   const {
+    formState: { errors },
     register,
     handleSubmit,
-    formState: { errors },
     watch,
     getValues,
-    setValue
+    setValue,
   } = useForm<Fields>({
     defaultValues: {
       firstName: "",
@@ -49,23 +49,20 @@ const SFV: NextPage = () => {
     },
     resolver: yupResolver(schema),
   });
-  const watchMiddleNameToggle = watch(["hasMiddleName"]);
+  const hasMiddleName = useMemo(
+    () => getValues("hasMiddleName"),
+    [getValues("hasMiddleName")]
+  );
 
   const onSubmit: SubmitHandler<Fields> = (fieldValues) => {
     setResults(fieldValues);
   };
 
   useEffect(() => {
-    const hasMiddleName = getValues("hasMiddleName");
-
-    // reset middleName when field gets disabled
     if (!hasMiddleName) {
-      setValue('middleName', '');
-
+      setValue("middleName", "");
     }
-  }, [watchMiddleNameToggle]);
-
-  // console.log(watch("hasMiddleName", false));
+  }, [hasMiddleName]);
 
   return (
     <article className="container grid mx-auto h-screen">
