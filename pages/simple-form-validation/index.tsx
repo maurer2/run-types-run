@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useEffect, useCallback, useMemo } from "react";
 import type { NextPage } from "next";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -32,7 +32,6 @@ const schema = yup
   .required();
 
 const SFV: NextPage = () => {
-  const [results, setResults] = useState({});
   const {
     formState: { errors },
     register,
@@ -54,9 +53,7 @@ const SFV: NextPage = () => {
     [getValues("hasMiddleName")]
   );
 
-  const onSubmit: SubmitHandler<Fields> = (fieldValues) => {
-    setResults(fieldValues);
-  };
+  const onSubmit: SubmitHandler<Fields> = (fieldValues) => {};
 
   useEffect(() => {
     if (!hasMiddleName) {
@@ -137,10 +134,9 @@ const SFV: NextPage = () => {
         >
           Send
         </button>
+        <h2>Debug</h2>
         <code className={`${styles.debug} h-25 bg-slate-100 overflow-y-auto`}>
-          {Boolean(Object.keys(results).length) && (
-            <pre>{JSON.stringify(results, null, 2)}</pre>
-          )}
+          <pre>{JSON.stringify(watch(), null, 2)}</pre>
         </code>
       </form>
     </article>
