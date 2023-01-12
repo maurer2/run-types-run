@@ -1,7 +1,9 @@
 import React from "react";
 import type { NextPage } from "next";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+
 import UncontrolledInput from "./UncontrolledInput";
+import ControlledInput from "./ControlledInput";
 
 type FormValues = {
   // id: Uppercase<string>;
@@ -27,6 +29,15 @@ const Pizza: NextPage = () => {
       <h1>Pizza</h1>
       <form onSubmit={onSubmit}>
         <UncontrolledInput label="id" register={register} />
+
+        <Controller
+          control={control}
+          name="name"
+          defaultValue=""
+          render={({ field: { onChange, value } }) => (
+            <ControlledInput label="value" onChange={onChange} value={value} />
+          )}
+        />
       </form>
     </div>
   );
