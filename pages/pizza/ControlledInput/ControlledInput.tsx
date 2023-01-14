@@ -20,7 +20,7 @@ function ControlledInput({
     <>
       <label htmlFor={htmlId}>{label}</label>
       <input
-        type="input"
+        type="text"
         id={htmlId}
         name={htmlId}
         onChange={handleChange}

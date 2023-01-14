@@ -28,7 +28,7 @@ const Pizza: NextPage = () => {
     <div>
       <h1>Pizza</h1>
       <form onSubmit={onSubmit}>
-        <UncontrolledInput label="id" register={register} />
+        <UncontrolledInput label="id" {...register('id')} />
 
         <Controller
           control={control}
