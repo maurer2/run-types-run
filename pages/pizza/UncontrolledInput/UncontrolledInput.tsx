@@ -1,27 +1,30 @@
-import React, { useId, forwardRef } from "react";
-import type { ReactElement, ForwardedRef } from "react";
+import React, { useId, forwardRef } from 'react';
+import type { ReactElement, ForwardedRef } from 'react';
+
+import type { UncontrolledInputProps } from './types';
 
 const UncontrolledInput = forwardRef(
   (
-    { label, ...props }: { label: string },
-    ref: ForwardedRef<HTMLInputElement>
+    { htmlLabel, error, ...props }: UncontrolledInputProps,
+    ref: ForwardedRef<HTMLInputElement>,
   ): ReactElement => {
     const htmlId = useId();
 
     return (
-      <>
-        <label htmlFor={htmlId}>{label}</label>
+      <div className="mt-4">
+        <label htmlFor={htmlId}>{htmlLabel}</label>
         <input
           {...props}
+          ref={ref}
           type="text"
           id={htmlId}
-          defaultValue=""
-          ref={ref}
-          className="block h-full border select-none cursor-pointer"
+          aria-invalid={error ? 'true' : 'false'}
+          className="block h-full border"
         />
-      </>
+        {Boolean(error) && <p className="mt-2 text-red-500">{error?.message ?? 'Generic error'}</p>}
+      </div>
     );
-  }
+  },
 );
 
 export default UncontrolledInput;

@@ -1,15 +1,13 @@
 import React, { useId } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 
+import type { ControlledInputProps } from "./types";
+
 function ControlledInput({
   label,
   value,
   onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-}): ReactElement {
+}: ControlledInputProps): ReactElement {
   const htmlId = useId();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -17,7 +15,7 @@ function ControlledInput({
   };
 
   return (
-    <>
+    <div className="mt-4">
       <label htmlFor={htmlId}>{label}</label>
       <input
         type="text"
@@ -25,9 +23,9 @@ function ControlledInput({
         name={htmlId}
         onChange={handleChange}
         value={value}
-        className="block h-full border select-none"
+        className="block h-full border"
       />
-    </>
+    </div>
   );
 }
 
