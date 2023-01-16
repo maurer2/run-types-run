@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import type { NextPage } from 'next';
 import { useForm } from 'react-hook-form';
 
@@ -32,15 +32,11 @@ const Pizza: NextPage = () => {
   console.log(watchFields);
 
   return (
-    <article>
+    <article className="container mx-auto h-screen bg-slate-100">
       <h1>Pizza</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="m-4">
-        <UncontrolledInput
-          htmlLabel="Id"
-          error={errors.id}
-          {...register('id')}
-        />
+        <UncontrolledInput htmlLabel="Id" error={errors.id} {...register('id')} />
 
         {DOUGH.map((dough) => (
           <div key={dough}>
@@ -54,9 +50,9 @@ const Pizza: NextPage = () => {
           </div>
         ))}
 
-        {INGREDIENTS.map((ingredient, index) => (
-          <Fragment key={ingredient}>
-            <div>
+        <ul className="grid grid-flow-col auto-cols-min gap-4">
+          {INGREDIENTS.map((ingredient, index) => (
+            <li key={ingredient} className="w-40 h-40 border bg-white">
               <UncontrolledRadioCheckbox
                 htmlLabel={ingredient}
                 type="checkbox"
@@ -64,14 +60,14 @@ const Pizza: NextPage = () => {
                 error={errors.selectedIngredients as FieldError | undefined} // todo
                 {...register('selectedIngredients')}
               />
-            </div>
-            {index === INGREDIENTS.length - 1 && Boolean(errors.selectedIngredients) && (
-              <p className="mt-2 text-red-500">
-                {errors.selectedIngredients?.message ?? 'Generic error'}
-              </p>
-            )}
-          </Fragment>
-        ))}
+              {index === INGREDIENTS.length - 1 && Boolean(errors.selectedIngredients) && (
+                <p className="mt-2 text-red-500">
+                  {errors.selectedIngredients?.message ?? 'Generic error'}
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
 
         {/* <Controller
           control={control}
@@ -81,7 +77,7 @@ const Pizza: NextPage = () => {
           )}
         /> */}
 
-        <button type="submit" className="mt-4 p-2 border">
+        <button type="submit" className="mt-4 p-2 border bg-white">
           Send
         </button>
       </form>

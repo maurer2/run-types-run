@@ -11,7 +11,7 @@ const UncontrolledRadioCheckbox = forwardRef(
     const htmlId = useId();
 
     return (
-      <div className="mt-4">
+      <>
         <input
           {...props}
           ref={ref}
@@ -22,7 +22,7 @@ const UncontrolledRadioCheckbox = forwardRef(
           value={value}
         />
         <label htmlFor={htmlId}>{htmlLabel}</label>
-      </div>
+      </>
     );
   },
 );
