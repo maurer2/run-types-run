@@ -1,16 +1,16 @@
 import React from 'react';
 import type { NextPage } from 'next';
 import { useForm } from 'react-hook-form';
-
 import type { FieldError } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import UncontrolledInput from './UncontrolledInput';
 
 import UncontrolledRadioCheckbox from './UncontrolledRadioCheckbox';
 
-import { INGREDIENTS, DOUGH, PIZZA_VALIDATION_SCHEMA } from './constants';
+import { INGREDIENTS, DOUGH } from './constants';
+import { pizzaValidationSchema } from './validation';
 
-import type { PizzaValidationSchema } from './types';
+import type { FormValues } from './types';
 
 const Pizza: NextPage = () => {
   const {
@@ -18,17 +18,17 @@ const Pizza: NextPage = () => {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<PizzaValidationSchema>({
+  } = useForm<FormValues>({
     defaultValues: {
       id: '',
       selectedDough: DOUGH[1],
       selectedIngredients: [],
     },
-    resolver: zodResolver(PIZZA_VALIDATION_SCHEMA),
+    resolver: zodResolver(pizzaValidationSchema),
   });
 
-  const onSubmit = (data: PizzaValidationSchema) => console.log(data);
-  const watchFields: PizzaValidationSchema = watch();
+  const onSubmit = (data: FormValues) => console.log(data);
+  const watchFields: FormValues = watch();
   console.log(watchFields);
 
   return (
