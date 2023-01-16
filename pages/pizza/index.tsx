@@ -3,13 +3,14 @@ import type { NextPage } from 'next';
 import { useForm } from 'react-hook-form';
 
 import type { FieldError } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import UncontrolledInput from './UncontrolledInput';
 
 import UncontrolledRadioCheckbox from './UncontrolledRadioCheckbox';
 
-import { INGREDIENTS, DOUGH } from './constants';
+import { INGREDIENTS, DOUGH, PIZZA_VALIDATION_SCHEMA } from './constants';
 
-import type { FormValues } from './types';
+import type { PizzaValidationSchema } from './types';
 
 const Pizza: NextPage = () => {
   const {
@@ -17,16 +18,17 @@ const Pizza: NextPage = () => {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<FormValues>({
+  } = useForm<PizzaValidationSchema>({
     defaultValues: {
       id: '',
       selectedDough: DOUGH[1],
-      selectedIngredients: ['tomato'],
+      selectedIngredients: [],
     },
+    resolver: zodResolver(PIZZA_VALIDATION_SCHEMA),
   });
 
-  const onSubmit = (data: FormValues) => console.log(data);
-  const watchFields: FormValues = watch();
+  const onSubmit = (data: PizzaValidationSchema) => console.log(data);
+  const watchFields: PizzaValidationSchema = watch();
   console.log(watchFields);
 
   return (
@@ -37,16 +39,7 @@ const Pizza: NextPage = () => {
         <UncontrolledInput
           htmlLabel="Id"
           error={errors.id}
-          {...register('id', {
-            required: "Field shouldn't be empty",
-            minLength: {
-              value: 5,
-              message: 'Field should contain 5 characters',
-            },
-            validate: {
-              noTest: (value) => !/test/.test(value) || 'Field should not contain "test"',
-            },
-          })}
+          {...register('id')}
         />
 
         {DOUGH.map((dough) => (
@@ -69,12 +62,7 @@ const Pizza: NextPage = () => {
                 type="checkbox"
                 value={ingredient}
                 error={errors.selectedIngredients as FieldError | undefined} // todo
-                {...register('selectedIngredients', {
-                  validate: {
-                    minNumber: (value) =>
-                      value.length !== 0 || 'At least 1 item should be selected',
-                  },
-                })}
+                {...register('selectedIngredients')}
               />
             </div>
             {index === INGREDIENTS.length - 1 && Boolean(errors.selectedIngredients) && (
