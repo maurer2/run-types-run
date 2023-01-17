@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import { useForm } from 'react-hook-form';
 import type { FieldError } from 'react-hook-form';
@@ -13,11 +13,15 @@ import { pizzaValidationSchema } from './validation';
 import type { FormValues } from './types';
 
 const Pizza: NextPage = () => {
+  // const [apiData, setApiData] = useState<FormValues | null>(null);
+  const [isLoading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
+    reset,
   } = useForm<FormValues>({
     defaultValues: {
       id: '',
@@ -31,45 +35,70 @@ const Pizza: NextPage = () => {
   const watchFields: FormValues = watch();
   console.log(watchFields);
 
+  useEffect(() => {
+    const fetchApiData = async () => {
+      setLoading(true);
+
+      const response = await fetch('/api/pizza');
+      const data = await response.json();
+
+      try {
+        const validatedData = pizzaValidationSchema.parse(data) satisfies FormValues;
+        // setApiData(validatedData);
+        reset(validatedData, { keepDefaultValues: true });
+      } catch (error) {
+        reset();
+        // setApiData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApiData();
+  }, [reset]);
+
   return (
     <article className="container mx-auto h-screen bg-slate-100">
       <h1>Pizza</h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="m-4">
-        <UncontrolledInput htmlLabel="Id" error={errors.id} {...register('id')} />
+      {isLoading && <span>is loading</span>}
 
-        {DOUGH.map((dough) => (
-          <div key={dough}>
-            <UncontrolledRadioCheckbox
-              htmlLabel={dough}
-              type="radio"
-              error={errors.selectedDough}
-              value={dough}
-              {...register('selectedDough')}
-            />
-          </div>
-        ))}
+      {!isLoading && (
+        <form onSubmit={handleSubmit(onSubmit)} className="m-4">
+          <UncontrolledInput htmlLabel="Id" error={errors.id} {...register('id')} />
 
-        <ul className="grid grid-flow-col auto-cols-min gap-4">
-          {INGREDIENTS.map((ingredient, index) => (
-            <li key={ingredient} className="w-40 h-40 border bg-white">
+          {DOUGH.map((dough) => (
+            <div key={dough}>
               <UncontrolledRadioCheckbox
-                htmlLabel={ingredient}
-                type="checkbox"
-                value={ingredient}
-                error={errors.selectedIngredients as FieldError | undefined} // todo
-                {...register('selectedIngredients')}
+                htmlLabel={dough}
+                type="radio"
+                error={errors.selectedDough}
+                value={dough}
+                {...register('selectedDough')}
               />
-              {index === INGREDIENTS.length - 1 && Boolean(errors.selectedIngredients) && (
-                <p className="mt-2 text-red-500">
-                  {errors.selectedIngredients?.message ?? 'Generic error'}
-                </p>
-              )}
-            </li>
+            </div>
           ))}
-        </ul>
 
-        {/* <Controller
+          <ul className="grid grid-flow-col auto-cols-min gap-4">
+            {INGREDIENTS.map((ingredient, index) => (
+              <li key={ingredient} className="w-40 h-40 border bg-white">
+                <UncontrolledRadioCheckbox
+                  htmlLabel={ingredient}
+                  type="checkbox"
+                  value={ingredient}
+                  error={errors.selectedIngredients as FieldError | undefined} // todo
+                  {...register('selectedIngredients')}
+                />
+                {index === INGREDIENTS.length - 1 && Boolean(errors.selectedIngredients) && (
+                  <p className="mt-2 text-red-500">
+                    {errors.selectedIngredients?.message ?? 'Generic error'}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {/* <Controller
           control={control}
           name="name"
           render={({ field: { onChange, value } }) => (
@@ -77,10 +106,11 @@ const Pizza: NextPage = () => {
           )}
         /> */}
 
-        <button type="submit" className="mt-4 p-2 border bg-white">
-          Send
-        </button>
-      </form>
+          <button type="submit" className="mt-4 p-2 border bg-white">
+            Send
+          </button>
+        </form>
+      )}
     </article>
   );
 };
