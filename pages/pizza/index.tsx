@@ -7,7 +7,7 @@ import UncontrolledInput from './UncontrolledInput';
 
 import UncontrolledRadioCheckbox from './UncontrolledRadioCheckbox';
 
-import { INGREDIENTS, DOUGH } from './constants';
+import { TOPPINGS, DOUGH } from './constants';
 import { pizzaValidationSchema } from './validation';
 
 import type { FormValues } from './types';
@@ -26,7 +26,7 @@ const Pizza: NextPage = () => {
     defaultValues: {
       id: '',
       selectedDough: DOUGH[1],
-      selectedIngredients: [],
+      selectedToppings: [],
     },
     resolver: zodResolver(pizzaValidationSchema),
   });
@@ -80,18 +80,18 @@ const Pizza: NextPage = () => {
           ))}
 
           <ul className="grid grid-flow-col auto-cols-min gap-4">
-            {INGREDIENTS.map((ingredient, index) => (
-              <li key={ingredient} className="w-40 h-40 border bg-white">
+            {Object.entries(TOPPINGS).map(([toppingKey, toppingValue], index, arr) => (
+              <li key={toppingKey} className="w-40 h-40 border bg-white">
                 <UncontrolledRadioCheckbox
-                  htmlLabel={ingredient}
+                  htmlLabel={toppingValue}
                   type="checkbox"
-                  value={ingredient}
-                  error={errors.selectedIngredients as FieldError | undefined} // todo
-                  {...register('selectedIngredients')}
+                  value={toppingValue}
+                  error={errors.selectedToppings as FieldError | undefined} // todo
+                  {...register('selectedToppings')}
                 />
-                {index === INGREDIENTS.length - 1 && Boolean(errors.selectedIngredients) && (
+                {index === arr.length - 1 && Boolean(errors.selectedToppings) && (
                   <p className="mt-2 text-red-500">
-                    {errors.selectedIngredients?.message ?? 'Generic error'}
+                    {errors.selectedToppings?.message ?? 'Generic error'}
                   </p>
                 )}
               </li>
