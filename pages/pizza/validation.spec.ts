@@ -17,7 +17,6 @@ describe('validation.ts', () => {
     const data = {
       ...correctValues,
     };
-
     expect(pizzaValidationSchema.safeParse(data).success).toBeTruthy();
   });
 
@@ -26,7 +25,6 @@ describe('validation.ts', () => {
       ...correctValues,
       priceRangeClass: 'Meow',
     };
-
     expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
   });
 
@@ -35,7 +33,6 @@ describe('validation.ts', () => {
       ...correctValues,
       selectedToppings: [],
     };
-
     expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
   });
 
@@ -44,7 +41,6 @@ describe('validation.ts', () => {
       ...correctValues,
       selectedToppings: [...TOPPINGS],
     };
-
     expect(pizzaValidationSchema.safeParse(data).success).toBeTruthy();
   });
 
@@ -53,7 +49,6 @@ describe('validation.ts', () => {
       ...correctValues,
       selectedToppings: [...TOPPINGS, 'Cat-Food'],
     };
-
     expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
   });
 
@@ -63,6 +58,40 @@ describe('validation.ts', () => {
       selectedToppings: ['Cat-Food'],
     };
 
+    expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
+  });
+
+  it('cross field validation - field values', () => {
+    let data = {
+      ...correctValues,
+      priceRangeClass: 'Budget',
+      selectedDough: 'American',
+    };
+    expect(pizzaValidationSchema.safeParse(data).success).toBeTruthy();
+
+    data = {
+      ...correctValues,
+      priceRangeClass: 'Budget',
+      selectedDough: 'Italian',
+    };
+    expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
+    // console.log(pizzaValidationSchema.safeParse(data))
+  });
+
+  it('cross field validation - field length', () => {
+    let data = {
+      ...correctValues,
+      priceRangeClass: 'Budget',
+      selectedToppings: ['Tomato', 'Pepperoni'],
+    };
+    expect(pizzaValidationSchema.safeParse(data).success).toBeTruthy();
+
+    data = {
+      ...correctValues,
+      priceRangeClass: 'Budget',
+      selectedDough: 'Italian',
+      selectedToppings: ['Tomato', 'Pepperoni', 'Jalapeno'],
+    };
     expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
   });
 });
