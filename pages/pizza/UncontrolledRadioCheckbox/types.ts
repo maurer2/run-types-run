@@ -1,8 +1,10 @@
-import type { FieldError } from 'react-hook-form';
+import type { FieldError, UseFormRegister } from 'react-hook-form';
 
-export type UncontrolledRadioCheckboxProps = {
-  htmlLabel: string;
-  value:  string;
+export type UncontrolledRadioCheckboxProps<T> = {
+  values: T;
+  name: string;
   type: 'radio' | 'checkbox';
   error: FieldError | undefined;
+  // register: UseFormRegister<T>;
+  register: any; // todo
 };

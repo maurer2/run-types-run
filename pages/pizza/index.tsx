@@ -67,19 +67,15 @@ const Pizza: NextPage = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="m-4">
           <UncontrolledInput htmlLabel="Id" error={errors.id} {...register('id')} />
 
-          {DOUGH.map((dough) => (
-            <div key={dough}>
-              <UncontrolledRadioCheckbox
-                htmlLabel={dough}
-                type="radio"
-                error={errors.selectedDough}
-                value={dough}
-                {...register('selectedDough')}
-              />
-            </div>
-          ))}
+          <UncontrolledRadioCheckbox
+            type="radio"
+            error={errors.selectedDough}
+            name="selectedDough"
+            values={[...DOUGH]}
+            register={register}
+          />
 
-          <ul className="grid grid-flow-col auto-cols-min gap-4">
+          {/* <ul className="grid grid-flow-col auto-cols-min gap-4">
             {Object.entries(TOPPINGS).map(([toppingKey, toppingValue], index, arr) => (
               <li key={toppingKey} className="w-40 h-40 border bg-white">
                 <UncontrolledRadioCheckbox
@@ -96,7 +92,7 @@ const Pizza: NextPage = () => {
                 )}
               </li>
             ))}
-          </ul>
+          </ul> */}
 
           {/* <Controller
           control={control}

@@ -1,30 +1,34 @@
-import React, { useId, forwardRef } from 'react';
-import type { ReactElement, ForwardedRef } from 'react';
+/* eslint-disable arrow-body-style */
+import React from 'react';
+import type { ReactElement } from 'react';
 
 import type { UncontrolledRadioCheckboxProps } from './types';
 
-const UncontrolledRadioCheckbox = forwardRef(
-  (
-    { htmlLabel, type, value, error, ...props }: UncontrolledRadioCheckboxProps,
-    ref: ForwardedRef<HTMLInputElement>,
-  ): ReactElement => {
-    const htmlId = useId();
+const UncontrolledRadioCheckbox = <T extends Array<string>>({
+  type, name, values, register, ...props
+}: UncontrolledRadioCheckboxProps<T>): ReactElement => {
+  // console.log(register);
 
-    return (
-      <>
-        <input
-          {...props}
-          ref={ref}
-          type={type}
-          id={htmlId}
-          aria-invalid={error ? 'true' : 'false'}
-          className="w-4 h-4 mr-2"
-          value={value}
-        />
-        <label htmlFor={htmlId}>{htmlLabel}</label>
-      </>
-    );
-  },
-);
+  return (
+    <div>
+      {values.map((value) => (
+        <div key={value}>
+          <input
+            {...props}
+            {...register(name)}
+            type={type}
+            id={value}
+            className="w-4 h-4 mr-2"
+            value={value}
+          />
+          <label htmlFor={value}>{value}</label>
+        </div>
+      ))}
+      <p className="mt-2 text-red-500">
+        Error
+      </p>
+    </div>
+  )
+}
 
 export default UncontrolledRadioCheckbox;
