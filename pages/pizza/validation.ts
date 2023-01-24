@@ -43,12 +43,18 @@ export const pizzaValidationSchema = z
   .refine(
     ({ priceRangeClass, selectedDough }) =>
       !(priceRangeClass === 'Budget' && selectedDough === 'Italian'),
-    `"Italian" dough can't be selected, when "Budget" option is selected`,
+    {
+      message: `"Italian" dough can't be selected, when "Budget" option is selected`,
+      path: ['selectedDough'],
+    },
   )
   // budget option doesn't allow more than two toppings
   .refine(
     ({ priceRangeClass, selectedToppings }) =>
       !(priceRangeClass === 'Budget' && selectedToppings.length > 2),
-    `Only 2 toppings can be selected, when "Budget" class is selected`,
+    {
+      message: `Only 2 toppings can be selected, when "Budget" class is selected`,
+      path: ['selectedToppings'],
+    }
   ) satisfies z.ZodType<FormValues>; // https://github.com/colinhacks/zod/issues/1495#issuecomment-1339832685
 // #endregion

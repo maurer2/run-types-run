@@ -1,30 +1,42 @@
-import React, { useId, forwardRef } from 'react';
-import type { ReactElement, ForwardedRef } from 'react';
+import React from 'react';
+import type { ReactElement } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 import type { UncontrolledRadioCheckboxProps } from './types';
 
-const UncontrolledRadioCheckbox = forwardRef(
-  (
-    { htmlLabel, type, value, error, ...props }: UncontrolledRadioCheckboxProps,
-    ref: ForwardedRef<HTMLInputElement>,
-  ): ReactElement => {
-    const htmlId = useId();
+const UncontrolledRadioCheckbox = <T extends Array<string>>({
+  type,
+  name,
+  values,
+}: UncontrolledRadioCheckboxProps<T>): ReactElement => {
+  const { register, getFieldState } = useFormContext();
 
-    return (
-      <>
-        <input
-          {...props}
-          ref={ref}
-          type={type}
-          id={htmlId}
-          aria-invalid={error ? 'true' : 'false'}
-          className="w-4 h-4 mr-2"
-          value={value}
-        />
-        <label htmlFor={htmlId}>{htmlLabel}</label>
-      </>
-    );
-  },
-);
+  const fieldState = getFieldState(name);
+  // console.log(fieldState);
+
+  return (
+    <fieldset aria-describedby={`id-${name}`}>
+      <legend id={`id-${name}`}>Select {name}</legend>
+      <ul>
+        {values.map((value) => (
+          <li key={value}>
+            <input
+              {...register(name)}
+              type={type}
+              id={value}
+              className="w-4 h-4 mr-2"
+              aria-invalid={fieldState.error ? 'true' : 'false'}
+              value={value}
+            />
+            <label htmlFor={value}>{value}</label>
+          </li>
+        ))}
+      </ul>
+      {Boolean(fieldState.error) && (
+        <p className="mt-2 text-red-500">{fieldState.error?.message?.toString()}</p>
+      )}
+    </fieldset>
+  );
+};
 
 export default UncontrolledRadioCheckbox;

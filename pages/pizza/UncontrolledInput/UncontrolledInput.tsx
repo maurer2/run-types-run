@@ -11,7 +11,7 @@ const UncontrolledInput = forwardRef(
     const htmlId = useId();
 
     return (
-      <div className="mt-4">
+      <fieldset>
         <label htmlFor={htmlId}>{htmlLabel}</label>
         <input
           {...props}
@@ -21,8 +21,12 @@ const UncontrolledInput = forwardRef(
           aria-invalid={error ? 'true' : 'false'}
           className="block h-full border"
         />
-        {Boolean(error) && <p className="mt-2 text-red-500">{error?.message ?? 'Generic error'}</p>}
-      </div>
+        {Boolean(error) && (
+          <p className="mt-2 text-red-500">
+            {error?.message?.toString()}
+          </p>
+        )}
+      </fieldset>
     );
   },
 );
