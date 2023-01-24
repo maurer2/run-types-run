@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, } from 'react';
 import type { NextPage } from 'next';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,6 +14,7 @@ import type { FormValues } from './types';
 const Pizza: NextPage = () => {
   // const [apiData, setApiData] = useState<FormValues | null>(null);
   const [isLoading, setLoading] = useState(false);
+  const [isShowingResults, setIsShowingResults] = useState(false);
 
   const formMethods = useForm<FormValues>({
     defaultValues: {
@@ -28,11 +29,17 @@ const Pizza: NextPage = () => {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
     // reset,
   } = formMethods;
 
-  const onSubmit = (data: FormValues) => console.log(data);
-  console.log(errors);
+  const formOutput = getValues();
+
+  const onSubmit = (data: FormValues): void => {
+    setIsShowingResults(true);
+    console.log(data);
+  };
+  const onError = (): void => setIsShowingResults(false);
 
   // useEffect(() => {
   //   const fetchApiData = async () => {
@@ -64,7 +71,7 @@ const Pizza: NextPage = () => {
 
       {!isLoading && (
         <FormProvider {...formMethods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="[&>*]:mt-4 p-4">
+          <form onSubmit={handleSubmit(onSubmit, onError)} className="[&>*]:mt-4 p-4">
             <UncontrolledInput htmlLabel="Id" error={errors.id} {...register('id')} />
 
             <UncontrolledRadioCheckbox
@@ -91,11 +98,18 @@ const Pizza: NextPage = () => {
             render={({ field: { onChange, value } }) => (
               <ControlledInput label="value" onChange={onChange} value={value} />
             )}
-          /> */}
+            /> */}
 
             <button type="submit" className="px-4 py-2 border bg-white">
               Send
             </button>
+
+            {isShowingResults && (
+              <code>
+                <h2>Last successful submit:</h2>
+                <pre>{JSON.stringify(formOutput, undefined, 4)}</pre>
+              </code>
+            )}
           </form>
         </FormProvider>
       )}
