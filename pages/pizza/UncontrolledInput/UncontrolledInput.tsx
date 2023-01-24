@@ -21,7 +21,11 @@ const UncontrolledInput = forwardRef(
           aria-invalid={error ? 'true' : 'false'}
           className="block h-full border"
         />
-        {Boolean(error) && <p className="mt-2 text-red-500">{error?.message ?? 'Generic error'}</p>}
+        {Boolean(error) && (
+          <p className="mt-2 text-red-500">
+            {error?.message?.toString()}
+          </p>
+        )}
       </div>
     );
   },

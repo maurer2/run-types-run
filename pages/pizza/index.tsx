@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
-import { useForm } from 'react-hook-form';
-import type { FieldError } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import UncontrolledInput from './UncontrolledInput';
 
@@ -16,13 +15,7 @@ const Pizza: NextPage = () => {
   // const [apiData, setApiData] = useState<FormValues | null>(null);
   const [isLoading, setLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    reset,
-  } = useForm<FormValues>({
+  const formMethods = useForm<FormValues>({
     defaultValues: {
       id: '',
       selectedDough: DOUGH[1],
@@ -30,6 +23,13 @@ const Pizza: NextPage = () => {
     },
     resolver: zodResolver(pizzaValidationSchema),
   });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+  } = formMethods;
 
   const onSubmit = (data: FormValues) => console.log(data);
   const watchFields: FormValues = watch();
@@ -64,48 +64,35 @@ const Pizza: NextPage = () => {
       {isLoading && <span>is loading</span>}
 
       {!isLoading && (
-        <form onSubmit={handleSubmit(onSubmit)} className="m-4">
-          <UncontrolledInput htmlLabel="Id" error={errors.id} {...register('id')} />
+        <FormProvider {...formMethods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="m-4">
+            <UncontrolledInput htmlLabel="Id" error={errors.id} {...register('id')} />
 
-          <UncontrolledRadioCheckbox
-            type="radio"
-            error={errors.selectedDough}
-            name="selectedDough"
-            values={[...DOUGH]}
-            register={register}
-          />
+            <UncontrolledRadioCheckbox
+              type="radio"
+              name="selectedDough"
+              values={[...DOUGH]}
+            />
 
-          {/* <ul className="grid grid-flow-col auto-cols-min gap-4">
-            {Object.entries(TOPPINGS).map(([toppingKey, toppingValue], index, arr) => (
-              <li key={toppingKey} className="w-40 h-40 border bg-white">
-                <UncontrolledRadioCheckbox
-                  htmlLabel={toppingValue}
-                  type="checkbox"
-                  value={toppingValue}
-                  error={errors.selectedToppings as FieldError | undefined} // todo
-                  {...register('selectedToppings')}
-                />
-                {index === arr.length - 1 && Boolean(errors.selectedToppings) && (
-                  <p className="mt-2 text-red-500">
-                    {errors.selectedToppings?.message ?? 'Generic error'}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul> */}
+            <UncontrolledRadioCheckbox
+              type="checkbox"
+              name="selectedToppings"
+              values={[...TOPPINGS]}
+            />
 
-          {/* <Controller
-          control={control}
-          name="name"
-          render={({ field: { onChange, value } }) => (
-            <ControlledInput label="value" onChange={onChange} value={value} />
-          )}
-        /> */}
+            {/* <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, value } }) => (
+              <ControlledInput label="value" onChange={onChange} value={value} />
+            )}
+          /> */}
 
-          <button type="submit" className="mt-4 p-2 border bg-white">
-            Send
-          </button>
-        </form>
+            <button type="submit" className="mt-4 p-2 border bg-white">
+              Send
+            </button>
+          </form>
+        </FormProvider>
       )}
     </article>
   );

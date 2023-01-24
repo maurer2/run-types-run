@@ -1,34 +1,45 @@
-/* eslint-disable arrow-body-style */
 import React from 'react';
 import type { ReactElement } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 import type { UncontrolledRadioCheckboxProps } from './types';
 
 const UncontrolledRadioCheckbox = <T extends Array<string>>({
-  type, name, values, register, ...props
+  type,
+  name,
+  values,
 }: UncontrolledRadioCheckboxProps<T>): ReactElement => {
-  // console.log(register);
+  const {
+    register,
+    getFieldState,
+  } = useFormContext();
+
+  const fieldState = getFieldState(name);
+  console.log(fieldState)
 
   return (
-    <div>
-      {values.map((value) => (
-        <div key={value}>
-          <input
-            {...props}
-            {...register(name)}
-            type={type}
-            id={value}
-            className="w-4 h-4 mr-2"
-            value={value}
-          />
-          <label htmlFor={value}>{value}</label>
-        </div>
-      ))}
-      <p className="mt-2 text-red-500">
-        Error
-      </p>
-    </div>
-  )
-}
+    <fieldset aria-describedby="foo">
+      <legend>Select {name}</legend>
+      <ul>
+        {values.map((value) => (
+          <li key={value}>
+            <input
+              {...register(name)}
+              type={type}
+              id={value}
+              className="w-4 h-4 mr-2"
+              // aria-invalid={error ? 'true' : 'false'}
+              value={value}
+            />
+            <label htmlFor={value}>{value}</label>
+          </li>
+        ))}
+      </ul>
+      {Boolean(fieldState.error) && (
+        <p className="mt-2 text-red-500">{fieldState.error?.message?.toString()}</p>
+      )}
+    </fieldset>
+  );
+};
 
 export default UncontrolledRadioCheckbox;
