@@ -11,7 +11,7 @@ const UncontrolledInput = forwardRef(
     const htmlId = useId();
 
     return (
-      <div className="mt-4">
+      <fieldset>
         <label htmlFor={htmlId}>{htmlLabel}</label>
         <input
           {...props}
@@ -26,7 +26,7 @@ const UncontrolledInput = forwardRef(
             {error?.message?.toString()}
           </p>
         )}
-      </div>
+      </fieldset>
     );
   },
 );

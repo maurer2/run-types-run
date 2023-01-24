@@ -9,17 +9,14 @@ const UncontrolledRadioCheckbox = <T extends Array<string>>({
   name,
   values,
 }: UncontrolledRadioCheckboxProps<T>): ReactElement => {
-  const {
-    register,
-    getFieldState,
-  } = useFormContext();
+  const { register, getFieldState } = useFormContext();
 
   const fieldState = getFieldState(name);
-  console.log(fieldState)
+  // console.log(fieldState);
 
   return (
-    <fieldset aria-describedby="foo">
-      <legend>Select {name}</legend>
+    <fieldset aria-describedby={`id-${name}`}>
+      <legend id={`id-${name}`}>Select {name}</legend>
       <ul>
         {values.map((value) => (
           <li key={value}>
@@ -28,7 +25,7 @@ const UncontrolledRadioCheckbox = <T extends Array<string>>({
               type={type}
               id={value}
               className="w-4 h-4 mr-2"
-              // aria-invalid={error ? 'true' : 'false'}
+              aria-invalid={fieldState.error ? 'true' : 'false'}
               value={value}
             />
             <label htmlFor={value}>{value}</label>
