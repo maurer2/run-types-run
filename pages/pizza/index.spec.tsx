@@ -22,15 +22,13 @@ import Component from '.';
 
 test.describe(() => {
   test('has child components', async ({ mount, page }) => {
-    const component = await mount(<Component />);
+    await mount(<Component />);
 
-    await expect(component).toContainText('Pizza');
-    await expect(page.getByRole('heading').filter({ hasText: 'Pizza' })).toBeTruthy();
     await expect(page.getByTestId('id-priceRangeClass')).toHaveCount(3);
     await expect(page.getByTestId('id-selectedDough')).toHaveCount(3);
     await expect(page.getByTestId('id-selectedToppings')).toHaveCount(11);
-    await expect(page.getByRole('button', {name: 'Send'})).toBeTruthy();
-    await expect(page.getByRole('button', {name: 'Send'})).toHaveAttribute('type', 'submit')
+    await expect(page.getByRole('button', { name: 'Send' })).toBeTruthy();
+    await expect(page.getByRole('button', { name: 'Send' })).toHaveAttribute('type', 'submit');
   });
 
   test('should show errors on submit', async ({ mount, page }) => {
@@ -38,25 +36,29 @@ test.describe(() => {
 
     // priceClass
     await page.getByLabel('Budget').check();
-    expect(await page.getByLabel('Budget').isChecked()).toBeTruthy()
+    expect(await page.getByLabel('Budget').isChecked()).toBeTruthy();
 
     // selectedDough
     await page.getByLabel('Italian').check();
-    expect(await page.getByLabel('Italian').isChecked()).toBeTruthy()
+    expect(await page.getByLabel('Italian').isChecked()).toBeTruthy();
 
     // selectedToppings
     await page.getByLabel('Tomato').check();
-    expect(await page.getByLabel('Tomato').isChecked()).toBeTruthy()
+    expect(await page.getByLabel('Tomato').isChecked()).toBeTruthy();
     await page.getByLabel('Pineapple').check();
-    expect(await page.getByLabel('Pineapple').isChecked()).toBeTruthy()
+    expect(await page.getByLabel('Pineapple').isChecked()).toBeTruthy();
     await page.getByLabel('Pepperoni').check();
-    expect(await page.getByLabel('Pepperoni').isChecked()).toBeTruthy()
+    expect(await page.getByLabel('Pepperoni').isChecked()).toBeTruthy();
 
     // submit
-    await page.getByRole('button', {name: 'Send'}).click()
+    await page.getByRole('button', { name: 'Send' }).click();
 
     // errors
-    await expect(component).toContainText(`"Italian" dough can't be selected, when "Budget" option is selected`);
-    await expect(component).toContainText(`Only 2 toppings can be selected, when "Budget" class is selected`);
+    await expect(component).toContainText(
+      `"Italian" dough can't be selected, when "Budget" option is selected`,
+    );
+    await expect(component).toContainText(
+      `Only 2 toppings can be selected, when "Budget" class is selected`,
+    );
   });
 });

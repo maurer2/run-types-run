@@ -1,4 +1,4 @@
-import React, { useState, useEffect, } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,16 +31,16 @@ const Pizza: NextPage = () => {
     formState: { errors },
     getValues,
     trigger,
-    watch
+    watch,
     // reset,
   } = formMethods;
   const formOutput = getValues();
-  const priceRangeClassValue = watch("priceRangeClass");
+  const priceRangeClassValue = watch('priceRangeClass');
 
   // custom validation trigger
   useEffect(() => {
     trigger(['selectedDough', 'selectedToppings']);
-    console.log(priceRangeClassValue)
+    console.log(priceRangeClassValue);
   }, [priceRangeClassValue, trigger]);
 
   const onSubmit = (data: FormValues): void => {
@@ -72,55 +72,68 @@ const Pizza: NextPage = () => {
   // }, [reset]);
 
   return (
-    <article className="container mx-auto h-screen bg-slate-100">
-      <h1>Pizza</h1>
+    <article className="container max-w-4xl mx-auto px-8 pt-8">
+      <div className="mockup-window border border-base-300">
+        <div className="px-4 py-16 bg-base-200">
+          {isLoading ? (
+            <progress className="progress w-56" />
+          ) : (
+            <FormProvider {...formMethods}>
+              <form onSubmit={handleSubmit(onSubmit, onError)}>
+                <UncontrolledInput
+                  htmlLabel="Enter your ID"
+                  error={errors.id}
+                  {...register('id')}
+                />
 
-      {isLoading && <span>is loading</span>}
+                <div className="divider" />
 
-      {!isLoading && (
-        <FormProvider {...formMethods}>
-          <form onSubmit={handleSubmit(onSubmit, onError)} className="[&>*]:mt-4 p-4">
-            <UncontrolledInput htmlLabel="Id" error={errors.id} {...register('id')} />
+                <UncontrolledRadioCheckbox
+                  type="radio"
+                  name="priceRangeClass"
+                  values={[...PRICE_RANGE_CLASS]}
+                />
 
-            <UncontrolledRadioCheckbox
-              type="radio"
-              name="priceRangeClass"
-              values={[...PRICE_RANGE_CLASS]}
-            />
+                <div className="divider" />
 
-            <UncontrolledRadioCheckbox
-              type="radio"
-              name="selectedDough"
-              values={[...DOUGH]}
-            />
+                <UncontrolledRadioCheckbox type="radio" name="selectedDough" values={[...DOUGH]} />
 
-            <UncontrolledRadioCheckbox
-              type="checkbox"
-              name="selectedToppings"
-              values={[...TOPPINGS]}
-            />
+                <div className="divider" />
 
-            {/* <Controller
-            control={control}
-            name="name"
-            render={({ field: { onChange, value } }) => (
-              <ControlledInput label="value" onChange={onChange} value={value} />
-            )}
-            /> */}
+                <UncontrolledRadioCheckbox
+                  type="checkbox"
+                  name="selectedToppings"
+                  values={[...TOPPINGS]}
+                />
 
-            <button type="submit" className="px-4 py-2 border bg-white">
-              Send
-            </button>
+                <div className="divider" />
 
-            {isShowingResults && (
-              <code>
-                <h2>Last successful submit:</h2>
-                <pre>{JSON.stringify(formOutput, undefined, 4)}</pre>
-              </code>
-            )}
-          </form>
-        </FormProvider>
-      )}
+                {/* <Controller
+                  control={control}
+                  name="name"
+                  render={({ field: { onChange, value } }) => (
+                    <ControlledInput label="value" onChange={onChange} value={value} />
+                  )}
+                  />
+                */}
+
+                <button type="submit" className="btn btn-wide">
+                  Send values
+                </button>
+
+                {isShowingResults && (
+                  <>
+                    <div className="divider" />
+                    <code>
+                      <pre>{JSON.stringify(formOutput, undefined, 4)}</pre>
+                    </code>
+                  </>
+                )}
+              </form>
+            </FormProvider>
+          )}
+        </div>
+      </div>
     </article>
   );
 };
