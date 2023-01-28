@@ -27,6 +27,7 @@ const UncontrolledRadioCheckbox = <T extends Array<string>>({
               className="w-4 h-4 mr-2"
               aria-invalid={fieldState.error ? 'true' : 'false'}
               value={value}
+              data-testid={`id-${name}`}
             />
             <label htmlFor={value}>{value}</label>
           </li>

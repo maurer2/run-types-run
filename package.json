@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest pages/pizza/validation.spec.ts"
+    "test:validation": "vitest pages/pizza/validation.spec.ts",
+    "test:components": "playwright test -c playwright-ct.config.ts pages/pizza/index.spec.tsx"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
@@ -24,6 +25,7 @@
     "zod": "^3.20.2"
   },
   "devDependencies": {
+    "@playwright/experimental-ct-react": "^1.30.0",
     "@testing-library/react": "^13.4.0",
     "@types/node": "18.11.18",
     "@types/react": "18.0.26",

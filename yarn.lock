@@ -534,6 +534,23 @@
     tiny-glob "^0.2.9"
     tslib "^2.4.0"
 
+"@playwright/experimental-ct-react@^1.30.0":
+  version "1.30.0"
+  resolved "https://registry.yarnpkg.com/@playwright/experimental-ct-react/-/experimental-ct-react-1.30.0.tgz#399fdf093a7e87ceb99b9a0bba39c35345202eff"
+  integrity sha512-SjjmPAaqF6u4fAyLvYCl5LunHs+kH7LTmiwG1IrjdsPjKazX8EffaVNI54PtblExLcKiyhy6Gpwn4rDDu3LxJg==
+  dependencies:
+    "@playwright/test" "1.30.0"
+    "@vitejs/plugin-react" "^3.0.0"
+    vite "^4.0.3"
+
+"@playwright/test@1.30.0":
+  version "1.30.0"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.30.0.tgz#8c0c4930ff2c7be7b3ec3fd434b2a3b4465ed7cb"
+  integrity sha512-SVxkQw1xvn/Wk/EvBnqWIq6NLo1AppwbYOjNLmyU0R1RoQ3rLEBtmjTnElcnz8VEtn11fptj1ECxK0tgURhajw==
+  dependencies:
+    "@types/node" "*"
+    playwright-core "1.30.0"
+
 "@rushstack/eslint-patch@^1.1.3":
   version "1.2.0"
   resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz"
@@ -741,7 +758,7 @@
     "@typescript-eslint/types" "5.48.1"
     eslint-visitor-keys "^3.3.0"
 
-"@vitejs/plugin-react@^3.0.1":
+"@vitejs/plugin-react@^3.0.0", "@vitejs/plugin-react@^3.0.1":
   version "3.0.1"
   resolved "https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-3.0.1.tgz"
   integrity sha512-mx+QvYwIbbpOIJw+hypjnW1lAbKDHtWK5ibkF/V1/oMBu8HU/chb+SnqJDAsLq1+7rGqjktCEomMTM5KShzUKQ==
@@ -2962,6 +2979,11 @@ pkg-types@^1.0.1:
     mlly "^1.0.0"
     pathe "^1.0.0"
 
+playwright-core@1.30.0:
+  version "1.30.0"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.30.0.tgz#de987cea2e86669e3b85732d230c277771873285"
+  integrity sha512-7AnRmTCf+GVYhHbLJsGUtskWTE33SwMZkybJ0v6rqR1boxq2x36U7p1vDRV7HO2IwTZgmycracLxPEJI49wu4g==
+
 postcss-import@^14.1.0:
   version "14.1.0"
   resolved "https://registry.npmjs.org/postcss-import/-/postcss-import-14.1.0.tgz"
@@ -3678,7 +3700,7 @@ vite-node@0.27.3:
     source-map-support "^0.5.21"
     vite "^3.0.0 || ^4.0.0"
 
-"vite@^3.0.0 || ^4.0.0":
+"vite@^3.0.0 || ^4.0.0", vite@^4.0.3:
   version "4.0.4"
   resolved "https://registry.npmjs.org/vite/-/vite-4.0.4.tgz"
   integrity sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==
