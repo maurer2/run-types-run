@@ -23,13 +23,13 @@ const UncontrolledRadioCheckbox = <T extends Array<string>>({
             <input
               {...register(name)}
               type={type}
-              id={value}
+              id={`${name}-${value}`}
               className="w-4 h-4 mr-2"
               aria-invalid={fieldState.error ? 'true' : 'false'}
               value={value}
               data-testid={`id-${name}`}
             />
-            <label htmlFor={value}>{value}</label>
+            <label htmlFor={`${name}-${value}`}>{value}</label>
           </li>
         ))}
       </ul>

@@ -15,7 +15,6 @@ const Pizza: NextPage = () => {
   // const [apiData, setApiData] = useState<FormValues | null>(null);
   const [isLoading, setLoading] = useState(false);
   const [isShowingResults, setIsShowingResults] = useState(false);
-
   const formMethods = useForm<FormValues>({
     defaultValues: {
       id: 'Testuser',
@@ -23,6 +22,7 @@ const Pizza: NextPage = () => {
       selectedDough: DOUGH[0],
       selectedToppings: [TOPPINGS[2]],
     },
+    mode: 'onChange',
     resolver: zodResolver(pizzaValidationSchema),
   });
   const {
@@ -30,10 +30,18 @@ const Pizza: NextPage = () => {
     handleSubmit,
     formState: { errors },
     getValues,
+    trigger,
+    watch
     // reset,
   } = formMethods;
-
   const formOutput = getValues();
+  const priceRangeClassValue = watch("priceRangeClass");
+
+  // custom validation trigger
+  useEffect(() => {
+    trigger(['selectedDough', 'selectedToppings']);
+    console.log(priceRangeClassValue)
+  }, [priceRangeClassValue, trigger]);
 
   const onSubmit = (data: FormValues): void => {
     setIsShowingResults(true);
