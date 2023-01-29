@@ -1,7 +1,56 @@
 import { z } from 'zod';
 
-import type { FormValues } from './types';
+import type { FormValues, FormSettings } from './types';
 import { PRICE_RANGE_CLASS, DOUGH, TOPPINGS } from './constants';
+
+export const pizzaSettingsSchema = z
+  .object({
+    // #region id
+    id: z
+      .string()
+    ,
+    // #endregion
+
+    // #region priceRangeClasses
+    priceRangeClasses: z
+      .tuple([
+        z.literal(PRICE_RANGE_CLASS[0]),
+        z.literal(PRICE_RANGE_CLASS[1]),
+        z.literal(PRICE_RANGE_CLASS[2]),
+      ])
+    ,
+    // #endregion
+
+    // #region doughs
+    doughs: z
+      .tuple([
+        z.literal(DOUGH[0]),
+        z.literal(DOUGH[1]),
+        z.literal(DOUGH[2]),
+        // ...DOUGH.slice(2).map((dough, index) => z.literal(dough) as z.ZodLiteral<Extract<typeof DOUGH[number], typeof DOUGH[index]>>),
+      ])
+    ,
+    // #endregion
+
+    // #region toppings
+    toppings: z
+      .tuple([
+        z.literal(TOPPINGS[0]),
+        z.literal(TOPPINGS[1]),
+        z.literal(TOPPINGS[2]),
+        z.literal(TOPPINGS[3]),
+        z.literal(TOPPINGS[4]),
+        z.literal(TOPPINGS[5]),
+        z.literal(TOPPINGS[6]),
+        z.literal(TOPPINGS[7]),
+        z.literal(TOPPINGS[8]),
+        z.literal(TOPPINGS[9]),
+        z.literal(TOPPINGS[10]),
+      ])
+    ,
+    // #endregion
+  })
+  .strict() satisfies z.ZodType<FormSettings>;
 
 export const pizzaValidationSchema = z
   .object({
@@ -9,7 +58,8 @@ export const pizzaValidationSchema = z
     id: z
       .string()
       .min(1, { message: 'id should not be empty' })
-      .min(5, { message: 'id should contain at least 5 characters' }),
+      .min(5, { message: 'id should contain at least 5 characters' })
+    ,
     // #endregion
 
     // #region priceRangeClass
@@ -27,14 +77,16 @@ export const pizzaValidationSchema = z
         z.literal(DOUGH[0]),
         z.literal(DOUGH[1]),
         ...DOUGH.slice(2).map((dough) => z.literal(dough)),
-      ]),
+      ])
+    ,
     // #endregion
 
     // #region selectedToppings
     selectedToppings: z
       .array(z.enum(TOPPINGS))
       .min(1, { message: 'At least 1 topping should be selected' })
-      .max(TOPPINGS.length, { message: 'All toppings have been selected already' }),
+      .max(TOPPINGS.length, { message: 'All toppings have been selected already' })
+    ,
     // #endregion
   })
   .strict()
