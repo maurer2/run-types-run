@@ -14,3 +14,10 @@ export type FormValues = {
   selectedDough: Dough;
   selectedToppings: Toppings[];
 };
+
+export type FormSettings = {
+  id: string;
+  priceRangeClasses: typeof PRICE_RANGE_CLASS,
+  doughs: typeof DOUGH;
+  toppings: typeof TOPPINGS;
+};

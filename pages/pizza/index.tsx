@@ -1,48 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import type { NextPage } from 'next';
-import { useForm, FormProvider } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import UncontrolledInput from './UncontrolledInput';
+import useSWR from 'swr';
+import type { Key, Fetcher } from 'swr';
 
-import UncontrolledRadioCheckbox from './UncontrolledRadioCheckbox';
-
-import { TOPPINGS, DOUGH, PRICE_RANGE_CLASS } from './constants';
-import { pizzaValidationSchema } from './validation';
-
-import type { FormValues } from './types';
+import type { FormSettings } from './types';
 import PizzaForm from './PizzaForm';
 
+const fetcher: Fetcher<FormSettings, Key> = (url: string): Promise<FormSettings> => fetch(url).then((res) => res.json()); // todo generic
+
 const Pizza: NextPage = () => {
-  // const [apiData, setApiData] = useState<FormValues | null>(null);
-  const [isLoading, setLoading] = useState(false);
+  const {
+    data: formSettings,
+    error: formSettingsLoadingError,
+    isLoading: isLoadingFormSettings,
+  } = useSWR<FormSettings, Error>('/api/pizza', fetcher);
+  // const { data, error, isLoading: isLoadingDefaultFormValues } = useSWR('/api/pizza/default-values', fetcher);
 
-  // useEffect(() => {
-  //   const fetchApiData = async () => {
-  //     setLoading(true);
+  // todo validate FormSettings
 
-  //     const response = await fetch('/api/pizza');
-  //     const data = await response.json();
-
-  //     try {
-  //       const validatedData = pizzaValidationSchema.parse(data) satisfies FormValues;
-  //       // setApiData(validatedData);
-  //       reset(validatedData, { keepDefaultValues: true });
-  //     } catch (error) {
-  //       reset();
-  //       // setApiData(null);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchApiData();
-  // }, [reset]);
+  const showForm = !formSettingsLoadingError && !isLoadingFormSettings && !!formSettings;
 
   return (
     <article className="container max-w-4xl mx-auto px-8 pt-8">
       <div className="mockup-window border border-base-300">
         <div className="px-4 py-16 bg-base-200">
-          <PizzaForm />
+          {!showForm ? (
+            <>
+              <p>Loading form settings</p>
+              <progress className="progress w-56" />
+
+              {/* <p>Loading default values</p>
+                <progress className="progress w-56" /> */}
+            </>
+          ) : (
+            <PizzaForm formSettings={formSettings} />
+          )}
         </div>
       </div>
     </article>

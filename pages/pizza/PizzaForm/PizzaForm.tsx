@@ -9,10 +9,9 @@ import { TOPPINGS, DOUGH, PRICE_RANGE_CLASS } from '../constants';
 import { pizzaValidationSchema } from '../validation';
 
 import type { FormValues } from '../types';
+import type { PizzaFormProps } from './types';
 
-const PizzaForm = () => {
-  // const [apiData, setApiData] = useState<FormValues | null>(null);
-  const [isLoading, setLoading] = useState(false);
+const PizzaForm = ({ formSettings }: PizzaFormProps) => {
   const [isShowingResults, setIsShowingResults] = useState(false);
   const formMethods = useForm<FormValues>({
     defaultValues: {
@@ -48,10 +47,6 @@ const PizzaForm = () => {
   };
   const onError = (): void => setIsShowingResults(false);
 
-  if (isLoading) {
-    return <progress className="progress w-56" />;
-  }
-
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
@@ -62,16 +57,24 @@ const PizzaForm = () => {
         <UncontrolledRadioCheckbox
           type="radio"
           name="priceRangeClass"
-          values={[...PRICE_RANGE_CLASS]}
+          values={[...formSettings.priceRangeClasses]}
         />
 
         <div className="divider" />
 
-        <UncontrolledRadioCheckbox type="radio" name="selectedDough" values={[...DOUGH]} />
+        <UncontrolledRadioCheckbox
+          type="radio"
+          name="selectedDough"
+          values={[...formSettings.doughs]}
+        />
 
         <div className="divider" />
 
-        <UncontrolledRadioCheckbox type="checkbox" name="selectedToppings" values={[...TOPPINGS]} />
+        <UncontrolledRadioCheckbox
+          type="checkbox"
+          name="selectedToppings"
+          values={[...formSettings.toppings]}
+        />
 
         <div className="divider" />
 
