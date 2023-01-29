@@ -55,29 +55,21 @@ export const pizzaSettingsSchema = z
 export const pizzaValidationSchema = z
   .object({
     // #region id
-    id: z
-      .string()
+    id: pizzaSettingsSchema.shape.id
       .min(1, { message: 'id should not be empty' })
       .min(5, { message: 'id should contain at least 5 characters' })
     ,
     // #endregion
 
     // #region priceRangeClass
-    priceRangeClass: z.union([
-      z.literal(PRICE_RANGE_CLASS[0]),
-      z.literal(PRICE_RANGE_CLASS[1]),
-      ...PRICE_RANGE_CLASS.slice(2).map((priceRangeClass) => z.literal(priceRangeClass)),
-    ]),
+    priceRangeClass: z.union(pizzaSettingsSchema.shape.priceRangeClasses.items)
+    ,
     // #endregion
 
     // #region selectedDough
     selectedDough: z
       // https://stackoverflow.com/questions/74921458/does-zod-have-something-equivalent-to-yups-oneof/74921781#74921781
-      .union([
-        z.literal(DOUGH[0]),
-        z.literal(DOUGH[1]),
-        ...DOUGH.slice(2).map((dough) => z.literal(dough)),
-      ])
+      .union(pizzaSettingsSchema.shape.doughs.items)
     ,
     // #endregion
 
@@ -85,7 +77,7 @@ export const pizzaValidationSchema = z
     selectedToppings: z
       .array(z.enum(TOPPINGS))
       .min(1, { message: 'At least 1 topping should be selected' })
-      .max(TOPPINGS.length, { message: 'All toppings have been selected already' })
+      .max(pizzaSettingsSchema.shape.toppings.items.length, { message: 'All toppings have already been selected' })
     ,
     // #endregion
   })
