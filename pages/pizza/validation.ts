@@ -27,7 +27,7 @@ export const pizzaSettingsSchema = z
         z.literal(DOUGH[0]),
         z.literal(DOUGH[1]),
         z.literal(DOUGH[2]),
-        // ...DOUGH.slice(2).map((dough, index) => z.literal(dough) as z.ZodLiteral<Extract<typeof DOUGH[number], typeof DOUGH[index]>>),
+        // ...DOUGH.slice(2).map((dough, index) => z.literal(dough) as typeof DOUGH.at(index)),
       ])
     ,
     // #endregion
@@ -52,6 +52,11 @@ export const pizzaSettingsSchema = z
   })
   .strict() satisfies z.ZodType<FormSettings>;
 
+const toppingsValues = [
+  pizzaSettingsSchema.shape.toppings.items[0].value,
+  ...pizzaSettingsSchema.shape.toppings.items.slice(1).map((topping) => (topping.value))
+] as const;
+
 export const pizzaValidationSchema = z
   .object({
     // #region id
@@ -62,7 +67,8 @@ export const pizzaValidationSchema = z
     // #endregion
 
     // #region priceRangeClass
-    priceRangeClass: z.union(pizzaSettingsSchema.shape.priceRangeClasses.items)
+    priceRangeClass: z
+      .union(pizzaSettingsSchema.shape.priceRangeClasses.items)
     ,
     // #endregion
 
@@ -75,9 +81,9 @@ export const pizzaValidationSchema = z
 
     // #region selectedToppings
     selectedToppings: z
-      .array(z.enum(TOPPINGS))
+      .array(z.enum(toppingsValues))
       .min(1, { message: 'At least 1 topping should be selected' })
-      .max(pizzaSettingsSchema.shape.toppings.items.length, { message: 'All toppings have already been selected' })
+      .max(toppingsValues.length, { message: 'All toppings have already been selected' })
     ,
     // #endregion
   })
