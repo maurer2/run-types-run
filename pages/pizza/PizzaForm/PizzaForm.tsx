@@ -4,22 +4,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
-
-import { TOPPINGS, DOUGH, PRICE_RANGE_CLASS } from '../constants';
 import { pizzaValidationSchema } from '../validation';
 
 import type { FormValues } from '../types';
 import type { PizzaFormProps } from './types';
 
-const PizzaForm = ({ formSettings }: PizzaFormProps) => {
+const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
   const [isShowingResults, setIsShowingResults] = useState(false);
   const formMethods = useForm<FormValues>({
-    defaultValues: {
-      id: 'Testuser',
-      priceRangeClass: PRICE_RANGE_CLASS[0],
-      selectedDough: DOUGH[0],
-      selectedToppings: [TOPPINGS[2]],
-    },
+    defaultValues,
     mode: 'onChange',
     resolver: zodResolver(pizzaValidationSchema),
   });

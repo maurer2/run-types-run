@@ -10,5 +10,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<FormVa
     selectedToppings: ['Tomato'],
   };
 
-  res.status(200).json(defaultValues);
+  setTimeout(() => {
+    res.status(200).json(defaultValues);
+  }, Math.trunc(Math.random() * 10000));
 }
