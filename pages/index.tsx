@@ -1,15 +1,15 @@
-import type { NextPage } from 'next'
+import type { NextPage } from 'next';
 
-import styles from '../styles/Home.module.css'
+import Link from 'next/link';
 
 const Home: NextPage = () => (
-    <nav className={styles.container}>
-      <ul>
-        <li><a href="simple-form-validation">Test</a></li>
-        <li><a href="related-input-validations">RIV</a></li>
-        <li><a href="pizza">Pizza</a></li>
-      </ul>
-    </nav>
-  )
+  <div className="container max-w-4xl mx-auto px-8 pt-8">
+    <div className="navbar navbar-center bg-neutral text-neutral-content">
+      <Link className="btn btn-ghost normal-case text-xl" href="/pizza">
+        Pizza
+      </Link>
+    </div>
+  </div>
+);
 
-export default Home
+export default Home;
