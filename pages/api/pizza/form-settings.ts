@@ -15,7 +15,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<FormSe
     setTimeout(() => {
       res
         .status(200)
-        .json(formSettings)
+        .json(formSettings);
 
       resolve(res);
     }, Math.trunc(Math.random() * 5000));

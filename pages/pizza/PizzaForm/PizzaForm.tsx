@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { clsx } from 'clsx';
 
 import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
 import { pizzaValidationSchema } from '../validation';
 
-import type { FormValues } from '../types';
+import type { FormValues, FormValues } from '../types';
 import type { PizzaFormProps } from './types';
 
 const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
-  const [isShowingResults, setIsShowingResults] = useState(false);
   const formMethods = useForm<FormValues>({
     defaultValues,
     mode: 'onChange',
@@ -19,26 +19,44 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    getValues,
+    formState: { errors, isValid },
     trigger,
     watch,
     // reset,
   } = formMethods;
-  const formOutput = getValues();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const priceRangeClassValue = watch('priceRangeClass');
 
   // custom validation trigger
   useEffect(() => {
     trigger(['selectedDough', 'selectedToppings']);
-    console.log(priceRangeClassValue);
   }, [priceRangeClassValue, trigger]);
 
-  const onSubmit = (data: FormValues): void => {
-    setIsShowingResults(true);
-    console.log(data);
+  const sendFormValues = (formValues: FormValues) => {
+    const requestData = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formValues),
+    } satisfies RequestInit;
+
+    return fetch('/api/pizza/user-data', requestData);
   };
-  const onError = (): void => setIsShowingResults(false);
+
+  const onSubmit = async (formValues: FormValues): Promise<void> => {
+    try {
+      setIsSubmitting(true);
+
+      const response = await sendFormValues(formValues);
+      const responseJSON = await response.json();
+      console.log(responseJSON);
+    } catch (e) {
+      // todo
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  const onError = (): void => {};
 
   return (
     <FormProvider {...formMethods}>
@@ -71,18 +89,18 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
 
         <div className="divider" />
 
-        <button type="submit" className="btn btn-wide">
+        <button
+          type="submit"
+          aria-disabled={!isValid}
+          className={clsx('btn btn-wide', {
+            loading: isSubmitting,
+            'cursor-wait': isSubmitting,
+            'btn-disabled': !isValid && !isSubmitting,
+            'cursor-not-allowed': !isValid && !isSubmitting,
+          })}
+        >
           Send values
         </button>
-
-        {isShowingResults && (
-          <>
-            <div className="divider" />
-            <code>
-              <pre>{JSON.stringify(formOutput, undefined, 4)}</pre>
-            </code>
-          </>
-        )}
       </form>
     </FormProvider>
   );

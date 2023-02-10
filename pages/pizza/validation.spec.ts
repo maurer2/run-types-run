@@ -3,10 +3,10 @@ import { faker } from '@faker-js/faker';
 
 import { pizzaValidationSchema } from './validation';
 import { TOPPINGS } from './constants';
-import type { FormValues as PizzaValidationSchema } from './types';
+import type { FormValues } from './types';
 
 describe('validation.ts', () => {
-  const correctValues: PizzaValidationSchema = {
+  const correctValues: FormValues = {
     id: faker.random.alphaNumeric(5),
     priceRangeClass: 'Standard',
     selectedDough: 'Standard',

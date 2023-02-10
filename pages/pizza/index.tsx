@@ -2,7 +2,7 @@ import React from 'react';
 import type { NextPage } from 'next';
 
 import PizzaForm from './PizzaForm';
-import Preloader from './Preloader/Preloader';
+import Preloader from './Preloader';
 
 import { useFetchStartValues } from './Hooks/useFetchStartValues';
 
