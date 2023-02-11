@@ -1,10 +1,10 @@
 import React from 'react';
 import type { NextPage } from 'next';
 
-import PizzaForm from './PizzaForm';
-import Preloader from './Preloader';
+import PizzaForm from '../../components/PizzaForm';
+import Preloader from '../../components/Preloader';
 
-import { useFetchStartValues } from './Hooks/useFetchStartValues';
+import useFetchStartValues from '../../hooks/useFetchStartValues';
 
 const Pizza: NextPage = () => {
   const [fetchingState] = useFetchStartValues([

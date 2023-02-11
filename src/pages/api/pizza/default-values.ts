@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import type { FormValues } from '../../pizza/types';
+import type { FormValues } from '../../../types/pizza';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<FormValues>) {
   return new Promise(resolve => {

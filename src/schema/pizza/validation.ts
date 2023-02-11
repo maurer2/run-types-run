@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import type { FormValues, FormSettings } from './types';
-import { PRICE_RANGE_CLASS, DOUGH, TOPPINGS } from './constants';
+import type { FormValues, FormSettings } from '../../types/pizza';
+import { PRICE_RANGE_CLASS, DOUGH, TOPPINGS } from '../../constants/pizza';
 
 export const pizzaSettingsSchema = z
   .object({

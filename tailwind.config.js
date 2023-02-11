@@ -1,14 +1,12 @@
 module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
+    './src/components/**/*.{ts,tsx}',
+    './src/pages/**/*.{ts,tsx}'
   ],
   theme: {
     extend: {},
   },
-  plugins: [
-    require("daisyui"),
-  ],
+  plugins: [require('daisyui')],
   daisyui: {
     styled: true,
     themes: ['black'],
@@ -16,6 +14,6 @@ module.exports = {
     utils: true,
     logs: true,
     rtl: false,
-    prefix: "",
+    prefix: '',
   },
-}
+};

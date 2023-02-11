@@ -5,9 +5,9 @@ import { clsx } from 'clsx';
 
 import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
-import { pizzaValidationSchema } from '../validation';
+import { pizzaValidationSchema } from '../../schema/pizza/validation';
 
-import type { FormValues, FormValues } from '../types';
+import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
 
 const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {

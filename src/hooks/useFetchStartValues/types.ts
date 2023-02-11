@@ -1,4 +1,4 @@
-import type { FormSettings, FormValues } from '../types';
+import type { FormSettings, FormValues } from '../../types/pizza';
 
 export type Payload<T1, T2> = {
   formSettings: T1;

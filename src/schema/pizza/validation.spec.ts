@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { faker } from '@faker-js/faker';
 
 import { pizzaValidationSchema } from './validation';
-import { TOPPINGS } from './constants';
-import type { FormValues } from './types';
+import { TOPPINGS } from '../../constants/pizza';
+import type { FormValues } from '../../types/pizza';
 
 describe('validation.ts', () => {
   const correctValues: FormValues = {

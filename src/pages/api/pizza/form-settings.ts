@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import type { FormSettings } from '../../pizza/types';
-import { TOPPINGS, DOUGH, PRICE_RANGE_CLASS } from '../../pizza/constants';
+import type { FormSettings } from '../../../types/pizza';
+import { TOPPINGS, DOUGH, PRICE_RANGE_CLASS } from '../../../constants/pizza';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<FormSettings>) {
   return new Promise(resolve => {

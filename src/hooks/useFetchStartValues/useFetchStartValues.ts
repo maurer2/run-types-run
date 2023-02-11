@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 
-import type { FormSettings, FormValues } from '../types';
+import type { FormSettings, FormValues } from '../../types/pizza';
 import type { FetchingState, Loading, Success, Fail } from './types';
 
 const fetcher = async <T>(url: string): Promise<T> => {
@@ -13,7 +13,7 @@ const fetcher = async <T>(url: string): Promise<T> => {
   return response.json();
 };
 
-export function useFetchStartValues(url: string[]) {
+function useFetchStartValues(url: string[]) {
   const {
     data: formSettingsData,
     error: formSettingsLoadingError,
@@ -73,3 +73,5 @@ export function useFetchStartValues(url: string[]) {
 
   return [fetchingState] as const;
 }
+
+export default useFetchStartValues;
