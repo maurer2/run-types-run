@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clsx } from 'clsx';
+import { useRouter } from 'next/router';
 
 import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
 import { pizzaValidationSchema } from '../../schema/pizza/validation';
+import { sendFormValues } from './utils';
 
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
@@ -25,6 +27,8 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
     // reset,
   } = formMethods;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const router = useRouter();
 
   const priceRangeClassValue = watch('priceRangeClass');
 
@@ -33,25 +37,22 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
     trigger(['selectedDough', 'selectedToppings']);
   }, [priceRangeClassValue, trigger]);
 
-  const sendFormValues = (formValues: FormValues) => {
-    const requestData = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formValues),
-    } satisfies RequestInit;
-
-    return fetch('/api/pizza/user-data', requestData);
-  };
-
   const onSubmit = async (formValues: FormValues): Promise<void> => {
     try {
       setIsSubmitting(true);
+      setShowErrorMessage(false);
 
-      const response = await sendFormValues(formValues);
-      const responseJSON = await response.json();
-      console.log(responseJSON);
+      const response = await sendFormValues(formValues, '/api/pizza/user-data');
+      if (response.ok) {
+        await response.json();
+
+        router.push('/pizza/success');
+        return
+      }
+
+      throw new Error('Error sending data');
     } catch (e) {
-      // todo
+      setShowErrorMessage(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -92,7 +93,7 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
         <button
           type="submit"
           aria-disabled={!isValid}
-          className={clsx('btn btn-wide', {
+          className={clsx('btn btn-wide normal-case', {
             loading: isSubmitting,
             'cursor-wait': isSubmitting,
             'btn-disabled': !isValid && !isSubmitting,
@@ -101,6 +102,27 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
         >
           Send values
         </button>
+
+        {showErrorMessage && (
+          <div className="alert alert-warning shadow-lg mt-8">
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current flex-shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>Server error</span>
+            </div>
+          </div>
+        )}
       </form>
     </FormProvider>
   );
