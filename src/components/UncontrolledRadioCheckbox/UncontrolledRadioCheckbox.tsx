@@ -14,7 +14,6 @@ const UncontrolledRadioCheckbox = <T extends Array<string>>({
 
   const fieldState = getFieldState(name);
   const isRadio = type === 'radio';
-  // console.log(fieldState);
 
   return (
     <fieldset aria-describedby={`id-${name}`}>

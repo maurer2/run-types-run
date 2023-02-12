@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test:validation": "vitest pages/pizza/validation.spec.ts",
-    "test:components": "playwright test -c playwright-ct.config.ts pages/pizza/index.spec.tsx"
+    "test:components": "playwright test -c playwright-ct.config.ts src/components/ControlledInput/ControlledInput.spec.tsx src/components/UncontrolledInput/ControlledInput.spec.tsx src/components/Preloader/Preloader.spec.tsx src/components/UncontrolledRadioCheckbox/UncontrolledRadioCheckbox.spec.tsx"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",

@@ -3,29 +3,35 @@ import React from 'react';
 import type { PreloaderProps } from './types';
 
 const Preloader = ({ fetchingState }: PreloaderProps) => (
-  <div>
-    <p>Loading form settings</p>
+  <>
+    <h2 className="mb-4">Form settings</h2>
     {fetchingState.status === 'loading' && fetchingState.progress.formSettings && (
-      <progress className="progress w-56 mt-4 mb-4" />
+      <>
+        <progress className="progress w-56 mb-4 block" />
+        <p className="badge mb-4">is loading</p>
+      </>
     )}
     {fetchingState.status === 'loading' && !fetchingState.progress.formSettings && (
-      <p className="badge badge-success mb-4">has Loaded</p>
+      <p className="badge badge-success mb-4">has loaded</p>
     )}
     {fetchingState.status === 'fail' && fetchingState.error.formSettings && (
-      <p className="badge badge-error mb-4">has Loaded</p>
+      <p className="badge badge-error mb-4">has failed loading</p>
     )}
 
-    <p>Loading default values</p>
+    <h2 className="mb-4">Default values</h2>
     {fetchingState.status === 'loading' && fetchingState.progress.defaultValues && (
-      <progress className="progress w-56 mt-4 mb-4" />
+      <>
+        <progress className="progress w-56 mb-4 block" />
+        <p className="badge mb-4">is loading</p>
+      </>
     )}
     {fetchingState.status === 'loading' && !fetchingState.progress.defaultValues && (
-      <p className="badge badge-success mb-4">has Loaded</p>
+      <p className="badge badge-success mb-4">has loaded</p>
     )}
     {fetchingState.status === 'fail' && fetchingState.error.defaultValues && (
-      <p className="badge badge-error mb-4">has Loaded</p>
+      <p className="badge badge-error mb-4"> has failed loading</p>
     )}
-  </div>
+  </>
 );
 
 export default Preloader;
