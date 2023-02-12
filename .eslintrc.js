@@ -29,6 +29,7 @@ module.exports = {
     '@typescript-eslint/consistent-type-imports': 'warn',
     'react/function-component-definition': 'off',
     'react/display-name': 'off',
+    'react/button-has-type': 'off', // allow reset button
   },
   settings: {
     'import/resolver': {

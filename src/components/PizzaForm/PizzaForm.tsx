@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { FormEvent } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clsx } from 'clsx';
@@ -24,7 +25,7 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
     formState: { errors, isValid },
     trigger,
     watch,
-    // reset,
+    reset,
   } = formMethods;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -47,7 +48,7 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
         await response.json();
 
         router.push('/pizza/success');
-        return
+        return;
       }
 
       throw new Error('Error sending data');
@@ -57,11 +58,19 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
       setIsSubmitting(false);
     }
   };
+
+  // validation error
   const onError = (): void => {};
+
+  const handleReset = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+
+    reset({ ...defaultValues });
+  };
 
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onSubmit, onError)}>
+      <form onSubmit={handleSubmit(onSubmit, onError)} onReset={handleReset}>
         <UncontrolledInput htmlLabel="Enter your ID" error={errors.id} {...register('id')} />
 
         <div className="divider" />
@@ -89,6 +98,10 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
         />
 
         <div className="divider" />
+
+        <button type="reset" className="btn btn-outline normal-case mr-4">
+          Reset
+        </button>
 
         <button
           type="submit"
