@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { faker } from '@faker-js/faker';
 
 import { pizzaValidationSchema } from './validation';
-import { TOPPINGS } from '../../constants/pizza';
+import { TOPPINGS } from '../../constants/pizza/pizza';
 import type { FormValues } from '../../types/pizza';
 
 describe('validation.ts', () => {

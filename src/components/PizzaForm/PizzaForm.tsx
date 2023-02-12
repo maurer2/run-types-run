@@ -9,6 +9,7 @@ import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
 import { pizzaValidationSchema } from '../../schema/pizza/validation';
 import { sendFormValues } from './utils';
+import { apiRoutes } from '../../constants/pizza/urls';
 
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
@@ -43,14 +44,13 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
       setIsSubmitting(true);
       setShowErrorMessage(false);
 
-      const response = await sendFormValues(formValues, '/api/pizza/user-data');
+      const response = await sendFormValues(formValues, apiRoutes.userData);
       if (response.ok) {
         await response.json();
-
         router.push('/pizza/success');
+
         return;
       }
-
       throw new Error('Error sending data');
     } catch (e) {
       setShowErrorMessage(true);

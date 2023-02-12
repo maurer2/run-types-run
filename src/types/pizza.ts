@@ -1,4 +1,4 @@
-import type { PRICE_RANGE_CLASS, TOPPINGS, DOUGH } from '../constants/pizza';
+import type { PRICE_RANGE_CLASS, TOPPINGS, DOUGH } from '../constants/pizza/pizza';
 
 type PriceRangeClass = typeof PRICE_RANGE_CLASS[number]
 type Toppings = typeof TOPPINGS[keyof typeof TOPPINGS];

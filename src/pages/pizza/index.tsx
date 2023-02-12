@@ -3,14 +3,11 @@ import type { NextPage } from 'next';
 
 import PizzaForm from '../../components/PizzaForm';
 import Preloader from '../../components/Preloader';
-
 import useFetchStartValues from '../../hooks/useFetchStartValues';
+import { apiRoutes } from '../../constants/pizza/urls';
 
 const Pizza: NextPage = () => {
-  const [fetchingState] = useFetchStartValues([
-    '/api/pizza/form-settings',
-    '/api/pizza/default-values',
-  ]);
+  const [fetchingState] = useFetchStartValues([apiRoutes.formSettings, apiRoutes.defaultValues]);
 
   return (
     <article className="container max-w-4xl mx-auto px-8 pt-8">

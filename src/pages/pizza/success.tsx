@@ -1,7 +1,6 @@
 import React from 'react';
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import { nanoid } from 'nanoid';
 
 const Success: NextPage = () => (
   <article className="container max-w-4xl mx-auto px-8 pt-8">
@@ -25,7 +24,7 @@ const Success: NextPage = () => (
             <span>Data has been saved on the server.</span>
           </div>
         </div>
-        <Link className="btn normal-case btn-wide" href={`/pizza?${nanoid(5)}`}>
+        <Link className="btn normal-case btn-wide" href="/pizza">
           Go back
         </Link>
       </div>

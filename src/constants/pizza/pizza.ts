@@ -1,4 +1,4 @@
-import type { TOPPINGSMAP } from './types';
+import type { TOPPINGSMAP } from '../../types/pizza';
 
 // #region PRICE_RANGE_CLASS
 export const PRICE_RANGE_CLASS = ['Budget', 'Standard', 'Deluxe'] as const satisfies readonly string[];

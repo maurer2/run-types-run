@@ -1,4 +1,4 @@
-import type { FormSettings, FormValues } from "../types";
+import type { FormSettings, FormValues } from "../../types/pizza";
 
 export type PizzaFormProps = {
   formSettings: FormSettings;
