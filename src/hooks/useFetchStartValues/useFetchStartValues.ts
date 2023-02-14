@@ -1,5 +1,6 @@
 import useSWR from 'swr';
 
+import { pizzaSettingsSchema, pizzaValidationSchema } from '../../schema/pizza/validation';
 import type { FormSettings, FormValues } from '../../types/pizza';
 import type { FetchingState, Loading, Success, Fail } from './types';
 
@@ -46,26 +47,29 @@ function useFetchStartValues(url: string[]) {
   }
   // loading done
   if (!formSettingsIsLoading && !defaultValuesIsLoading) {
-    // has no error
-    if (!formSettingsLoadingError && !defaultValuesLoadingError) {
-      // todo validation
+    const isValidFormSettingsData = pizzaSettingsSchema.safeParse(formSettingsData).success;
+    const isValidDefaultValuesData = pizzaValidationSchema.safeParse(defaultValuesData).success;
 
-      // has data and is validated
-      if (!!formSettingsData && !!defaultValuesData) {
-        fetchingState = {
-          status: 'success',
-          payload: {
-            formSettings: formSettingsData,
-            defaultValues: defaultValuesData,
-          },
-        } satisfies Success;
-      }
+    // formSettingsData && defaultValuesData only necessary for TS strict mode
+    if (
+      formSettingsData &&
+      defaultValuesData &&
+      isValidFormSettingsData &&
+      isValidDefaultValuesData
+    ) {
+      fetchingState = {
+        status: 'success',
+        payload: {
+          formSettings: formSettingsData,
+          defaultValues: defaultValuesData,
+        },
+      } satisfies Success;
     } else {
       fetchingState = {
         status: 'fail',
         error: {
-          formSettings: formSettingsLoadingError,
-          defaultValues: defaultValuesLoadingError,
+          formSettings: formSettingsLoadingError ?? new Error('Error'),
+          defaultValues: defaultValuesLoadingError ?? new Error('Error'),
         },
       } satisfies Fail;
     }
