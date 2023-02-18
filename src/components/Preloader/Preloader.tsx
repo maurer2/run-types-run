@@ -7,7 +7,7 @@ const Preloader = ({ fetchingState }: PreloaderProps) => (
     <h2 className="mb-4">Form settings</h2>
     {fetchingState.status === 'loading' && fetchingState.progress.formSettings && (
       <>
-        <progress className="progress w-56 mb-4 block" />
+        <progress className="progress w-56 mb-4 block" data-testid="progressbar-form-settings" />
         <p className="badge mb-4">is loading</p>
       </>
     )}
@@ -21,7 +21,7 @@ const Preloader = ({ fetchingState }: PreloaderProps) => (
     <h2 className="mb-4">Default values</h2>
     {fetchingState.status === 'loading' && fetchingState.progress.defaultValues && (
       <>
-        <progress className="progress w-56 mb-4 block" />
+        <progress className="progress w-56 mb-4 block" data-testid="progressbar-default-values"/>
         <p className="badge mb-4">is loading</p>
       </>
     )}
