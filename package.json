@@ -9,13 +9,15 @@
     "start": "next start",
     "lint": "next lint",
     "test:validation": "vitest pages/pizza/validation.spec.ts",
-    "test:components": "playwright test -c playwright-ct.config.ts src/components/ControlledInput/ControlledInput.spec.tsx src/components/UncontrolledInput/ControlledInput.spec.tsx src/components/Preloader/Preloader.spec.tsx src/components/UncontrolledRadioCheckbox/UncontrolledRadioCheckbox.spec.tsx"
+    "test:components": "cypress run --component",
+    "test:components:visual": "cypress open"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
     "@hookform/resolvers": "^2.9.11",
     "autoprefixer": "^10.4.13",
     "clsx": "^1.2.1",
+    "cypress": "^12.6.0",
     "daisyui": "^2.50.0",
     "next": "13.1.1",
     "postcss": "^8.4.21",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@playwright/experimental-ct-react": "^1.30.0",
+    "@testing-library/cypress": "^9.0.0",
     "@testing-library/react": "^13.4.0",
     "@types/node": "^18.13.0",
     "@types/react": "18.0.27",
