@@ -1,17 +1,20 @@
-import React from 'react'
+import React from 'react';
 
-import UncontrolledInput from './UncontrolledInput'
+import UncontrolledInput from './UncontrolledInput';
 
 describe('<UncontrolledInput />', () => {
   it('renders', () => {
-    // see: https://on.cypress.io/mounting-react
-    cy.mount(<UncontrolledInput htmlLabel="Label" error={undefined} />)
+    cy.mount(<UncontrolledInput htmlLabel="Label" error={undefined} />);
 
     cy.findByText('Label').should('exist');
-    cy.findByDisplayValue("").should('exist');
-    cy.findAllByRole("paragraph").should('not.exist');
+    cy.findByRole('textbox').should('exist');
+    cy.findAllByRole('paragraph').should('not.exist');
+  });
 
-    cy.findByDisplayValue("").type('value');
-    cy.findByDisplayValue("value").should('exist');
-  })
-})
+  it('should update value when typing', () => {
+    cy.mount(<UncontrolledInput htmlLabel="Label" error={undefined} />);
+
+    cy.findByRole('textbox').type('value');
+    cy.findByRole('textbox').should('have.value', 'value');
+  });
+});
