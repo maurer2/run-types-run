@@ -17,7 +17,7 @@ export type Success = {
 
 export type Fail = {
   status: 'fail';
-  error: Partial<Payload<Error, Error>>;
+  error: Partial<Payload<string, string>>;
 };
 
 export type FetchingState = Loading | Success | Fail;

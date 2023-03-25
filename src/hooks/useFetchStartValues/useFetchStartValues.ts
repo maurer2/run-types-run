@@ -1,9 +1,16 @@
 import useSWR from 'swr';
+import { fromZodError } from 'zod-validation-error';
 
 import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
 import { pizzaSettingsSchema } from '../../schema/pizza/settings';
 import type { FormSettings, FormValues } from '../../types/pizza';
 import type { FetchingState, Loading, Success, Fail } from './types';
+
+const zodErrorOptions = {
+  maxIssuesInMessage: 1,
+  prefix: '',
+  prefixSeparator: '',
+};
 
 const fetcher = async <T>(url: string): Promise<T> => {
   const response = await fetch(url);
@@ -48,15 +55,14 @@ function useFetchStartValues(url: string[]) {
   }
   // loading done
   if (!formSettingsIsLoading && !defaultValuesIsLoading) {
-    const isValidFormSettingsData = pizzaSettingsSchema.safeParse(formSettingsData).success;
-    const isValidDefaultValuesData = pizzaFormValidationSchema.safeParse(defaultValuesData).success;
+    const pizzaSettingsSchemaParseResult = pizzaSettingsSchema.safeParse(formSettingsData);
+    const pizzaFormValidationParseResult = pizzaFormValidationSchema.safeParse(defaultValuesData);
 
-    // formSettingsData && defaultValuesData only necessary for TS strict mode
     if (
       formSettingsData &&
       defaultValuesData &&
-      isValidFormSettingsData &&
-      isValidDefaultValuesData
+      pizzaSettingsSchemaParseResult.success &&
+      pizzaFormValidationParseResult.success
     ) {
       fetchingState = {
         status: 'success',
@@ -66,13 +72,29 @@ function useFetchStartValues(url: string[]) {
         },
       } satisfies Success;
     } else {
-      fetchingState = {
-        status: 'fail',
-        error: {
-          formSettings: formSettingsLoadingError ?? new Error('Error'),
-          defaultValues: defaultValuesLoadingError ?? new Error('Error'),
-        },
-      } satisfies Fail;
+      if (formSettingsLoadingError || defaultValuesLoadingError) {
+        fetchingState = {
+          status: 'fail',
+          error: {
+            formSettings: formSettingsLoadingError?.message,
+            defaultValues: defaultValuesLoadingError?.message,
+          },
+        } satisfies Fail;
+      }
+
+      if (!pizzaSettingsSchemaParseResult.success || !pizzaFormValidationParseResult.success) {
+        fetchingState = {
+          status: 'fail',
+          error: {
+            formSettings: !pizzaSettingsSchemaParseResult.success
+              ? fromZodError(pizzaSettingsSchemaParseResult.error, zodErrorOptions).message
+              : undefined,
+            defaultValues: !pizzaFormValidationParseResult.success
+              ? fromZodError(pizzaFormValidationParseResult.error, zodErrorOptions).message
+              : undefined,
+          },
+        } satisfies Fail;
+      }
     }
   }
 
