@@ -21,12 +21,14 @@ export const successState: Success = {
   payload: {
     formSettings: {
       id: '',
+      amount: 1,
       priceRangeClasses: PRICE_RANGE_CLASS,
       doughs: DOUGH,
       toppings: TOPPINGS,
     },
     defaultValues: {
       id: 'Username',
+      amount: 1,
       priceRangeClass: 'Standard',
       selectedDough: 'American',
       selectedToppings: ['Tomato'],

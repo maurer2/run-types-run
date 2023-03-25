@@ -1,6 +1,7 @@
 import useSWR from 'swr';
 
-import { pizzaSettingsSchema, pizzaValidationSchema } from '../../schema/pizza/validation';
+import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
+import { pizzaSettingsSchema } from '../../schema/pizza/settings';
 import type { FormSettings, FormValues } from '../../types/pizza';
 import type { FetchingState, Loading, Success, Fail } from './types';
 
@@ -48,7 +49,7 @@ function useFetchStartValues(url: string[]) {
   // loading done
   if (!formSettingsIsLoading && !defaultValuesIsLoading) {
     const isValidFormSettingsData = pizzaSettingsSchema.safeParse(formSettingsData).success;
-    const isValidDefaultValuesData = pizzaValidationSchema.safeParse(defaultValuesData).success;
+    const isValidDefaultValuesData = pizzaFormValidationSchema.safeParse(defaultValuesData).success;
 
     // formSettingsData && defaultValuesData only necessary for TS strict mode
     if (

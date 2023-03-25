@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { faker } from '@faker-js/faker';
 
-import { pizzaValidationSchema } from './validation';
+import { pizzaFormValidationSchema } from './validation';
 import { TOPPINGS } from '../../constants/pizza/pizza';
 import type { FormValues } from '../../types/pizza';
 
@@ -18,7 +18,7 @@ describe('validation.ts', () => {
     const data = {
       ...correctValues,
     };
-    expect(pizzaValidationSchema.safeParse(data).success).toBeTruthy();
+    expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
   });
 
   it('priceRangeClass validation', () => {
@@ -26,7 +26,7 @@ describe('validation.ts', () => {
       ...correctValues,
       priceRangeClass: 'Meow',
     };
-    expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
+    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
   });
 
   it('selectedToppings validation - empty', () => {
@@ -34,7 +34,7 @@ describe('validation.ts', () => {
       ...correctValues,
       selectedToppings: [],
     };
-    expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
+    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
   });
 
   it('selectedToppings validation - full', () => {
@@ -42,7 +42,7 @@ describe('validation.ts', () => {
       ...correctValues,
       selectedToppings: [...TOPPINGS],
     };
-    expect(pizzaValidationSchema.safeParse(data).success).toBeTruthy();
+    expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
   });
 
   it('selectedToppings validation - full + 1', () => {
@@ -50,7 +50,7 @@ describe('validation.ts', () => {
       ...correctValues,
       selectedToppings: [...TOPPINGS, 'Cat-Food'],
     };
-    expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
+    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
   });
 
   it('selectedToppings validation - invalid value', () => {
@@ -59,7 +59,7 @@ describe('validation.ts', () => {
       selectedToppings: ['Cat-Food'],
     };
 
-    expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
+    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
   });
 
   it('cross field validation - field values', () => {
@@ -68,14 +68,14 @@ describe('validation.ts', () => {
       priceRangeClass: 'Budget',
       selectedDough: 'American',
     };
-    expect(pizzaValidationSchema.safeParse(data).success).toBeTruthy();
+    expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
 
     data = {
       ...correctValues,
       priceRangeClass: 'Budget',
       selectedDough: 'Italian',
     };
-    expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
+    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
     // console.log(pizzaValidationSchema.safeParse(data))
   });
 
@@ -85,7 +85,7 @@ describe('validation.ts', () => {
       priceRangeClass: 'Budget',
       selectedToppings: ['Tomato', 'Pepperoni'],
     };
-    expect(pizzaValidationSchema.safeParse(data).success).toBeTruthy();
+    expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
 
     data = {
       ...correctValues,
@@ -93,6 +93,6 @@ describe('validation.ts', () => {
       selectedDough: 'Italian',
       selectedToppings: ['Tomato', 'Pepperoni', 'Jalapeno'],
     };
-    expect(pizzaValidationSchema.safeParse(data).success).toBeFalsy();
+    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
   });
 });

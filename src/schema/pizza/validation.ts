@@ -1,74 +1,14 @@
 import { z } from 'zod';
 
-import type { FormValues, FormSettings } from '../../types/pizza';
-import { PRICE_RANGE_CLASS, DOUGH, TOPPINGS } from '../../constants/pizza/pizza';
-
-export const pizzaSettingsSchema = z
-  .object({
-    // #region id
-    id: z
-      .string()
-    ,
-    // #endregion
-
-    // #region amount
-    amount: z
-      .coerce.number({
-        required_error: 'Amount is required',
-        invalid_type_error: 'Invalid type for amount',
-      })
-      .int({message: 'Amount must be an integer'})
-      .min(1, {message: 'Amount must be at least one' })
-    ,
-    // #endregion
-
-    // #region priceRangeClasses
-    priceRangeClasses: z
-      .tuple([
-        z.literal(PRICE_RANGE_CLASS[0]),
-        z.literal(PRICE_RANGE_CLASS[1]),
-        z.literal(PRICE_RANGE_CLASS[2]),
-      ])
-    ,
-    // #endregion
-
-    // #region doughs
-    doughs: z
-      .tuple([
-        z.literal(DOUGH[0]),
-        z.literal(DOUGH[1]),
-        z.literal(DOUGH[2]),
-        // ...DOUGH.slice(2).map((dough, index) => z.literal(dough) as typeof DOUGH.at(index)),
-      ])
-    ,
-    // #endregion
-
-    // #region toppings
-    toppings: z
-      .tuple([
-        z.literal(TOPPINGS[0]),
-        z.literal(TOPPINGS[1]),
-        z.literal(TOPPINGS[2]),
-        z.literal(TOPPINGS[3]),
-        z.literal(TOPPINGS[4]),
-        z.literal(TOPPINGS[5]),
-        z.literal(TOPPINGS[6]),
-        z.literal(TOPPINGS[7]),
-        z.literal(TOPPINGS[8]),
-        z.literal(TOPPINGS[9]),
-        z.literal(TOPPINGS[10]),
-      ])
-    ,
-    // #endregion
-  })
-  .strict() satisfies z.ZodType<FormSettings>;
+import type { FormValues } from '../../types/pizza';
+import { pizzaSettingsSchema } from './settings';
 
 const toppingsValues = [
   pizzaSettingsSchema.shape.toppings.items[0].value,
   ...pizzaSettingsSchema.shape.toppings.items.slice(1).map((topping) => (topping.value))
 ] as const;
 
-export const pizzaValidationSchema = z
+export const pizzaFormValidationSchema = z
   .object({
     // #region id
     id: pizzaSettingsSchema.shape.id
@@ -78,13 +18,10 @@ export const pizzaValidationSchema = z
     // #endregion
 
     // #region amount
-    amount: z
-      .coerce.number({
-        required_error: 'Amount is required',
-        invalid_type_error: 'Invalid type for amount',
-      })
-      .int({message: 'Amount must be an integer'})
-      .min(1, {message: 'Amount must be at least one' })
+    amount: pizzaSettingsSchema.shape.amount
+      .int({ message: 'Amount must be an integer' })
+      .min(1, { message: 'Amount must be at least 1' })
+      .max(10, { message: 'Amount must not be larger than 10' })
     ,
     // #endregion
 

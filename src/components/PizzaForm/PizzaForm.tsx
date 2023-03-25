@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 
 import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
-import { pizzaValidationSchema } from '../../schema/pizza/validation';
+import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
 import { sendFormValues } from './utils';
 import { apiRoutes } from '../../constants/pizza/urls';
 
@@ -18,7 +18,7 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
   const formMethods = useForm<FormValues>({
     defaultValues,
     mode: 'onChange',
-    resolver: zodResolver(pizzaValidationSchema),
+    resolver: zodResolver(pizzaFormValidationSchema),
   });
   const {
     register,
