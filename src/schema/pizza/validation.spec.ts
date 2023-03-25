@@ -8,6 +8,7 @@ import type { FormValues } from '../../types/pizza';
 describe('validation.ts', () => {
   const correctValues: FormValues = {
     id: faker.random.alphaNumeric(5),
+    amount: 1,
     priceRangeClass: 'Standard',
     selectedDough: 'Standard',
     selectedToppings: ['Tomato'],

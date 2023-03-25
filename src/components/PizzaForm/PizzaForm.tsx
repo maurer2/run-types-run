@@ -75,6 +75,10 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
 
         <div className="divider" />
 
+        <UncontrolledInput htmlLabel="Enter amount" error={errors.amount} {...register('amount')} />
+
+        <div className="divider" />
+
         <UncontrolledRadioCheckbox
           type="radio"
           name="priceRangeClass"

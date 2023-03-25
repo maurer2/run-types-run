@@ -11,6 +11,17 @@ export const pizzaSettingsSchema = z
     ,
     // #endregion
 
+    // #region amount
+    amount: z
+      .coerce.number({
+        required_error: 'Amount is required',
+        invalid_type_error: 'Invalid type for amount',
+      })
+      .int({message: 'Amount must be an integer'})
+      .min(1, {message: 'Amount must be at least one' })
+    ,
+    // #endregion
+
     // #region priceRangeClasses
     priceRangeClasses: z
       .tuple([
@@ -63,6 +74,17 @@ export const pizzaValidationSchema = z
     id: pizzaSettingsSchema.shape.id
       .min(1, { message: 'id should not be empty' })
       .min(5, { message: 'id should contain at least 5 characters' })
+    ,
+    // #endregion
+
+    // #region amount
+    amount: z
+      .coerce.number({
+        required_error: 'Amount is required',
+        invalid_type_error: 'Invalid type for amount',
+      })
+      .int({message: 'Amount must be an integer'})
+      .min(1, {message: 'Amount must be at least one' })
     ,
     // #endregion
 

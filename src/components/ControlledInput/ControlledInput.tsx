@@ -7,6 +7,7 @@ function ControlledInput({
   label,
   value,
   onChange,
+  type = 'text'
 }: ControlledInputProps): ReactElement {
   const htmlId = useId();
 
@@ -18,7 +19,7 @@ function ControlledInput({
     <div className="mt-4">
       <label htmlFor={htmlId}>{label}</label>
       <input
-        type="text"
+        type={type}
         id={htmlId}
         name={htmlId}
         onChange={handleChange}

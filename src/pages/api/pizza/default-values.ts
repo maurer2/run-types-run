@@ -6,6 +6,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<FormVa
   return new Promise(resolve => {
     const defaultValues: FormValues = {
       id: 'Username',
+      amount: 1,
       priceRangeClass: 'Standard',
       selectedDough: 'American',
       selectedToppings: ['Tomato'],

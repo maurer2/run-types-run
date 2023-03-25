@@ -62,10 +62,13 @@ const createRouter = (params: Partial<NextRouter>) => ({
   isPreview: false,
 });
 
-const MockRouter = ({ children, ...props }: PropsWithChildren) => {
+const MockRouter = ({ children, ...props }: PropsWithChildren<Partial<NextRouter>>) => {
   const router = createRouter(props);
 
-  return <RouterContext.Provider value={router}>{children}</RouterContext.Provider>;
+  return (
+    <RouterContext.Provider value={router}>
+      {children}
+    </RouterContext.Provider>);
 };
 
 describe('<Index />', () => {

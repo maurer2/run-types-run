@@ -10,6 +10,7 @@ export type TOPPINGSMAP = {
 
 export type FormValues = {
   id: string;
+  amount: number;
   priceRangeClass: PriceRangeClass,
   selectedDough: Dough;
   selectedToppings: Toppings[];
@@ -17,6 +18,7 @@ export type FormValues = {
 
 export type FormSettings = {
   id: string;
+  amount: number;
   priceRangeClasses: typeof PRICE_RANGE_CLASS,
   doughs: typeof DOUGH;
   toppings: typeof TOPPINGS;

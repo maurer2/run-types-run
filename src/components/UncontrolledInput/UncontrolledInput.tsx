@@ -6,7 +6,7 @@ import type { UncontrolledInputProps } from './types';
 
 const UncontrolledInput = forwardRef(
   (
-    { htmlLabel, error, ...props }: UncontrolledInputProps,
+    { htmlLabel, error, type = 'text', ...props }: UncontrolledInputProps,
     ref: ForwardedRef<HTMLInputElement>,
   ): ReactElement => {
     const htmlId = useId();
@@ -19,7 +19,7 @@ const UncontrolledInput = forwardRef(
         <input
           {...props}
           ref={ref}
-          type="text"
+          type={type}
           id={htmlId}
           aria-invalid={error ? 'true' : 'false'}
           className={clsx('input', 'input-primary', 'input-bordered', 'w-full', 'max-w-xs', {
