@@ -22,7 +22,7 @@ const fetcher = async <T>(url: string): Promise<T> => {
   return response.json();
 };
 
-function useFetchStartValues(url: string[]) {
+function useFetchStartValues(url: string[]): readonly [FetchingState] {
   const {
     data: formSettingsData,
     error: formSettingsLoadingError,
