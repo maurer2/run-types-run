@@ -1,3 +1,4 @@
+import type { fromZodError } from 'zod-validation-error';
 import type { FormSettings, FormValues } from '../../types/pizza';
 
 export type Payload<T1, T2> = {
@@ -21,3 +22,23 @@ export type Fail = {
 };
 
 export type FetchingState = Loading | Success | Fail;
+
+
+export type Loading2 = {
+  status: 'loading';
+  progress: boolean;
+};
+
+export type Success2<T> = {
+  status: 'success';
+  payload: T;
+};
+
+export type Fail2 = {
+  status: 'fail';
+  errors: Error['message'];
+};
+
+export type FetchingState2<T> = Loading2 | Success2<T> | Fail;
+
+export type OptionsFromZodError = Parameters<typeof fromZodError>[1];
