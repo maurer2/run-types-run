@@ -1,48 +1,31 @@
 import useSWR from 'swr';
 import { fromZodError } from 'zod-validation-error';
+import type { z } from 'zod';
 
-import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
-import type { pizzaSettingsSchema } from '../../schema/pizza/settings';
-import type { FormSettings, FormValues } from '../../types/pizza';
-import type { FetchingState2, Loading2, Success2, Fail2, OptionsFromZodError } from './types';
+import type { Loading, Success, Fail, OptionsFromZodError } from './types';
+import { fetcher } from '../../helpers/fetcher';
 
 const zodErrorOptions: OptionsFromZodError = {
-  // maxIssuesInMessage: 1,
-  prefix: '',
-  prefixSeparator: '|',
+  prefix: 'Error',
 };
 
-const fetcher = async <T>(url: string): Promise<T> => {
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(response?.statusText || `Error fetching ${url}}`);
-  }
-
-  return response.json();
-};
-
-type Schema = typeof pizzaSettingsSchema; // todo make generic
-
-function useFetchValue(url: string, schema: Schema) {
-  const {
-    data,
-    error,
-    isLoading,
-  } = useSWR<FormSettings, Error>(url[0], fetcher, { revalidateOnFocus: false });
+function useFetchValue<T>(url: string, schema: z.ZodTypeAny) {
+  const { data, error, isLoading } = useSWR<T, Error>(url, fetcher<T>, {
+    revalidateOnFocus: false,
+  });
 
   if (isLoading) {
     return {
       status: 'loading',
-      progress: true,
-    } as const satisfies Loading2;
+    } as const satisfies Loading;
   }
 
+  // removing undefined data case early to simplify parseResult.success and parseResult.error handling
   if (error instanceof Error || !data) {
     return {
       status: 'fail',
       errors: error?.message || 'Loading error',
-    } as const satisfies Fail2;
+    } as const satisfies Fail;
   }
 
   const parseResult = schema.safeParse(data);
@@ -50,16 +33,15 @@ function useFetchValue(url: string, schema: Schema) {
     return {
       status: 'success',
       payload: data,
-    } as const satisfies Success2<FormSettings>;
+    } as const satisfies Success<T>;
   }
 
   return {
     status: 'fail',
     errors: fromZodError(parseResult.error, zodErrorOptions).message,
-  } as const satisfies Fail2;
+  } as const satisfies Fail;
 }
 
 export default useFetchValue;
 
-
-type Debug = ReturnType<typeof useFetchValue>;
+// type Debug = ReturnType<typeof useFetchValue>;
