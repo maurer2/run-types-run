@@ -7,6 +7,7 @@ import { fetcher } from '../../helpers/fetcher';
 
 const zodErrorOptions: OptionsFromZodError = {
   prefix: 'Error',
+  unionSeparator: 'or' // disable Oxford comma
 };
 
 function useFetchValue<T>(url: string, schema: z.ZodTypeAny) {

@@ -26,8 +26,8 @@ const Pizza: NextPage = () => {
             <PizzaForm formSettings={formSettings.payload} defaultValues={defaultValues.payload} />
           ) : (
             <>
-              <Preloader textLabel="form settings" fetchingState={formSettings} />
-              <Preloader textLabel="default values" fetchingState={defaultValues} />
+              <Preloader textLabel="Form settings" fetchingState={formSettings} />
+              <Preloader textLabel="Default values" fetchingState={defaultValues} />
             </>
           )}
         </div>

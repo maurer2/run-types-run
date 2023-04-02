@@ -4,28 +4,27 @@ import type { PreloaderProps } from './types';
 
 function Preloader<T>({ fetchingState, textLabel }: PreloaderProps<T>) {
   return (
-    <>
-      <h2 className="mb-4">{textLabel}</h2>
-
+    <div className="grid grid-cols-[max-content_1fr] gap-4 mb-4">
+      <h2>{textLabel}</h2>
       {/* loading */}
       {fetchingState.status === 'loading' && (
-        <>
-          <progress className="progress w-56 mb-4 block" data-testid="progressbar-form-settings" />
-          <p className="badge mb-4">is loading</p>
-        </>
+        <div className="flex flex-1 gap-4 items-center">
+          <p className="badge">is loading</p>
+          <progress className="progress w-56 block" data-testid="progressbar-form-settings" />
+        </div>
       )}
 
       {/* success */}
-      {fetchingState.status === 'success' && <p className="badge badge-success mb-4">has loaded</p>}
+      {fetchingState.status === 'success' && <p className="badge badge-success">has loaded</p>}
 
       {/* fail */}
       {fetchingState.status === 'fail' && (
-        <>
+        <div>
           <p className="badge badge-error mb-4">has failed</p>
-          <p className="mb-8">{fetchingState.errors}</p>
-        </>
+          <p>{fetchingState.errors}</p>
+        </div>
       )}
-    </>
+    </div>
   );
 }
 
