@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Preloader from './Preloader';
-import type { Loading, Fail } from '../../hooks/useFetchStartValues/types';
+import type { Loading, Fail } from '../../hooks/useFetchValue/types';
 
 export const loadingState: Loading = {
   status: 'loading',

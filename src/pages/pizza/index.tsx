@@ -3,23 +3,32 @@ import type { NextPage } from 'next';
 
 import PizzaForm from '../../components/PizzaForm';
 import Preloader from '../../components/Preloader';
-import useFetchStartValues from '../../hooks/useFetchStartValues';
+import useFetchValue from '../../hooks/useFetchValue';
 import { apiRoutes } from '../../constants/pizza/urls';
+import { pizzaSettingsSchema } from '../../schema/pizza/settings';
+import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
+import type { FormSettings, FormValues } from '../../types/pizza';
 
 const Pizza: NextPage = () => {
-  const [fetchingState] = useFetchStartValues([apiRoutes.formSettings, apiRoutes.defaultValues]);
+  const formSettings = useFetchValue<FormSettings>(apiRoutes.formSettings, pizzaSettingsSchema);
+  const defaultValues = useFetchValue<FormValues>(
+    apiRoutes.defaultValues,
+    pizzaFormValidationSchema,
+  );
+
+  const showForm = formSettings.status === 'success' && defaultValues.status === 'success';
 
   return (
     <article className="container max-w-4xl mx-auto px-8 pt-8">
       <div className="mockup-window border border-base-300">
         <div className="px-4 py-16 bg-base-200">
-          {fetchingState.status === 'loading' || fetchingState.status === 'fail' ? (
-            <Preloader fetchingState={fetchingState} />
+          {showForm ? (
+            <PizzaForm formSettings={formSettings.payload} defaultValues={defaultValues.payload} />
           ) : (
-            <PizzaForm
-              formSettings={fetchingState.payload.formSettings}
-              defaultValues={fetchingState.payload.defaultValues}
-            />
+            <>
+              <Preloader textLabel="Form settings" fetchingState={formSettings} />
+              <Preloader textLabel="Default values" fetchingState={defaultValues} />
+            </>
           )}
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/experimental-ct-react';
 
-import type { Payload, Loading, Fail } from '../../hooks/useFetchStartValues/types';
+import type { Payload, Loading, Fail } from '../../hooks/useFetchValue/types';
 
 import Component from '.';
 

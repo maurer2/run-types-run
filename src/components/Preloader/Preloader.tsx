@@ -2,44 +2,30 @@ import React from 'react';
 
 import type { PreloaderProps } from './types';
 
-const Preloader = ({ fetchingState }: PreloaderProps) => (
-  <>
-    <h2 className="mb-4">Form settings</h2>
-    {fetchingState.status === 'loading' && fetchingState.progress.formSettings && (
-      <>
-        <progress className="progress w-56 mb-4 block" data-testid="progressbar-form-settings" />
-        <p className="badge mb-4">is loading</p>
-      </>
-    )}
-    {((fetchingState.status === 'loading' && !fetchingState.progress.formSettings) ||
-      (fetchingState.status === 'fail' && !fetchingState.error.formSettings)) && (
-      <p className="badge badge-success mb-4">has loaded</p>
-    )}
-    {fetchingState.status === 'fail' && fetchingState.error.formSettings && (
-      <>
-        <p className="badge badge-error mb-4">has failed loading</p>
-        <p className="mb-8">{fetchingState.error.formSettings}</p>
-      </>
-    )}
+function Preloader<T>({ fetchingState, textLabel }: PreloaderProps<T>) {
+  return (
+    <div className="grid grid-cols-[max-content_1fr] gap-4 mb-4">
+      <h2>{textLabel}</h2>
+      {/* loading */}
+      {fetchingState.status === 'loading' && (
+        <div className="flex flex-1 gap-4 items-center">
+          <p className="badge">is loading</p>
+          <progress className="progress w-56 block" data-testid="progressbar-form-settings" />
+        </div>
+      )}
 
-    <h2 className="mb-4">Default values</h2>
-    {fetchingState.status === 'loading' && fetchingState.progress.defaultValues && (
-      <>
-        <progress className="progress w-56 mb-4 block" data-testid="progressbar-default-values" />
-        <p className="badge mb-4">is loading</p>
-      </>
-    )}
-    {((fetchingState.status === 'loading' && !fetchingState.progress.defaultValues) ||
-      (fetchingState.status === 'fail' && !fetchingState.error.defaultValues)) && (
-      <p className="badge badge-success mb-4">has loaded</p>
-    )}
-    {fetchingState.status === 'fail' && fetchingState.error.defaultValues && (
-      <>
-        <p className="badge badge-error mb-4"> has failed loading</p>
-        <p className="mb-8">{fetchingState.error.defaultValues}</p>
-      </>
-    )}
-  </>
-);
+      {/* success */}
+      {fetchingState.status === 'success' && <p className="badge badge-success">has loaded</p>}
+
+      {/* fail */}
+      {fetchingState.status === 'fail' && (
+        <div>
+          <p className="badge badge-error mb-4">has failed</p>
+          <p>{fetchingState.errors}</p>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default Preloader;
