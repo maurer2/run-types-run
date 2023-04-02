@@ -11,9 +11,9 @@ export type Success<T> = {
 
 export type Fail = {
   status: 'fail';
-  errors: Error['message'];
+  errors: string;
 };
 
-export type FetchingState2<T> = Loading | Success<T> | Fail;
+export type FetchingState<T> = Loading | Success<T> | Fail;
 
 export type OptionsFromZodError = Parameters<typeof fromZodError>[1];

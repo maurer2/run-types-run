@@ -5,7 +5,7 @@ import type { NextRouter } from 'next/router';
 
 import Index from './index';
 import { apiRoutes } from '../../constants/pizza/urls';
-import type { Success, Loading } from '../../hooks/useFetchStartValues/types';
+import type { Success, Loading } from '../../hooks/useFetchValue/types';
 import { TOPPINGS, DOUGH, PRICE_RANGE_CLASS } from '../../constants/pizza/pizza';
 
 export const loadingState: Loading = {
