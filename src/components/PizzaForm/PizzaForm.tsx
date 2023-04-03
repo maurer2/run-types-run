@@ -8,8 +8,8 @@ import { useRouter } from 'next/router';
 import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
 import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
-import { sendFormValues } from './utils';
 import { apiRoutes } from '../../constants/pizza/urls';
+import useSendValues from '../../hooks/useSendValues/useSendValues';
 
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
@@ -31,6 +31,7 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const router = useRouter();
+  const { triggerSending } = useSendValues(apiRoutes.userData);
 
   const priceRangeClassValue = watch('priceRangeClass');
 
@@ -44,8 +45,8 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
       setIsSubmitting(true);
       setShowErrorMessage(false);
 
-      const response = await sendFormValues(formValues, apiRoutes.userData);
-      if (response.ok) {
+      const response = await triggerSending(formValues);
+      if (response) {
         await response.json();
         router.push('/pizza/success');
 
