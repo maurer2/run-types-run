@@ -25,7 +25,7 @@ const Success: NextPage = () => (
             <span>Data has been saved on the server.</span>
           </div>
         </div>
-        <Link className="btn normal-case btn-wide" href="/pizza">
+        <Link className="btn btn-neutral btn-wide normal-case" href="/pizza">
           Go back
         </Link>
       </div>

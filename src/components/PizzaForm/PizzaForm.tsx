@@ -111,7 +111,7 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
         <button
           type="submit"
           aria-disabled={!isValid}
-          className={clsx('btn btn-wide normal-case', {
+          className={clsx('btn btn-wide btn-neutral normal-case', {
             loading: isSubmitting,
             'cursor-wait': isSubmitting,
             'btn-disabled': !isValid && !isSubmitting,
