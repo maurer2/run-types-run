@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest",
+    "test:schema": "vitest './src/schema/'",
     "test:validation": "vitest pages/pizza/*.spec.ts",
     "test:components": "cypress run --component",
     "test:components:visual": "cypress open"

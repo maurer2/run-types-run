@@ -1,3 +1,4 @@
+// import type { Simplify } from 'type-fest';
 import type { PRICE_RANGE_CLASS, TOPPINGS, DOUGH } from '../constants/pizza/pizza';
 
 type PriceRangeClass = typeof PRICE_RANGE_CLASS[number]
@@ -19,7 +20,7 @@ export type FormValues = {
 export type FormSettings = {
   id: string;
   amount: number;
-  priceRangeClasses: typeof PRICE_RANGE_CLASS,
+  priceRangeClasses: PriceRangeClass[],
   doughs: typeof DOUGH;
   toppings: typeof TOPPINGS;
-};
+}

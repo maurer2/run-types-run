@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z  } from 'zod';
 
 import type { FormSettings } from '../../types/pizza';
 import { PRICE_RANGE_CLASS, DOUGH, TOPPINGS } from '../../constants/pizza/pizza';
@@ -7,34 +7,37 @@ import { listFormatterAnd, listFormatterOr } from '../../helpers/listformatter/l
 export const pizzaSettingsSchema = z
   .object({
     // #region id
-    id: z
-      .string({
-        required_error: 'Id is required',
-        invalid_type_error: 'Id must be a number',
-      })
+    id: z.string({
+      required_error: 'Id is required',
+      invalid_type_error: 'Id must be a number',
+    })
     ,
     // #endregion
 
     // #region amount
-    amount: z
-      .coerce.number({
-        required_error: 'Amount is required',
-        invalid_type_error: 'Amount must be a number',
-      })
-    ,
+    amount: z.coerce.number({
+      required_error: 'Amount is required',
+      invalid_type_error: 'Amount must be a number',
+    }),
     // #endregion
 
     // #region priceRangeClasses
-    priceRangeClasses: z
-      .tuple([
-        z.literal(PRICE_RANGE_CLASS[0]),
-        z.literal(PRICE_RANGE_CLASS[1]),
-        z.literal(PRICE_RANGE_CLASS[2]),
-      ], {
-        required_error: 'Price range class is required',
-        invalid_type_error: `Price range class must be either ${listFormatterOr([...PRICE_RANGE_CLASS])}}`,
-      })
-    ,
+    priceRangeClasses: z.array(
+      z.enum([
+        PRICE_RANGE_CLASS[0],
+        PRICE_RANGE_CLASS[1],
+        PRICE_RANGE_CLASS[2],
+        ], {
+          required_error: 'Price range class is required',
+          invalid_type_error: `Price range class must contain ${listFormatterAnd([...PRICE_RANGE_CLASS])}}`,
+        }
+      ))
+      .min(PRICE_RANGE_CLASS.length, `Price range classes must not contain fewer than ${PRICE_RANGE_CLASS.length} entries`)
+      .max(PRICE_RANGE_CLASS.length, `Price range classes must not contain more than ${PRICE_RANGE_CLASS.length} entries`)
+      // https://github.com/colinhacks/zod/discussions/2316
+      .refine(items => new Set(items).size === items.length, {
+        message: 'Price range classes must not contain duplicate entries',
+      }),
     // #endregion
 
     // #region doughs
@@ -73,3 +76,5 @@ export const pizzaSettingsSchema = z
     // #endregion
   })
   .strict() satisfies z.ZodType<FormSettings>;
+
+// type PizzaSettingsSchema = z.infer<typeof pizzaSettingsSchema>;
