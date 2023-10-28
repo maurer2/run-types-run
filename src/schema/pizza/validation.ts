@@ -7,14 +7,14 @@ import { pizzaSettingsSchema } from './settings';
 export const pizzaFormValidationSchema = z
   .object({
     // #region id
-    id: pizzaSettingsSchema.shape.id
+    id: z.string(pizzaSettingsSchema.shape.id)
       .min(1, { message: 'id should not be empty' })
       .min(5, { message: 'id should contain at least 5 characters' })
     ,
     // #endregion
 
     // #region amount
-    amount: pizzaSettingsSchema.shape.amount
+    amount: z.number(pizzaSettingsSchema.shape.amount)
       .int({ message: 'Amount must be an integer' })
       .min(1, { message: 'Amount must be at least 1' })
       .max(10, { message: 'Amount must not be larger than 10' })
@@ -22,19 +22,21 @@ export const pizzaFormValidationSchema = z
     // #endregion
 
     // #region priceRangeClass
-    priceRangeClass: pizzaSettingsSchema.shape.priceRangeClasses._def.schema.element,
+    priceRangeClass: z.enum(pizzaSettingsSchema.shape.priceRangeClasses._def.schema.element.options),
     // #endregion
 
     // #region selectedDough
-    selectedDough: pizzaSettingsSchema.shape.doughs._def.schema.element,
+    selectedDough: z.enum(pizzaSettingsSchema.shape.doughs._def.schema.element.options),
     // #endregion
 
     // #region selectedToppings
-    selectedToppings: z.array(pizzaSettingsSchema.shape.toppings._def.schema.element)
+    selectedToppings: z.array(z.enum(pizzaSettingsSchema.shape.toppings._def.schema.element.options))
       .min(1, { message: 'At least 1 topping should be selected' })
-      // .max([pizzaSettingsSchema.shape.toppings._def.schema.element.Values].length, {
-      //   message: 'All toppings have already been selected' })
-    ,
+      .max(pizzaSettingsSchema.shape.toppings._def.schema.element.options.length, {
+        message: 'All toppings have already been selected' })
+      .refine(items => new Set(items).size === items.length, {
+          message: 'Toppings must not contain duplicate toppings',
+      }),
     // #endregion
   })
   .strict()
