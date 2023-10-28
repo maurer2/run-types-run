@@ -2,7 +2,7 @@ import { z  } from 'zod';
 
 import type { FormSettings } from '../../types/pizza';
 import { PRICE_RANGE_CLASS, DOUGH, TOPPINGS } from '../../constants/pizza/pizza';
-import { listFormatterAnd, listFormatterOr } from '../../helpers/listformatter/listformatter';
+import { listFormatterAnd } from '../../helpers/listformatter/listformatter';
 
 export const pizzaSettingsSchema = z
   .object({
@@ -23,17 +23,11 @@ export const pizzaSettingsSchema = z
 
     // #region priceRangeClasses
     priceRangeClasses: z.array(
-      z.enum([
-        PRICE_RANGE_CLASS[0],
-        PRICE_RANGE_CLASS[1],
-        PRICE_RANGE_CLASS[2],
-        ], {
-          required_error: 'Price range class is required',
-          invalid_type_error: `Price range class must contain ${listFormatterAnd([...PRICE_RANGE_CLASS])}}`,
-        }
-      ))
-      .min(PRICE_RANGE_CLASS.length, `Price range classes must not contain fewer than ${PRICE_RANGE_CLASS.length} entries`)
-      .max(PRICE_RANGE_CLASS.length, `Price range classes must not contain more than ${PRICE_RANGE_CLASS.length} entries`)
+      z.enum([...PRICE_RANGE_CLASS], {
+        required_error: 'Price range class is required',
+        invalid_type_error: `Price range class must contain ${listFormatterAnd([...PRICE_RANGE_CLASS])}}`,
+      }))
+      .length(PRICE_RANGE_CLASS.length, `Price range class must have exactly ${PRICE_RANGE_CLASS.length} entries`)
       // https://github.com/colinhacks/zod/discussions/2316
       .refine(items => new Set(items).size === items.length, {
         message: 'Price range classes must not contain duplicate entries',
@@ -41,40 +35,27 @@ export const pizzaSettingsSchema = z
     // #endregion
 
     // #region doughs
-    doughs: z
-      .tuple([
-        z.literal(DOUGH[0]),
-        z.literal(DOUGH[1]),
-        z.literal(DOUGH[2]),
-        // ...DOUGH.slice(2).map((dough, index) => z.literal(dough) as typeof DOUGH.at(index)),
-      ], {
+    doughs: z.array(
+      z.enum([...DOUGH], {
         required_error: 'Dough is required',
-        invalid_type_error: `Dough must be either ${listFormatterOr([...DOUGH])}}`,
-      })
-    ,
+        invalid_type_error: `Dough must be either ${listFormatterAnd([...DOUGH])}}`,
+      }))
+      .length(DOUGH.length, `Dough must have exactly ${DOUGH.length} entries`)
+      .refine(items => new Set(items).size === items.length, {
+        message: 'Dough must not contain duplicate entries',
+      }),
     // #endregion
 
     // #region toppings
-    toppings: z
-      .tuple([
-        z.literal(TOPPINGS[0]),
-        z.literal(TOPPINGS[1]),
-        z.literal(TOPPINGS[2]),
-        z.literal(TOPPINGS[3]),
-        z.literal(TOPPINGS[4]),
-        z.literal(TOPPINGS[5]),
-        z.literal(TOPPINGS[6]),
-        z.literal(TOPPINGS[7]),
-        z.literal(TOPPINGS[8]),
-        z.literal(TOPPINGS[9]),
-        z.literal(TOPPINGS[10]),
-      ], {
+    toppings: z.array(
+      z.enum([...TOPPINGS], {
         required_error: 'Toppings are required',
         invalid_type_error: `Toppings must be one or more of ${listFormatterAnd([...TOPPINGS])}}`,
-      })
-    ,
+      }))
+      .length(TOPPINGS.length, `Toppings must have exactly ${TOPPINGS.length} entries`)
+      .refine(items => new Set(items).size === items.length, {
+        message: 'Toppings must not contain duplicate entries',
+      }),
     // #endregion
   })
   .strict() satisfies z.ZodType<FormSettings>;
-
-// type PizzaSettingsSchema = z.infer<typeof pizzaSettingsSchema>;

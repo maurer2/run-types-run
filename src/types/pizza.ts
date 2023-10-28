@@ -21,6 +21,6 @@ export type FormSettings = {
   id: string;
   amount: number;
   priceRangeClasses: PriceRangeClass[],
-  doughs: typeof DOUGH;
-  toppings: typeof TOPPINGS;
+  doughs: Dough[];
+  toppings: Toppings[];
 }
