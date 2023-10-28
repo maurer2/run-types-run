@@ -1,12 +1,8 @@
+/* eslint-disable no-underscore-dangle */
 import { z } from 'zod';
 
 import type { FormValues } from '../../types/pizza';
 import { pizzaSettingsSchema } from './settings';
-
-const toppingsValues = [
-  pizzaSettingsSchema.shape.toppings.items[0].value,
-  ...pizzaSettingsSchema.shape.toppings.items.slice(1).map((topping) => (topping.value))
-] as const;
 
 export const pizzaFormValidationSchema = z
   .object({
@@ -26,23 +22,18 @@ export const pizzaFormValidationSchema = z
     // #endregion
 
     // #region priceRangeClass
-    priceRangeClass: z
-      .union(pizzaSettingsSchema.shape.priceRangeClasses.items)
-    ,
+    priceRangeClass: pizzaSettingsSchema.shape.priceRangeClasses._def.schema.element,
     // #endregion
 
     // #region selectedDough
-    selectedDough: z
-      // https://stackoverflow.com/questions/74921458/does-zod-have-something-equivalent-to-yups-oneof/74921781#74921781
-      .union(pizzaSettingsSchema.shape.doughs.items)
-    ,
+    selectedDough: pizzaSettingsSchema.shape.doughs._def.schema.element,
     // #endregion
 
     // #region selectedToppings
-    selectedToppings: z
-      .array(z.enum(toppingsValues))
+    selectedToppings: z.array(pizzaSettingsSchema.shape.toppings._def.schema.element)
       .min(1, { message: 'At least 1 topping should be selected' })
-      .max(toppingsValues.length, { message: 'All toppings have already been selected' })
+      // .max([pizzaSettingsSchema.shape.toppings._def.schema.element.Values].length, {
+      //   message: 'All toppings have already been selected' })
     ,
     // #endregion
   })
