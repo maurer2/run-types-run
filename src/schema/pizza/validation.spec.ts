@@ -11,88 +11,123 @@ describe('validation.ts', () => {
     amount: 1,
     priceRangeClass: 'Standard',
     selectedDough: 'Standard',
-    selectedToppings: ['Tomato'],
+    selectedToppings: ['Tomato', 'Pepperoni'],
   };
 
-  it('default validation', () => {
-    const data = {
-      ...correctValues,
-    };
-    expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
-  });
+  describe('General', () => {
+    it('happy path', () => {
+      const data: FormValues = {
+        ...correctValues,
+      };
 
-  it('priceRangeClass validation', () => {
-    const data = {
-      ...correctValues,
-      priceRangeClass: 'Meow',
-    };
-    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
-  });
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
+    });
+  })
 
-  it('selectedToppings validation - empty', () => {
-    const data = {
-      ...correctValues,
-      selectedToppings: [],
-    };
-    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
-  });
+  describe('priceRangeClass', () => {
+    it('unexpected value', () => {
+      const data = {
+        ...correctValues,
+        priceRangeClass: 'Meow',
+      };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
+    });
+  })
 
-  it('selectedToppings validation - full', () => {
-    const data = {
-      ...correctValues,
-      selectedToppings: [...TOPPINGS],
-    };
-    expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
-  });
+  describe('selectedDough', () => {
+    it('unexpected value', () => {
+      const data = {
+        ...correctValues,
+        selectedDough: 'Meow',
+      };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
+    });
+  })
 
-  it('selectedToppings validation - full + 1', () => {
-    const data = {
-      ...correctValues,
-      selectedToppings: [...TOPPINGS, 'Cat-Food'],
-    };
-    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
-  });
+  describe('toppings', () => {
+    it('unexpected value', () => {
+      const data = {
+        ...correctValues,
+        selectedToppings: ['Cat-Food'],
+      };
 
-  it('selectedToppings validation - invalid value', () => {
-    const data = {
-      ...correctValues,
-      selectedToppings: ['Cat-Food'],
-    };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
+    });
 
-    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
-  });
+    it('empty', () => {
+      const data: FormValues = {
+        ...correctValues,
+        selectedToppings: [],
+      };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
+    });
 
-  it('cross field validation - field values', () => {
-    let data = {
-      ...correctValues,
-      priceRangeClass: 'Budget',
-      selectedDough: 'American',
-    };
-    expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
+    it('valid toppings in random order', () => {
+      const data: FormValues = {
+        ...correctValues,
+        selectedToppings: [...correctValues.selectedToppings].reverse(),
+      };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
+    });
 
-    data = {
-      ...correctValues,
-      priceRangeClass: 'Budget',
-      selectedDough: 'Italian',
-    };
-    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
-    // console.log(pizzaValidationSchema.safeParse(data))
-  });
+    it('every topping', () => {
+      const data: FormValues = {
+        ...correctValues,
+        selectedToppings: [...TOPPINGS],
+      };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
+    });
 
-  it('cross field validation - field length', () => {
-    let data = {
-      ...correctValues,
-      priceRangeClass: 'Budget',
-      selectedToppings: ['Tomato', 'Pepperoni'],
-    };
-    expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
+    it('every topping + 1', () => {
+      const data = {
+        ...correctValues,
+        selectedToppings: [...TOPPINGS, 'Cat-Food'],
+      };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
+    });
 
-    data = {
-      ...correctValues,
-      priceRangeClass: 'Budget',
-      selectedDough: 'Italian',
-      selectedToppings: ['Tomato', 'Pepperoni', 'Jalapeno'],
-    };
-    expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
-  });
+    it('duplicate valid toppings', () => {
+      const data: FormValues = {
+        ...correctValues,
+        selectedToppings: ['Tomato', 'Tomato'],
+      };
+
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
+    });
+  })
+
+  describe('cross field validation', () => {
+    it('cross field validation - field values', () => {
+      let data: FormValues = {
+        ...correctValues,
+        priceRangeClass: 'Budget',
+        selectedDough: 'American',
+      };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
+
+      data = {
+        ...correctValues,
+        priceRangeClass: 'Budget',
+        selectedDough: 'Italian',
+      };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
+    });
+
+    it('cross field validation - field length', () => {
+      let data: FormValues = {
+        ...correctValues,
+        priceRangeClass: 'Budget',
+        selectedToppings: ['Tomato', 'Pepperoni'],
+      };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeTruthy();
+
+      data = {
+        ...correctValues,
+        priceRangeClass: 'Budget',
+        selectedDough: 'Italian',
+        selectedToppings: ['Tomato', 'Pepperoni', 'Jalapeno'],
+      };
+      expect(pizzaFormValidationSchema.safeParse(data).success).toBeFalsy();
+    });
+  })
 });

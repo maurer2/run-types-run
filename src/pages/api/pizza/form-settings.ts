@@ -8,9 +8,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<FormSe
     const formSettings: FormSettings = {
       id: '',
       amount: 1,
-      priceRangeClasses: PRICE_RANGE_CLASS,
-      doughs: DOUGH,
-      toppings: TOPPINGS,
+      priceRangeClasses: [...PRICE_RANGE_CLASS],
+      doughs: [...DOUGH],
+      toppings: [...TOPPINGS],
     };
 
     setTimeout(() => {
