@@ -1,8 +1,7 @@
-// import type { Simplify } from 'type-fest';
 import type { PRICE_RANGE_CLASS, TOPPINGS, DOUGH } from '../constants/pizza/pizza';
 
 type PriceRangeClass = typeof PRICE_RANGE_CLASS[number]
-type Toppings = typeof TOPPINGS[keyof typeof TOPPINGS];
+type Toppings = typeof TOPPINGS[number];
 type Dough = typeof DOUGH[number];
 
 export type TOPPINGSMAP = {

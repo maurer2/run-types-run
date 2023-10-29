@@ -7,14 +7,14 @@ import { pizzaSettingsSchema } from './settings';
 export const pizzaFormValidationSchema = z
   .object({
     // #region id
-    id: z.string(pizzaSettingsSchema.shape.id)
+    id: pizzaSettingsSchema.shape.id
       .min(1, { message: 'id should not be empty' })
       .min(5, { message: 'id should contain at least 5 characters' })
     ,
     // #endregion
 
     // #region amount
-    amount: z.number(pizzaSettingsSchema.shape.amount)
+    amount: pizzaSettingsSchema.shape.amount
       .int({ message: 'Amount must be an integer' })
       .min(1, { message: 'Amount must be at least 1' })
       .max(10, { message: 'Amount must not be larger than 10' })
@@ -30,12 +30,13 @@ export const pizzaFormValidationSchema = z
     // #endregion
 
     // #region selectedToppings
+    // extract enum values and create new array to remove previous validation rules for toppings
     selectedToppings: z.array(z.enum(pizzaSettingsSchema.shape.toppings._def.schema.element.options))
       .min(1, { message: 'At least 1 topping should be selected' })
       .max(pizzaSettingsSchema.shape.toppings._def.schema.element.options.length, {
         message: 'All toppings have already been selected' })
       .refine(items => new Set(items).size === items.length, {
-          message: 'Toppings must not contain duplicate toppings',
+          message: 'Toppings must not contain each topping more than once',
       }),
     // #endregion
   })

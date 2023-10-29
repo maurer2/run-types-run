@@ -10,8 +10,7 @@ export const pizzaSettingsSchema = z
     id: z.string({
       required_error: 'Id is required',
       invalid_type_error: 'Id must be a number',
-    })
-    ,
+    }),
     // #endregion
 
     // #region amount
@@ -38,7 +37,7 @@ export const pizzaSettingsSchema = z
     doughs: z.array(
       z.enum([...DOUGH], {
         required_error: 'Dough is required',
-        invalid_type_error: `Dough must be either ${listFormatterAnd([...DOUGH])}}`,
+        invalid_type_error: `Dough must contain  ${listFormatterAnd([...DOUGH])}}`,
       }))
       .length(DOUGH.length, `Dough must have exactly ${DOUGH.length} entries`)
       .refine(items => new Set(items).size === items.length, {
@@ -50,11 +49,11 @@ export const pizzaSettingsSchema = z
     toppings: z.array(
       z.enum([...TOPPINGS], {
         required_error: 'Toppings are required',
-        invalid_type_error: `Toppings must be one or more of ${listFormatterAnd([...TOPPINGS])}}`,
+        invalid_type_error: `Toppings must contain ${listFormatterAnd([...TOPPINGS])}}`,
       }))
       .length(TOPPINGS.length, `Toppings must have exactly ${TOPPINGS.length} entries`)
       .refine(items => new Set(items).size === items.length, {
-        message: 'Toppings must not contain duplicate entries',
+        message: 'Toppings must not contain each topping more than once',
       }),
     // #endregion
   })
