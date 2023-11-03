@@ -1,6 +1,6 @@
-import useSWR from 'swr';
 import { fromZodError } from 'zod-validation-error';
 import type { z } from 'zod';
+import { useQuery } from '@tanstack/react-query';
 
 import type { Loading, Success, Fail, OptionsFromZodError } from './types';
 import { fetcher } from '../../helpers/fetcher';
@@ -10,19 +10,26 @@ const zodErrorOptions: OptionsFromZodError = {
   unionSeparator: 'or' // disable Oxford comma
 };
 
-function useFetchValue<T>(url: string, schema: z.ZodTypeAny) {
-  const { data, error, isLoading } = useSWR<T, Error>(url, fetcher<T>, {
-    revalidateOnFocus: false,
+function useFetchValue<T>(key: string[], url: string, schema: z.ZodTypeAny) {
+  const {
+    data,
+    isError,
+    isLoading,
+    isFetching,
+    error
+  } = useQuery({
+    queryKey: key,
+    queryFn: () => <T>fetcher(url),
   });
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return {
       status: 'loading',
     } as const satisfies Loading;
   }
 
   // removing undefined data case early to simplify parseResult.success and parseResult.error handling
-  if (error instanceof Error || !data) {
+  if (isError || !data) {
     return {
       status: 'fail',
       errors: error?.message || 'Loading error',
@@ -30,6 +37,7 @@ function useFetchValue<T>(url: string, schema: z.ZodTypeAny) {
   }
 
   const parseResult = schema.safeParse(data);
+
   if (parseResult.success) {
     return {
       status: 'success',
@@ -44,5 +52,3 @@ function useFetchValue<T>(url: string, schema: z.ZodTypeAny) {
 }
 
 export default useFetchValue;
-
-// type Debug = ReturnType<typeof useFetchValue>;
