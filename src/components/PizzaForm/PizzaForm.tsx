@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,50 +28,38 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
     watch,
     reset,
   } = formMethods;
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
   const router = useRouter();
-  const { triggerSending } = useSendValues(apiRoutes.userData);
+  const {
+    isError,
+    isPending,
+    mutate,
+    error: mutationError,
+    reset: resetMutation,
+  } = useSendValues(['pizza', 'form-results'], apiRoutes.userData, () => {
+    router.push('/pizza/success');
+  });
 
   const priceRangeClassValue = watch('priceRangeClass');
 
-  // custom validation trigger
+  // custom validation trigger for dough and toppings when price range changes
   useEffect(() => {
     trigger(['selectedDough', 'selectedToppings']);
   }, [priceRangeClassValue, trigger]);
 
   const onSubmit = async (formValues: FormValues): Promise<void> => {
-    try {
-      setIsSubmitting(true);
-      setShowErrorMessage(false);
-
-      const response = await triggerSending(formValues);
-      if (response) {
-        await response.json();
-        router.push('/pizza/success');
-
-        return;
-      }
-      throw new Error('Error sending data');
-    } catch (e) {
-      setShowErrorMessage(true);
-    } finally {
-      setIsSubmitting(false);
-    }
+    mutate(formValues);
   };
-
-  // validation error
-  const onError = (): void => {};
 
   const handleReset = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
     reset({ ...defaultValues });
+    resetMutation();
   };
 
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onSubmit, onError)} onReset={handleReset}>
+      <form onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>
         <UncontrolledInput htmlLabel="Enter your ID" error={errors.id} {...register('id')} />
 
         <div className="divider" />
@@ -112,33 +100,31 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
           type="submit"
           aria-disabled={!isValid}
           className={clsx('btn btn-wide btn-neutral normal-case', {
-            loading: isSubmitting,
-            'cursor-wait': isSubmitting,
-            'btn-disabled': !isValid && !isSubmitting,
-            'cursor-not-allowed': !isValid && !isSubmitting,
+            loading: isPending,
+            'cursor-wait': isPending,
+            'btn-disabled': !isValid && !isPending,
+            'cursor-not-allowed': !isValid && !isPending,
           })}
         >
           Send values
         </button>
 
-        {showErrorMessage && (
+        {isError && (
           <div className="alert alert-warning shadow-lg mt-8">
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="stroke-current flex-shrink-0 h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span>Server error</span>
-            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="stroke-current shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <span>{mutationError ? mutationError.message : 'Error'}</span>
           </div>
         )}
       </form>
