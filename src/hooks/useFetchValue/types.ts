@@ -5,15 +5,15 @@ export type Loading = {
 };
 
 export type Success<T> = {
-  status: 'success';
   payload: T;
+  status: 'success';
 };
 
 export type Fail = {
-  status: 'fail';
   errors: string;
+  status: 'fail';
 };
 
-export type FetchingState<T> = Loading | Success<T> | Fail;
+export type FetchingState<T> = Fail | Loading | Success<T>;
 
 export type OptionsFromZodError = Parameters<typeof fromZodError>[1];

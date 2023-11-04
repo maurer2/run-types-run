@@ -3,6 +3,8 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:perfectionist/recommended-natural',
     'airbnb',
     'airbnb-typescript',
     'next',
@@ -19,7 +21,10 @@ module.exports = {
     project: ['tsconfig.json'],
     tsconfigRootDir: __dirname,
   },
-  plugins: ['@typescript-eslint'],
+  plugins: [
+    '@typescript-eslint',
+    'zod'
+  ],
   rules: {
     'import/prefer-default-export': 'off',
     'no-console': 'off',

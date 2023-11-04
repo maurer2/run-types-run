@@ -1,22 +1,23 @@
 import React from 'react';
 
+import type { Fail, Loading } from '../../hooks/useFetchValue/types';
+
 import Preloader from './Preloader';
-import type { Loading, Fail } from '../../hooks/useFetchValue/types';
 
 export const loadingState: Loading = {
-  status: 'loading',
   progress: {
-    formSettings: true,
     defaultValues: true,
+    formSettings: true,
   },
+  status: 'loading',
 };
 
 export const errorState: Fail = {
-  status: 'fail',
   error: {
-    formSettings: new Error('Error formSettings'),
     defaultValues: new Error('Error defaultValues'),
+    formSettings: new Error('Error formSettings'),
   },
+  status: 'fail',
 };
 
 describe('<Preloader />', () => {

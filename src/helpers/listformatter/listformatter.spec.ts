@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { listFormatterAnd, listFormatterOr } from './listformatter';
 
 describe('listFormatter', () => {

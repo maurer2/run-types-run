@@ -1,14 +1,15 @@
-import { describe, expect, it } from 'vitest';
 import { faker } from '@faker-js/faker';
+import { describe, expect, it } from 'vitest';
 
-import { pizzaFormValidationSchema } from './validation';
-import { TOPPINGS } from '../../constants/pizza/pizza';
 import type { FormValues } from '../../types/pizza';
+
+import { TOPPINGS } from '../../constants/pizza/pizza';
+import { pizzaFormValidationSchema } from './validation';
 
 describe('validation.ts', () => {
   const correctValues: FormValues = {
-    id: faker.random.alphaNumeric(5),
     amount: 1,
+    id: faker.random.alphaNumeric(5),
     priceRangeClass: 'Standard',
     selectedDough: 'Standard',
     selectedToppings: ['Tomato', 'Pepperoni'],

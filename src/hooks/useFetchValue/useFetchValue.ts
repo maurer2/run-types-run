@@ -1,8 +1,9 @@
-import { fromZodError } from 'zod-validation-error';
 import type { z } from 'zod';
-import { useQuery } from '@tanstack/react-query';
 
-import type { Loading, Success, Fail, OptionsFromZodError } from './types';
+import { useQuery } from '@tanstack/react-query';
+import { fromZodError } from 'zod-validation-error';
+
+import type { Fail, Loading, OptionsFromZodError, Success } from './types';
 
 const zodErrorOptions: OptionsFromZodError = {
   prefix: 'Error',
@@ -22,13 +23,13 @@ export const fetchFormValues = async <T>(url: string): Promise<T> => {
 function useFetchValue<T>(key: string[], url: string, schema: z.ZodTypeAny) {
   const {
     data,
+    error,
     isError,
-    isLoading,
     isFetching,
-    error
+    isLoading
   } = useQuery({
-    queryKey: key,
     queryFn: () => <T>fetchFormValues(url),
+    queryKey: key,
   });
 
   if (isLoading || isFetching) {
@@ -40,22 +41,22 @@ function useFetchValue<T>(key: string[], url: string, schema: z.ZodTypeAny) {
   // removing undefined data case early to simplify parseResult.success and parseResult.error handling
   if (isError || !data) {
     return {
-      status: 'fail',
       errors: error?.message || 'Loading error',
+      status: 'fail',
     } as const satisfies Fail;
   }
 
   const parseResult = schema.safeParse(data);
   if (parseResult.success) {
     return {
-      status: 'success',
       payload: data,
+      status: 'success',
     } as const satisfies Success<T>;
   }
 
   return {
-    status: 'fail',
     errors: fromZodError(parseResult.error, zodErrorOptions).message,
+    status: 'fail',
   } as const satisfies Fail;
 }
 

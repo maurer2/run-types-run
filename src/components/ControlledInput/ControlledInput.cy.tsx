@@ -5,7 +5,7 @@ import ControlledInput from './ControlledInput';
 describe('<ControlledInput />', () => {
   it('renders', () => {
     const onChangeHandler = cy.stub();
-    cy.mount(<ControlledInput label="Label" value="value" onChange={onChangeHandler} />);
+    cy.mount(<ControlledInput label="Label" onChange={onChangeHandler} value="value" />);
 
     cy.findByText('Label').should('exist');
     cy.findByRole('textbox').should('exist');
@@ -13,7 +13,7 @@ describe('<ControlledInput />', () => {
 
   it('onChange callback is called with new value', () => {
     const onChangeHandler = cy.stub().as('change');
-    cy.mount(<ControlledInput label="Label" value="value" onChange={onChangeHandler} />);
+    cy.mount(<ControlledInput label="Label" onChange={onChangeHandler} value="value" />);
 
     cy.findByRole('textbox').should('exist');
     cy.findByRole('textbox').clear().type('new value').type('{enter}');

@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/experimental-ct-react';
+import { expect, test } from '@playwright/experimental-ct-react';
 // import type { FieldError } from 'react-hook-form';
 
 import Component from '.';
 
 test.describe(() => {
   test('test', async ({ mount }) => {
-    const component = await mount(<Component htmlLabel="Label" error={undefined} />);
+    const component = await mount(<Component error={undefined} htmlLabel="Label" />);
 
     await expect(component.locator('label')).toContainText('Label');
     await expect(component.locator('input')).toHaveValue('');

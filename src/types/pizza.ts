@@ -1,4 +1,4 @@
-import type { PRICE_RANGE_CLASS, TOPPINGS, DOUGH } from '../constants/pizza/pizza';
+import type { DOUGH, PRICE_RANGE_CLASS, TOPPINGS } from '../constants/pizza/pizza';
 
 type PriceRangeClass = typeof PRICE_RANGE_CLASS[number]
 type Toppings = typeof TOPPINGS[number];
@@ -9,17 +9,17 @@ export type TOPPINGSMAP = {
 };
 
 export type FormValues = {
-  id: string;
   amount: number;
+  id: string;
   priceRangeClass: PriceRangeClass,
   selectedDough: Dough;
   selectedToppings: Toppings[];
 };
 
 export type FormSettings = {
-  id: string;
   amount: number;
-  priceRangeClasses: PriceRangeClass[],
   doughs: Dough[];
+  id: string;
+  priceRangeClasses: PriceRangeClass[],
   toppings: Toppings[];
 }

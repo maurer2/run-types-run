@@ -1,15 +1,15 @@
-import { test, expect } from '@playwright/experimental-ct-react';
+import { expect, test } from '@playwright/experimental-ct-react';
 
-import type { Payload, Loading, Fail } from '../../hooks/useFetchValue/types';
+import type { Fail, Loading, Payload } from '../../hooks/useFetchValue/types';
 
 import Component from '.';
 
 export const loadingState: Loading = {
-  status: 'loading',
   progress: {
-    formSettings: true,
     defaultValues: true,
-  }
+    formSettings: true,
+  },
+  status: 'loading'
 };
 
 

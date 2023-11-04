@@ -5,8 +5,8 @@ import type { FormValues } from '../../../types/pizza';
 export default function handler(req: NextApiRequest, res: NextApiResponse<FormValues>) {
   return new Promise(resolve => {
     const defaultValues: FormValues = {
-      id: 'Username',
       amount: 1,
+      id: 'Username',
       priceRangeClass: 'Standard',
       selectedDough: 'American',
       selectedToppings: ['Tomato'],

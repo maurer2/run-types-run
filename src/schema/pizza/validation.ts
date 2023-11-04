@@ -2,22 +2,23 @@
 import { z } from 'zod';
 
 import type { FormValues } from '../../types/pizza';
+
 import { pizzaSettingsSchema } from './settings';
 
 export const pizzaFormValidationSchema = z
   .object({
-    // #region id
-    id: pizzaSettingsSchema.shape.id
-      .min(1, { message: 'id should not be empty' })
-      .min(5, { message: 'id should contain at least 5 characters' })
-    ,
-    // #endregion
-
     // #region amount
     amount: pizzaSettingsSchema.shape.amount
       .int({ message: 'Amount must be an integer' })
       .min(1, { message: 'Amount must be at least 1' })
       .max(10, { message: 'Amount must not be larger than 10' })
+    ,
+    // #endregion
+
+    // #region id
+    id: pizzaSettingsSchema.shape.id
+      .min(1, { message: 'id should not be empty' })
+      .min(5, { message: 'id should contain at least 5 characters' })
     ,
     // #endregion
 

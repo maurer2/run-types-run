@@ -1,12 +1,13 @@
-import React, { useId, forwardRef } from 'react';
-import type { ReactElement, ForwardedRef } from 'react';
+import type { ForwardedRef, ReactElement } from 'react';
+
 import { clsx } from 'clsx';
+import React, { forwardRef, useId } from 'react';
 
 import type { UncontrolledInputProps } from './types';
 
 const UncontrolledInput = forwardRef(
   (
-    { htmlLabel, error, type = 'text', ...props }: UncontrolledInputProps,
+    { error, htmlLabel, type = 'text', ...props }: UncontrolledInputProps,
     ref: ForwardedRef<HTMLInputElement>,
   ): ReactElement => {
     const htmlId = useId();
@@ -18,13 +19,13 @@ const UncontrolledInput = forwardRef(
         </label>
         <input
           {...props}
-          ref={ref}
-          type={type}
-          id={htmlId}
           aria-invalid={error ? 'true' : 'false'}
           className={clsx('input', 'input-primary', 'input-bordered', 'w-full', 'max-w-xs', {
             'input-error': error,
           })}
+          id={htmlId}
+          ref={ref}
+          type={type}
         />
         {Boolean(error) && <p className="mt-2 text-red-500">{error?.message?.toString()}</p>}
       </fieldset>

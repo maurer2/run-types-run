@@ -1,44 +1,45 @@
-import React from 'react';
 import type { ReactElement } from 'react';
-import { useFormContext } from 'react-hook-form';
+
 import { clsx } from 'clsx';
+import React from 'react';
+import { useFormContext } from 'react-hook-form';
 
 import type { UncontrolledRadioCheckboxProps } from './types';
 
 const UncontrolledRadioCheckbox = <T extends Array<string>>({
-  type,
   name,
+  type,
   values,
 }: UncontrolledRadioCheckboxProps<T>): ReactElement => {
-  const { register, getFieldState } = useFormContext();
+  const { getFieldState, register } = useFormContext();
 
   const fieldState = getFieldState(name);
   const isRadio = type === 'radio';
 
   return (
     <fieldset aria-describedby={`id-${name}`}>
-      <legend id={`id-${name}`} className="mb-4">
+      <legend className="mb-4" id={`id-${name}`}>
         Select {name}
       </legend>
       <ul>
         {values.map((value) => (
-          <li key={value} className="form-control">
-            <label htmlFor={`${name}-${value}`} className="label-text cursor-pointer mt-2">
+          <li className="form-control" key={value}>
+            <label className="label-text cursor-pointer mt-2" htmlFor={`${name}-${value}`}>
               <input
                 {...register(name)}
-                type={type}
-                id={`${name}-${value}`}
+                aria-invalid={fieldState.error ? 'true' : 'false'}
                 className={clsx('checked:bg-primary-500', {
-                  radio: isRadio,
-                  // 'radio-primary': isRadio,
-                  'radio-sm': isRadio,
                   checkbox: !isRadio,
                   'checkbox-primary': !isRadio,
                   'checkbox-sm': !isRadio,
+                  radio: isRadio,
+                  // 'radio-primary': isRadio,
+                  'radio-sm': isRadio,
                 })}
-                aria-invalid={fieldState.error ? 'true' : 'false'}
-                value={value}
                 data-testid={`id-${name}`}
+                id={`${name}-${value}`}
+                type={type}
+                value={value}
               />
               <span className="label-text ml-4">{value}</span>
             </label>

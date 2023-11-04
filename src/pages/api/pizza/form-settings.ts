@@ -1,15 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import type { FormSettings } from '../../../types/pizza';
-import { TOPPINGS, DOUGH, PRICE_RANGE_CLASS } from '../../../constants/pizza/pizza';
+
+import { DOUGH, PRICE_RANGE_CLASS, TOPPINGS } from '../../../constants/pizza/pizza';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<FormSettings>) {
   return new Promise(resolve => {
     const formSettings: FormSettings = {
-      id: '',
       amount: 1,
-      priceRangeClasses: [...PRICE_RANGE_CLASS],
       doughs: [...DOUGH],
+      id: '',
+      priceRangeClasses: [...PRICE_RANGE_CLASS],
       toppings: [...TOPPINGS],
     };
 

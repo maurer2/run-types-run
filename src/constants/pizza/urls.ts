@@ -1,6 +1,6 @@
 export const apiRoutes = {
-  formSettings: '/api/pizza/form-settings',
   defaultValues: '/api/pizza/default-values',
+  formSettings: '/api/pizza/form-settings',
   userData: '/api/pizza/user-data',
 };
 

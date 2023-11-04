@@ -1,16 +1,17 @@
-import { describe, expect, it } from 'vitest';
 import { faker } from '@faker-js/faker';
+import { describe, expect, it } from 'vitest';
 
-import { pizzaSettingsSchema } from './settings';
-import { PRICE_RANGE_CLASS, DOUGH, TOPPINGS } from '../../constants/pizza/pizza';
 import type { FormSettings } from '../../types/pizza';
+
+import { DOUGH, PRICE_RANGE_CLASS, TOPPINGS } from '../../constants/pizza/pizza';
+import { pizzaSettingsSchema } from './settings';
 
 describe('settings', () => {
   const correctValues: FormSettings = {
-    id: faker.random.alphaNumeric(5),
     amount: 1,
-    priceRangeClasses: [...PRICE_RANGE_CLASS],
     doughs: [...DOUGH],
+    id: faker.random.alphaNumeric(5),
+    priceRangeClasses: [...PRICE_RANGE_CLASS],
     toppings: [...TOPPINGS],
   };
 

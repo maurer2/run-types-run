@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { parse } from 'qs';
+
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { parse } from 'qs';
 
 import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 

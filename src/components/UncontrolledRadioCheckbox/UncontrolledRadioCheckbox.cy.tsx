@@ -1,5 +1,5 @@
 import React from 'react'
-import { useForm, FormProvider } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
 import UncontrolledRadioCheckbox from './UncontrolledRadioCheckbox'
 
@@ -17,7 +17,7 @@ describe('<UncontrolledRadioCheckbox />', () => {
 
     cy.mount(
       <FormProvider getFieldState={getFieldStateMock} register={registerMock}>
-        <UncontrolledRadioCheckbox type='radio' name="name" values={['one', 'two', 'three']} />
+        <UncontrolledRadioCheckbox name="name" type='radio' values={['one', 'two', 'three']} />
       </FormProvider>
     );
 

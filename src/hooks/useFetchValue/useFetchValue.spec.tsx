@@ -1,11 +1,13 @@
-import { describe, expect, it, vi, afterEach } from 'vitest';
+import type { ReactNode } from 'react';
+
 import { renderHook, waitFor } from '@testing-library/react';
 import { SWRConfig } from 'swr';
-import type { ReactNode } from 'react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 
+import type { Fail, Loading, Success } from './types';
+
 import useFetchValue from '.';
-import type { Loading, Success, Fail } from './types';
 import * as fetcherModule from '../../helpers/fetcher';
 
 // vi.mock('../../helpers/fetcher', () => ({
@@ -25,9 +27,9 @@ describe('useFetchStartValues', () => {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <SWRConfig
       value={{
-        revalidateOnFocus: false,
-        provider: () => new Map(),
         dedupingInterval: 0,
+        provider: () => new Map(),
+        revalidateOnFocus: false,
       }}
     >
       {children}
@@ -68,8 +70,8 @@ describe('useFetchStartValues', () => {
       });
 
       expect(result.current).toMatchObject({
-        status: 'success',
         payload: { name: 'Mittens' },
+        status: 'success',
       } satisfies Success<Schema>);
     });
   });
@@ -85,8 +87,8 @@ describe('useFetchStartValues', () => {
       });
 
       expect(result.current).toMatchObject({
-        status: 'fail',
         errors: 'Loading error',
+        status: 'fail',
       } satisfies Fail);
     });
 
@@ -100,8 +102,8 @@ describe('useFetchStartValues', () => {
       });
 
       expect(result.current).toMatchObject({
-        status: 'fail',
         errors: '404',
+        status: 'fail',
       } satisfies Fail);
     });
 
@@ -117,8 +119,8 @@ describe('useFetchStartValues', () => {
       });
 
       expect(result.current).toMatchObject({
-        status: 'fail',
         errors: `Error: Required at "name"; Unrecognized key(s) in object: 'nayme'`,
+        status: 'fail',
       } satisfies Fail);
     });
   });

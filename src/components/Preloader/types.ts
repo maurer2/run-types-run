@@ -1,6 +1,6 @@
-import type { Loading, Success, Fail } from '../../hooks/useFetchValue/types';
+import type { Fail, Loading, Success } from '../../hooks/useFetchValue/types';
 
 export type PreloaderProps<T> = {
-  fetchingState: Loading | Fail | Success<T>;
+  fetchingState: Fail | Loading | Success<T>;
   textLabel: string;
 };

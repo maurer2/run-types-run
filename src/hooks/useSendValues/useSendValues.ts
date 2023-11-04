@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-
 import { stringify } from 'qs';
+
 import type { FormValues } from '../../types/pizza';
 
 export const sendFormValues = async (url: string, payload: FormValues) => {
@@ -9,9 +9,9 @@ export const sendFormValues = async (url: string, payload: FormValues) => {
   });
 
   const request = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
     body: new URLSearchParams(payloadStringified),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    method: 'POST',
   } satisfies RequestInit;
 
   const response = await fetch(url, request);
@@ -30,8 +30,8 @@ function useSendValues(
   handleOnSuccess: () => void,
 ) {
   const mutationResult = useMutation({
-    mutationKey: key,
     mutationFn: (payload: FormValues) => sendFormValues(url, payload),
+    mutationKey: key,
     onSuccess: (): void => {
       handleOnSuccess();
       // todo: invalidate fetching queries

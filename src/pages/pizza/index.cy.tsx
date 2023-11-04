@@ -1,67 +1,69 @@
-import React from 'react';
-import type { PropsWithChildren } from 'react';
-import { RouterContext } from 'next/dist/shared/lib/router-context';
 import type { NextRouter } from 'next/router';
+import type { PropsWithChildren } from 'react';
 
-import Index from './index';
+import { RouterContext } from 'next/dist/shared/lib/router-context';
+import React from 'react';
+
+import type { Loading, Success } from '../../hooks/useFetchValue/types';
+
+import { DOUGH, PRICE_RANGE_CLASS, TOPPINGS } from '../../constants/pizza/pizza';
 import { apiRoutes } from '../../constants/pizza/urls';
-import type { Success, Loading } from '../../hooks/useFetchValue/types';
-import { TOPPINGS, DOUGH, PRICE_RANGE_CLASS } from '../../constants/pizza/pizza';
+import Index from './index';
 
 export const loadingState: Loading = {
-  status: 'loading',
   progress: {
-    formSettings: true,
     defaultValues: true,
+    formSettings: true,
   },
+  status: 'loading',
 };
 
 export const successState: Success = {
-  status: 'success',
   payload: {
-    formSettings: {
-      id: '',
-      amount: 1,
-      priceRangeClasses: PRICE_RANGE_CLASS,
-      doughs: DOUGH,
-      toppings: TOPPINGS,
-    },
     defaultValues: {
-      id: 'Username',
       amount: 1,
+      id: 'Username',
       priceRangeClass: 'Standard',
       selectedDough: 'American',
       selectedToppings: ['Tomato'],
     },
+    formSettings: {
+      amount: 1,
+      doughs: DOUGH,
+      id: '',
+      priceRangeClasses: PRICE_RANGE_CLASS,
+      toppings: TOPPINGS,
+    },
   },
+  status: 'success',
 };
 
 // https://github.com/cypress-io/cypress/discussions/22715
 const createRouter = (params: Partial<NextRouter>) => ({
   ...params,
-  route: '/',
-  pathname: '/',
-  query: {},
   asPath: '/',
-  basePath: '',
   back: cy.spy().as('back'),
+  basePath: '',
   beforePopState: cy.spy().as('beforePopState'),
-  forward: cy.spy().as('forward'),
-  prefetch: cy.stub().as('prefetch').resolves(),
-  push: cy.spy().as('push'),
-  reload: cy.spy().as('reload'),
-  replace: cy.spy().as('replace'),
+  defaultLocale: 'en',
+  domainLocales: [],
   events: {
     emit: cy.spy().as('emit'),
     off: cy.spy().as('off'),
     on: cy.spy().as('on'),
   },
+  forward: cy.spy().as('forward'),
   isFallback: false,
   isLocaleDomain: false,
-  isReady: true,
-  defaultLocale: 'en',
-  domainLocales: [],
   isPreview: false,
+  isReady: true,
+  pathname: '/',
+  prefetch: cy.stub().as('prefetch').resolves(),
+  push: cy.spy().as('push'),
+  query: {},
+  reload: cy.spy().as('reload'),
+  replace: cy.spy().as('replace'),
+  route: '/',
 });
 
 const MockRouter = ({ children, ...props }: PropsWithChildren<Partial<NextRouter>>) => {
@@ -122,7 +124,7 @@ describe('<Index />', () => {
         method: 'GET',
         url: apiRoutes.formSettings,
       },
-      { message: 'OK', statusCode: 200, body: successState.payload.formSettings },
+      { body: successState.payload.formSettings, message: 'OK', statusCode: 200 },
     );
 
     cy.intercept(
@@ -130,7 +132,7 @@ describe('<Index />', () => {
         method: 'GET',
         url: apiRoutes.defaultValues,
       },
-      { message: 'OK', statusCode: 200, body: successState.payload.defaultValues },
+      { body: successState.payload.defaultValues, message: 'OK', statusCode: 200 },
     );
 
     cy.mount(

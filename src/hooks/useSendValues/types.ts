@@ -1,6 +1,6 @@
 export type Sending = {
-  status: 'sending';
   payload?: unknown;
+  status: 'sending';
 };
 
 export type Success = {
@@ -8,7 +8,7 @@ export type Success = {
 };
 
 export type Fail = {
-  status: 'fail';
   errors: string;
+  status: 'fail';
 };
 

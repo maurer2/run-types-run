@@ -1,5 +1,5 @@
 export type UncontrolledRadioCheckboxProps<T> = {
-  values: T;
   name: string;
-  type: 'radio' | 'checkbox';
+  type: 'checkbox' | 'radio';
+  values: T;
 };
