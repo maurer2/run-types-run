@@ -1,22 +1,27 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { parse } from 'qs';
+import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 
 import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
   const { body, method } = await request;
 
-  const payloadParsed = parse(body);
-
   if (method !== 'POST') {
-    response.status(405).send({ message: 'Bad http-method' });
+    response
+      .status(StatusCodes.METHOD_NOT_ALLOWED)
+      .send({ message: getReasonPhrase(StatusCodes.METHOD_NOT_ALLOWED) });
   }
 
+  const payloadParsed = parse(body);
   const isValid = pizzaFormValidationSchema.safeParse(payloadParsed).success;
   if (!isValid) {
-    response.status(400).send({ message: 'Bad request' });
+    response
+      .status(StatusCodes.BAD_REQUEST)
+      .send({ message: getReasonPhrase(StatusCodes.BAD_REQUEST) });
   }
 
-  return response.status(200).send({ message: 'OK' });
-}
+  console.log(payloadParsed);
 
+  return response.status(StatusCodes.OK).send({ message: getReasonPhrase(StatusCodes.OK) });
+}

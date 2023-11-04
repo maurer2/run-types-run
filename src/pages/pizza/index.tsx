@@ -10,8 +10,13 @@ import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
 import type { FormSettings, FormValues } from '../../types/pizza';
 
 const Pizza: NextPage = () => {
-  const formSettings = useFetchValue<FormSettings>(['pizza', 'settings'], apiRoutes.formSettings, pizzaSettingsSchema);
-  const defaultValues = useFetchValue<FormValues>(['pizza', 'default-values'],
+  const formSettings = useFetchValue<FormSettings>(
+    ['pizza', 'settings'],
+    apiRoutes.formSettings,
+    pizzaSettingsSchema
+  );
+  const defaultValues = useFetchValue<FormValues>(
+    ['pizza', 'default-values'],
     apiRoutes.defaultValues,
     pizzaFormValidationSchema,
   );

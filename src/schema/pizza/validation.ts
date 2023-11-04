@@ -51,6 +51,7 @@ export const pizzaFormValidationSchema = z
       path: ['selectedDough'],
     },
   )
+  // #endregion
   // budget option doesn't allow more than two toppings
   .refine(
     ({ priceRangeClass, selectedToppings }) =>
@@ -60,4 +61,4 @@ export const pizzaFormValidationSchema = z
       path: ['selectedToppings'],
     }
   ) satisfies z.ZodType<FormValues>; // https://github.com/colinhacks/zod/issues/1495#issuecomment-1339832685
-// #endregion
+  // #endregion

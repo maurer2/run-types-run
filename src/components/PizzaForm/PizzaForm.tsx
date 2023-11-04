@@ -30,10 +30,10 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
   } = formMethods;
   const router = useRouter();
   const {
-    isError,
-    isPending,
+    isError: isErrorMutation,
+    isPending: isPendingMutation,
     mutate,
-    error: mutationError,
+    error: errorMutation,
     reset: resetMutation,
   } = useSendValues(['pizza', 'form-results'], apiRoutes.userData, () => {
     router.push('/pizza/success');
@@ -92,24 +92,25 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
 
         <div className="divider" />
 
-        <button type="reset" className="btn btn-outline normal-case mr-4">
-          Reset
-        </button>
+        <div className="join">
+          <button type="reset" className="btn btn-neutral normal-case join-item">
+            Reset
+          </button>
+          <button
+            type="submit"
+            aria-disabled={!isValid || !isPendingMutation}
+            className={clsx('btn btn-neutral normal-case join-item', {
+              'cursor-wait': isPendingMutation,
+              'btn-disabled': !isValid || isPendingMutation,
+              'cursor-not-allowed': !isValid || isPendingMutation,
+            })}
+          >
+            {isPendingMutation && <span className="loading loading-spinner" />}
+            Send
+          </button>
+        </div>
 
-        <button
-          type="submit"
-          aria-disabled={!isValid}
-          className={clsx('btn btn-wide btn-neutral normal-case', {
-            loading: isPending,
-            'cursor-wait': isPending,
-            'btn-disabled': !isValid && !isPending,
-            'cursor-not-allowed': !isValid && !isPending,
-          })}
-        >
-          Send values
-        </button>
-
-        {isError && (
+        {isErrorMutation && (
           <div className="alert alert-warning shadow-lg mt-8">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +125,7 @@ const PizzaForm = ({ formSettings, defaultValues }: PizzaFormProps) => {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <span>{mutationError ? mutationError.message : 'Error'}</span>
+            <span>{errorMutation ? errorMutation.message : 'Error'}</span>
           </div>
         )}
       </form>

@@ -1,8 +1,27 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-// import type { Sending, Success, Fail } from './types';
-import { sender } from '../../helpers/sender';
+import { stringify } from 'qs';
 import type { FormValues } from '../../types/pizza';
+
+export const sendFormValues = async (url: string, payload: FormValues) => {
+  const payloadStringified = stringify(payload, {
+    arrayFormat: 'brackets', // retain array type for arrays with only one entry
+  });
+
+  const request = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    body: new URLSearchParams(payloadStringified),
+  } satisfies RequestInit;
+
+  const response = await fetch(url, request);
+
+  if (!response.ok) {
+    throw new Error(response?.statusText || `Error sending to ${url}}`);
+  }
+
+  return response.json();
+};
 
 function useSendValues(
   key: string[],
@@ -12,8 +31,8 @@ function useSendValues(
 ) {
   const mutationResult = useMutation({
     mutationKey: key,
-    mutationFn: (payload: FormValues) => sender(url, payload),
-    onSuccess: () => {
+    mutationFn: (payload: FormValues) => sendFormValues(url, payload),
+    onSuccess: (): void => {
       handleOnSuccess();
       // todo: invalidate fetching queries
     },

@@ -3,11 +3,20 @@ import type { z } from 'zod';
 import { useQuery } from '@tanstack/react-query';
 
 import type { Loading, Success, Fail, OptionsFromZodError } from './types';
-import { fetcher } from '../../helpers/fetcher';
 
 const zodErrorOptions: OptionsFromZodError = {
   prefix: 'Error',
   unionSeparator: 'or' // disable Oxford comma
+};
+
+export const fetchFormValues = async <T>(url: string): Promise<T> => {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(response?.statusText || `Error fetching ${url}}`);
+  }
+
+  return response.json();
 };
 
 function useFetchValue<T>(key: string[], url: string, schema: z.ZodTypeAny) {
@@ -19,7 +28,7 @@ function useFetchValue<T>(key: string[], url: string, schema: z.ZodTypeAny) {
     error
   } = useQuery({
     queryKey: key,
-    queryFn: () => <T>fetcher(url),
+    queryFn: () => <T>fetchFormValues(url),
   });
 
   if (isLoading || isFetching) {
@@ -37,7 +46,6 @@ function useFetchValue<T>(key: string[], url: string, schema: z.ZodTypeAny) {
   }
 
   const parseResult = schema.safeParse(data);
-
   if (parseResult.success) {
     return {
       status: 'success',
