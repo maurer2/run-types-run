@@ -1,81 +1,81 @@
-import type { NextRouter } from 'next/router';
+// https://github.com/cypress-io/cypress/discussions/22715
+import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import type { PropsWithChildren } from 'react';
 
-import { RouterContext } from 'next/dist/shared/lib/router-context';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { AppRouterContext } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import Router from 'next/router'
 import React from 'react';
 
 import type { Loading, Success } from '../../hooks/useFetchValue/types';
 
 import { DOUGH, PRICE_RANGE_CLASS, TOPPINGS } from '../../constants/pizza/pizza';
 import { apiRoutes } from '../../constants/pizza/urls';
+import { queryClient } from '../_app';
 import Index from './index';
 
 export const loadingState: Loading = {
-  progress: {
-    defaultValues: true,
-    formSettings: true,
-  },
   status: 'loading',
 };
 
-export const successState: Success = {
-  payload: {
-    defaultValues: {
-      amount: 1,
-      id: 'Username',
-      priceRangeClass: 'Standard',
-      selectedDough: 'American',
-      selectedToppings: ['Tomato'],
-    },
-    formSettings: {
-      amount: 1,
-      doughs: DOUGH,
-      id: '',
-      priceRangeClasses: PRICE_RANGE_CLASS,
-      toppings: TOPPINGS,
-    },
+const payloadHappyPath = {
+  defaultValues: {
+    amount: 1,
+    id: 'Username',
+    priceRangeClass: 'Standard',
+    selectedDough: 'American',
+    selectedToppings: ['Tomato'],
   },
+  formSettings: {
+    amount: 1,
+    doughs: DOUGH,
+    id: '',
+    priceRangeClasses: PRICE_RANGE_CLASS,
+    toppings: TOPPINGS,
+  },
+};
+
+export const successState: Success<unknown> = {
+  payload: payloadHappyPath,
   status: 'success',
 };
 
 // https://github.com/cypress-io/cypress/discussions/22715
-const createRouter = (params: Partial<NextRouter>) => ({
-  ...params,
-  asPath: '/',
+const createRouter = (params: Partial<AppRouterInstance>) => ({
   back: cy.spy().as('back'),
-  basePath: '',
-  beforePopState: cy.spy().as('beforePopState'),
-  defaultLocale: 'en',
-  domainLocales: [],
-  events: {
-    emit: cy.spy().as('emit'),
-    off: cy.spy().as('off'),
-    on: cy.spy().as('on'),
-  },
   forward: cy.spy().as('forward'),
-  isFallback: false,
-  isLocaleDomain: false,
-  isPreview: false,
-  isReady: true,
-  pathname: '/',
   prefetch: cy.stub().as('prefetch').resolves(),
   push: cy.spy().as('push'),
-  query: {},
-  reload: cy.spy().as('reload'),
+  refresh: cy.spy().as('refresh'),
   replace: cy.spy().as('replace'),
-  route: '/',
+  ...params,
 });
 
-const MockRouter = ({ children, ...props }: PropsWithChildren<Partial<NextRouter>>) => {
+export const MockNextRouter = ({
+  children,
+  ...props
+}: Partial<PropsWithChildren<AppRouterInstance>>) => {
   const router = createRouter(props);
 
   return (
-    <RouterContext.Provider value={router}>
-      {children}
-    </RouterContext.Provider>);
+    <QueryClientProvider client={queryClient}>
+      <AppRouterContext.Provider value={router}>
+        {children}
+      </AppRouterContext.Provider>
+    </QueryClientProvider>
+  )
 };
 
-describe('<Index />', () => {
+describe('Pizza page', () => {
+  let router;
+
+  beforeEach(() => {
+    router = {
+      back: cy.stub().as('routerBack')
+    }
+    cy.stub(Router, 'useRouter').returns(router)
+  })
+
   it('renders loading state', () => {
     // https://blog.dai.codes/cypress-loading-state-tests/
     let sendResponse;
@@ -106,9 +106,9 @@ describe('<Index />', () => {
     );
 
     cy.mount(
-      <MockRouter>
+      <MockNextRouter>
         <Index />
-      </MockRouter>,
+      </MockNextRouter>,
     );
 
     cy.findAllByRole('heading', { level: 2 }).should('have.lengthOf', 2);
@@ -122,24 +122,26 @@ describe('<Index />', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: apiRoutes.formSettings,
+        url: apiRoutes.defaultValues,
       },
-      { body: successState.payload.formSettings, message: 'OK', statusCode: 200 },
+      { body: payloadHappyPath.defaultValues, message: 'OK', statusCode: 200 },
     );
 
     cy.intercept(
       {
         method: 'GET',
-        url: apiRoutes.defaultValues,
+        url: apiRoutes.formSettings,
       },
-      { body: successState.payload.defaultValues, message: 'OK', statusCode: 200 },
+      { body: payloadHappyPath.formSettings, message: 'OK', statusCode: 200 },
     );
 
     cy.mount(
-      <MockRouter>
+      <MockNextRouter>
         <Index />
-      </MockRouter>,
+      </MockNextRouter>,
     );
+
+    cy.findAllByRole('heading', { level: 2 }).should('have.lengthOf', 2);
 
     cy.findByLabelText('Enter your ID').should('exist');
     cy.findByText('Select priceRangeClass').should('exist');

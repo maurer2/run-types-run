@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import '@testing-library/cypress/add-commands';
+import '@testing-library/cypress/add-commands'; // adds findBy, findAllBy from RTL
 
 // ***********************************************
 // This example commands.ts shows you how to

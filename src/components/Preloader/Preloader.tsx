@@ -10,7 +10,7 @@ function Preloader<T>({ fetchingState, textLabel }: PreloaderProps<T>) {
       {fetchingState.status === 'loading' && (
         <div className="flex flex-1 gap-4 items-center">
           <p className="badge">is loading</p>
-          <progress className="progress w-56 block" data-testid="progressbar-form-settings" />
+          <progress className="progress w-56 block" data-testid="progressbar-form-data" />
         </div>
       )}
 

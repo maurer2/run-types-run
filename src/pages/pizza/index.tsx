@@ -23,6 +23,8 @@ const Pizza: NextPage = () => {
     pizzaFormValidationSchema,
   );
 
+  console.log(formSettings)
+
   const showForm = formSettings.status === 'success' && defaultValues.status === 'success';
 
   return (
