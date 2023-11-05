@@ -52,7 +52,6 @@ export const pizzaFormValidationSchema = z
       path: ['selectedDough'],
     },
   )
-  // #endregion
   // budget option doesn't allow more than two toppings
   .refine(
     ({ priceRangeClass, selectedToppings }) =>

@@ -7,9 +7,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<FormVa
     const defaultValues: FormValues = {
       amount: 1,
       id: 'Username',
-      priceRangeClass: 'Standard',
+      priceRangeClass: 'Budget',
       selectedDough: 'American',
-      selectedToppings: ['Tomato'],
+      selectedToppings: ['Tomato', 'Pepperoni'],
     };
 
     setTimeout(() => {

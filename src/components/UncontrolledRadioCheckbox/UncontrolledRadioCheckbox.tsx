@@ -7,6 +7,7 @@ import { useFormContext } from 'react-hook-form';
 import type { UncontrolledRadioCheckboxProps } from './types';
 
 const UncontrolledRadioCheckbox = <T extends Array<string>>({
+  label,
   name,
   type,
   values,
@@ -19,7 +20,7 @@ const UncontrolledRadioCheckbox = <T extends Array<string>>({
   return (
     <fieldset aria-describedby={`id-${name}`}>
       <legend className="mb-4" id={`id-${name}`}>
-        Select {name}
+        {label ?? name}
       </legend>
       <ul>
         {values.map((value) => (

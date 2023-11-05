@@ -9,6 +9,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
 
+import { formLabels } from '../../constants/pizza/labels'
 import { apiRoutes } from '../../constants/pizza/urls';
 import useSendValues from '../../hooks/useSendValues/useSendValues';
 import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
@@ -61,15 +62,16 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
   return (
     <FormProvider {...formMethods}>
       <form onReset={handleReset} onSubmit={handleSubmit(onSubmit)}>
-        <UncontrolledInput error={errors.id} htmlLabel="Enter your ID" {...register('id')} />
+        <UncontrolledInput error={errors.id} htmlLabel={formLabels.id} {...register('id')} />
 
         <div className="divider" />
 
-        <UncontrolledInput error={errors.amount} htmlLabel="Enter amount" {...register('amount')} />
+        <UncontrolledInput error={errors.amount} htmlLabel={formLabels.amount} {...register('amount')} />
 
         <div className="divider" />
 
         <UncontrolledRadioCheckbox
+          label={formLabels.priceRangeClass}
           name="priceRangeClass"
           type="radio"
           values={[...formSettings.priceRangeClasses]}
@@ -78,6 +80,7 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
         <div className="divider" />
 
         <UncontrolledRadioCheckbox
+          label={formLabels.selectedDough}
           name="selectedDough"
           type="radio"
           values={[...formSettings.doughs]}
@@ -86,6 +89,7 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
         <div className="divider" />
 
         <UncontrolledRadioCheckbox
+          label={formLabels.selectedToppings}
           name="selectedToppings"
           type="checkbox"
           values={[...formSettings.toppings]}
