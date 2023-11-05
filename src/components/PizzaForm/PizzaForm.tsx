@@ -39,7 +39,7 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     reset: resetMutation,
   } = useSendValues(['pizza', 'form-results'], apiRoutes.userData, () => {
     router.push('/pizza/success');
-  });
+  }, ['pizza']);
 
   const priceRangeClassValue = watch('priceRangeClass');
 

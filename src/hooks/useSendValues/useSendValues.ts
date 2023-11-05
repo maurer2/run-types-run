@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { stringify } from 'qs';
 
 import type { FormValues } from '../../types/pizza';
@@ -26,15 +26,20 @@ export const sendFormValues = async (url: string, payload: FormValues) => {
 function useSendValues(
   key: string[],
   url: string,
-  // queryKeysToInvalidate?: string[]
   handleOnSuccess: () => void,
+  queryKeysToInvalidate?: string[],
 ) {
+  const queryClient = useQueryClient();
   const mutationResult = useMutation({
     mutationFn: (payload: FormValues) => sendFormValues(url, payload),
     mutationKey: key,
     onSuccess: (): void => {
       handleOnSuccess();
-      // todo: invalidate fetching queries
+
+      queryClient.invalidateQueries({
+        exact: false,
+        queryKey: queryKeysToInvalidate,
+      });
     },
   })
 
