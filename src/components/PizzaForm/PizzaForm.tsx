@@ -62,11 +62,11 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
   return (
     <FormProvider {...formMethods}>
       <form onReset={handleReset} onSubmit={handleSubmit(onSubmit)}>
-        <UncontrolledInput error={errors.id} htmlLabel={formLabels.id} {...register('id')} />
+        <UncontrolledInput error={errors.id} label={formLabels.id} name='id' register={register} />
 
         <div className="divider" />
 
-        <UncontrolledInput error={errors.amount} htmlLabel={formLabels.amount} {...register('amount')} />
+        <UncontrolledInput error={errors.amount} label={formLabels.amount} name='amount' register={register} />
 
         <div className="divider" />
 
