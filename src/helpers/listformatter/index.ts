@@ -1,1 +1,1 @@
-export { listFormatterAnd, listFormatterOr } from "./listformatter"
+export { formatList, listFormatterAnd, listFormatterOr } from "./listformatter"
