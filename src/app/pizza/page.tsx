@@ -1,4 +1,4 @@
-import type { NextPage } from 'next';
+'use client'
 
 import React from 'react';
 
@@ -11,7 +11,7 @@ import useFetchValue from '../../hooks/useFetchValue';
 import { pizzaSettingsSchema } from '../../schema/pizza/settings';
 import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
 
-const Pizza: NextPage = () => {
+export default function Pizza() {
   const formSettings = useFetchValue<FormSettings>(
     ['pizza', 'settings'],
     apiRoutes.formSettings,
@@ -43,4 +43,3 @@ const Pizza: NextPage = () => {
   );
 };
 
-export default Pizza;

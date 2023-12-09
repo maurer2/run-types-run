@@ -1,9 +1,8 @@
-import type { NextPage } from 'next';
-
 import Link from 'next/link';
 import React from 'react';
 
-const Success: NextPage = () => (
+export default function Success() {
+  return (
   <article className="container max-w-4xl mx-auto px-8 pt-8">
     <div className="mockup-window border border-base-300">
       <div className="px-4 py-16 bg-base-200">
@@ -30,6 +29,5 @@ const Success: NextPage = () => (
       </div>
     </div>
   </article>
-);
-
-export default Success;
+  )
+};
