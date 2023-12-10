@@ -2,18 +2,18 @@
 
 import React from 'react';
 
-import type { FormSettings, FormValues } from '../../types/pizza';
+import type { FormSettings, FormValues } from '../../../types/pizza';
 
-import PizzaForm from '../../components/PizzaForm';
-import Preloader from '../../components/Preloader';
-import { apiRoutes } from '../../constants/pizza/urls';
-import useFetchValue from '../../hooks/useFetchValue';
-import { pizzaSettingsSchema } from '../../schema/pizza/settings';
-import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
+import PizzaForm from '../../../components/PizzaForm';
+import Preloader from '../../../components/Preloader';
+import { apiRoutes } from '../../../constants/pizza/urls';
+import useFetchValue from '../../../hooks/useFetchValue';
+import { pizzaSettingsSchema } from '../../../schema/pizza/settings';
+import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 
 export default function Pizza() {
   const formSettings = useFetchValue<FormSettings>(
-    ['pizza', 'settings'],
+    ['pizza', 'form-settings'],
     apiRoutes.formSettings,
     pizzaSettingsSchema
   );
@@ -42,4 +42,3 @@ export default function Pizza() {
     </article>
   );
 };
-
