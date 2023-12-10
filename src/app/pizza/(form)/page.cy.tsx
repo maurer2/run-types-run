@@ -7,12 +7,12 @@ import { AppRouterContext } from 'next/dist/shared/lib/app-router-context.shared
 import Router from 'next/router'
 import React from 'react';
 
-import type { Loading, Success } from '../../hooks/useFetchValue/types';
+import type { Loading, Success } from '../../../hooks/useFetchValue/types';
 
-import { DOUGH, PRICE_RANGE_CLASS, TOPPINGS } from '../../constants/pizza/pizza';
-import { apiRoutes } from '../../constants/pizza/urls';
+import { DOUGH, PRICE_RANGE_CLASS, TOPPINGS } from '../../../constants/pizza/pizza';
+import { apiRoutes } from '../../../constants/pizza/urls';
 import { queryClient } from '../_app';
-import Index from './index';
+import Index from './page/pizza/index';
 
 export const loadingState: Loading = {
   status: 'loading',
