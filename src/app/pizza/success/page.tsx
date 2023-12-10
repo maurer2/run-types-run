@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function Success() {
   return (
-    <div className="px-4 py-16 bg-base-200">
+    <>
       <div className="alert alert-success shadow-lg mb-8">
         <svg
           className="stroke-current flex-shrink-0 h-6 w-6"
@@ -24,6 +24,6 @@ export default function Success() {
       <Link className="btn btn-neutral btn-wide normal-case" href="/pizza">
         Go back
       </Link>
-    </div>
+    </>
   )
 };
