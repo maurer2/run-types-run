@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/experimental-ct-react';
 // import { useForm, FormProvider } from "react-hook-form";
 // import { zodResolver } from '@hookform/resolvers/zod';
 
-import Component from '.';
+import Component from './page';
 // import type { FormValues } from './types';
 // import { TOPPINGS, DOUGH, PRICE_RANGE_CLASS } from './constants';
 // import { pizzaValidationSchema } from './validation';

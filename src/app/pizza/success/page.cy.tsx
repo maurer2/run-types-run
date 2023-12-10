@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Success from './success';
+import Success from "./pagepages/app/pizza/success/success";
 
 describe('Success page', () => {
   it('renders', () => {
