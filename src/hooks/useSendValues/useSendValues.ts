@@ -5,7 +5,7 @@ import type { FormValues } from '../../types/pizza';
 
 export const sendFormValues = async (url: string, payload: FormValues) => {
   const payloadStringified = stringify(payload, {
-    arrayFormat: 'brackets', // retain array type for arrays with only one entry
+    arrayFormat: 'repeat',
   });
 
   const request = {
