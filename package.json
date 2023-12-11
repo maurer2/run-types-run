@@ -4,6 +4,7 @@
   "private": true,
   "author": "Martin",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "next dev",
     "dev2": "turbo dev",
     "build": "next build",
@@ -25,7 +26,6 @@
     "@testing-library/cypress": "^10.0.1",
     "@testing-library/react": "^14.1.2",
     "@types/node": "^18.19.3",
-    "@types/qs": "^6.9.10",
     "@types/react": "18.2.42",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
@@ -50,7 +50,6 @@
     "next": "^14.0.4",
     "playwright": "^1.40.1",
     "postcss": "^8.4.31",
-    "qs": "^6.11.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.48.2",
