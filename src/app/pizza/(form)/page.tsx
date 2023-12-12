@@ -1,3 +1,5 @@
+import type { ZodSchema, z } from 'zod';
+
 import React from 'react';
 
 import type { FormSettings, FormValues } from '../../../types/pizza';
@@ -9,25 +11,26 @@ import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 
 const url = 'http://localhost:3000';
 
-async function getData(pathName: string) {
+async function getData<T extends ZodSchema>(pathName: string, schema: T): Promise<z.infer<T>> {
   const response = await fetch(`${url}${pathName}`);
 
   if (!response.ok) {
-    throw new Error('Error');
+    throw new Error(response.statusText || 'Error fetching');
   }
+  const data: unknown = await response.json();
 
-  return response.json();
+  return schema.parseAsync(data);
 }
 
 export default async function Pizza() {
-  const formSettings = await getData(apiRoutes.formSettings);
-  const defaultValues = await getData(apiRoutes.defaultValues);
+  const formSettings = await getData(apiRoutes.formSettings, pizzaSettingsSchema) satisfies FormSettings;
+  const defaultValues = await getData(apiRoutes.defaultValues, pizzaFormValidationSchema) satisfies FormValues;
 
   const isValidFormSettings = pizzaSettingsSchema.safeParse(formSettings).success;
   const isValidDefaultValues = pizzaFormValidationSchema.safeParse(defaultValues).success;
 
   return (isValidFormSettings && isValidDefaultValues) ? (
-    <PizzaForm defaultValues={defaultValues as FormValues} formSettings={formSettings as FormSettings} />
+    <PizzaForm defaultValues={defaultValues} formSettings={formSettings} />
   ) : (
     <div className="alert alert-error shadow-lg mt-8">
       <svg

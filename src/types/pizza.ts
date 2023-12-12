@@ -16,10 +16,6 @@ export type FormValues = {
   selectedToppings: Toppings[];
 };
 
-export type FormValuesNullable = {
-  [K in keyof FormValues]: FormValues[K] | null
-}
-
 export type FormSettings = {
   amount: number;
   doughs: Dough[];
