@@ -1,3 +1,5 @@
+'use client'
+
 import type { FormEvent } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
