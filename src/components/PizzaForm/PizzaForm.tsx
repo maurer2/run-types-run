@@ -11,6 +11,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
 
+import { storeFormValues } from '../../actions/storeFormValues';
 import { formLabels } from '../../constants/pizza/labels'
 import { apiRoutes } from '../../constants/pizza/urls';
 import useSendValues from '../../hooks/useSendValues/useSendValues';
@@ -25,7 +26,7 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     resolver: zodResolver(pizzaFormValidationSchema),
   });
   const {
-    formState: { errors, isValid },
+    formState: { defaultValues: defaultValuesOfForm, errors, isValid },
     handleSubmit,
     register,
     reset,
@@ -114,6 +115,14 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
           >
             {isPendingMutation && <span className="loading loading-spinner" />}
             Send
+          </button>
+          <button
+            className="btn btn-neutral normal-case join-item"
+            onClick={async () => {
+              storeFormValues(defaultValuesOfForm);
+            }}
+            type="button">
+            Trigger server action
           </button>
         </div>
 
