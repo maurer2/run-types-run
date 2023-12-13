@@ -12,41 +12,31 @@ import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 const url = 'http://localhost:3000';
 
 async function getData<T extends ZodSchema>(pathName: string, schema: T): Promise<z.infer<T>> {
-  const response = await fetch(`${url}${pathName}`);
+  try {
+    const response = await fetch(`${url}${pathName}`);
 
-  if (!response.ok) {
-    throw new Error(response.statusText || 'Error fetching');
+    if (!response.ok) {
+      throw new Error(`${response?.status} ${response?.statusText} ${pathName}` || `Error fetching ${pathName}`); // error triggers closest error.tsx
+    }
+    const data: unknown = await response.json();
+
+    return schema.parse(data);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message, {
+        cause: error,
+      });
+    }
+
+    throw new Error(`Unknown error in fetching or parsing ${pathName}}`);
   }
-  const data: unknown = await response.json();
-
-  return schema.parseAsync(data);
 }
 
 export default async function Pizza() {
   const formSettings = await getData(apiRoutes.formSettings, pizzaSettingsSchema) satisfies FormSettings;
-  const defaultValues = await getData(apiRoutes.defaultValues, pizzaFormValidationSchema) satisfies FormValues;
+  const defaultValues = await getData(apiRoutes.defaultValues, pizzaFormValidationSchema) satisfies Error | FormValues;
 
-  const isValidFormSettings = pizzaSettingsSchema.safeParse(formSettings).success;
-  const isValidDefaultValues = pizzaFormValidationSchema.safeParse(defaultValues).success;
-
-  return (isValidFormSettings && isValidDefaultValues) ? (
+  return (
     <PizzaForm defaultValues={defaultValues} formSettings={formSettings} />
-  ) : (
-    <div className="alert alert-error shadow-lg mt-8">
-      <svg
-        className="stroke-current shrink-0 h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-        />
-      </svg>
-      <span>Error loading data</span>
-    </div>
-  );
+  )
 }

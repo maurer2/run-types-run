@@ -19,7 +19,7 @@ export default function Providers({ children }: PropsWithChildren) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen />
+      <ReactQueryDevtools />
     </QueryClientProvider>
   )
 }
