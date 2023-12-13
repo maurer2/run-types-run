@@ -48,13 +48,49 @@ describe('settings', () => {
       expect(pizzaSettingsSchema.safeParse(dataWithoutAmount).success).toBeFalsy();
     });
 
-    it('should validate with correct amount', () => {
+    it('should validate with amount larger 0', () => {
       const data: FormSettings = {
         ...correctValues,
         amount: 5
       };
 
       expect(pizzaSettingsSchema.safeParse(data).success).toBeTruthy();
+    });
+
+    it('should not validate with amount equal 0', () => {
+      const data: FormSettings = {
+        ...correctValues,
+        amount: 0
+      };
+
+      expect(pizzaSettingsSchema.safeParse(data).success).toBeFalsy();
+    });
+
+    it('should not validate with amount equal +0', () => {
+      const data: FormSettings = {
+        ...correctValues,
+        amount: 0
+      };
+
+      expect(pizzaSettingsSchema.safeParse(data).success).toBeFalsy();
+    });
+
+    it('should not validate with amount equal -0', () => {
+      const data: FormSettings = {
+        ...correctValues,
+        amount: 0
+      };
+
+      expect(pizzaSettingsSchema.safeParse(data).success).toBeFalsy();
+    });
+
+    it('should not validate with amount smaller than 0', () => {
+      const data: FormSettings = {
+        ...correctValues,
+        amount: -5
+      };
+
+      expect(pizzaSettingsSchema.safeParse(data).success).toBeFalsy();
     });
   });
 

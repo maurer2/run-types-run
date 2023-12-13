@@ -3,15 +3,19 @@ import { z  } from 'zod';
 import type { FormSettings } from '../../types/pizza';
 
 import { DOUGH, PRICE_RANGE_CLASS, TOPPINGS } from '../../constants/pizza/pizza';
-import { listFormatterAnd } from '../../helpers/listformatter/listformatter';
+import { formatList } from '../../helpers/listformatter/listformatter';
+
+const listFormatterAnd = formatList();
 
 export const pizzaSettingsSchema = z
   .object({
     // #region amount
-    amount: z.coerce.number({
-      invalid_type_error: 'Amount must be a number',
-      required_error: 'Amount is required',
-    }),
+    amount: z.coerce
+      .number({
+        invalid_type_error: 'Amount must be a number',
+        required_error: 'Amount is required',
+      })
+      .positive('Amount must be a larger than 0'),
     // #endregion
 
     // #region doughs
