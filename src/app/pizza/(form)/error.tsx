@@ -31,7 +31,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
         className="btn btn-neutral normal-case"
         onClick={() => reset()}
       >
-          Try again
+        Try again
       </button>
     </>
   );

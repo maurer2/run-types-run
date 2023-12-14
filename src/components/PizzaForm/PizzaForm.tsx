@@ -1,20 +1,18 @@
 'use client'
 
 import type { FormEvent } from 'react';
+import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clsx } from 'clsx';
-import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
 
-import { storeFormValues } from '../../actions/storeFormValues';
+import { handleFormValuesSubmit } from '../../app/actions/handleFormValuesSubmit/handleFormValuesSubmit';
 import { formLabels } from '../../constants/pizza/labels'
-import { apiRoutes } from '../../constants/pizza/urls';
-import useSendValues from '../../hooks/useSendValues/useSendValues';
 import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
 import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
@@ -26,23 +24,15 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     resolver: zodResolver(pizzaFormValidationSchema),
   });
   const {
-    formState: { defaultValues: defaultValuesOfForm, errors, isValid },
+    formState: { errors, isValid },
     handleSubmit,
     register,
     reset,
     trigger,
     watch,
   } = formMethods;
-  const router = useRouter();
-  const {
-    error: errorMutation,
-    isError: isErrorMutation,
-    isPending: isPendingMutation,
-    mutate,
-    reset: resetMutation,
-  } = useSendValues(['pizza', 'form-results'], apiRoutes.userData, () => {
-    router.push('/pizza/success');
-  }, ['pizza']);
+  const [isPending, setIsPending] = useState(false);
+  const [serverSideErrors, setServerSideErrors] = useState<Record<string, string[]>|undefined>(undefined); // todo: improve typings
 
   const priceRangeClassValue = watch('priceRangeClass');
 
@@ -52,25 +42,38 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
   }, [priceRangeClassValue, trigger]);
 
   const onSubmit = async (formValues: FormValues): Promise<void> => {
-    mutate(formValues);
+    // https://github.com/vercel/next.js/discussions/51371#discussioncomment-7152123
+    setIsPending(true);
+
+    const errors = await handleFormValuesSubmit(formValues);
+
+    setIsPending(false);
+    setServerSideErrors(errors?.errors);
   };
 
   const handleReset = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
     reset({ ...defaultValues });
-    resetMutation();
+    setIsPending(false);
+    setServerSideErrors(undefined);
   };
+
+  const hasServerSideErrors = serverSideErrors !== undefined && (
+    Object.hasOwn(serverSideErrors, 'amount')
+    || Object.hasOwn(serverSideErrors, 'id')
+    || Object.hasOwn(serverSideErrors, 'priceRangeClass')
+    || Object.hasOwn(serverSideErrors, 'selectedDough')
+    || Object.hasOwn(serverSideErrors, 'selectedToppings')
+  );
 
   return (
     <FormProvider {...formMethods}>
       <form onReset={handleReset} onSubmit={handleSubmit(onSubmit)}>
         <UncontrolledInput error={errors.id} label={formLabels.id} name='id' register={register} />
-
         <div className="divider" />
 
         <UncontrolledInput error={errors.amount} label={formLabels.amount} name='amount' register={register} />
-
         <div className="divider" />
 
         <UncontrolledRadioCheckbox
@@ -79,7 +82,6 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
           type="radio"
           values={[...formSettings.priceRangeClasses]}
         />
-
         <div className="divider" />
 
         <UncontrolledRadioCheckbox
@@ -88,7 +90,6 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
           type="radio"
           values={[...formSettings.doughs]}
         />
-
         <div className="divider" />
 
         <UncontrolledRadioCheckbox
@@ -97,7 +98,6 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
           type="checkbox"
           values={[...formSettings.toppings]}
         />
-
         <div className="divider" />
 
         <div className="join">
@@ -105,28 +105,20 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
             Reset
           </button>
           <button
-            aria-disabled={!isValid || !isPendingMutation}
+            aria-disabled={!isValid || !isPending}
             className={clsx('btn btn-neutral normal-case join-item', {
-              'btn-disabled': !isValid || isPendingMutation,
-              'cursor-not-allowed': !isValid || isPendingMutation,
-              'cursor-wait': isPendingMutation,
+              'btn-disabled': !isValid || isPending,
+              'cursor-not-allowed': !isValid || isPending,
+              'cursor-wait': isPending,
             })}
             type="submit"
           >
-            {isPendingMutation && <span className="loading loading-spinner" />}
+            {isPending && <span className="loading loading-spinner" />}
             Send
-          </button>
-          <button
-            className="btn btn-neutral normal-case join-item"
-            onClick={async () => {
-              storeFormValues(defaultValuesOfForm);
-            }}
-            type="button">
-            Trigger server action
           </button>
         </div>
 
-        {isErrorMutation && (
+        {hasServerSideErrors && (
           <div className="alert alert-warning shadow-lg mt-8">
             <svg
               className="stroke-current shrink-0 h-6 w-6"
@@ -141,7 +133,7 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
                 strokeWidth="2"
               />
             </svg>
-            <span>{errorMutation?.message || 'Error'}</span>
+            <code className="whitespace-pre">{JSON.stringify(serverSideErrors, null, 4)}</code>
           </div>
         )}
       </form>

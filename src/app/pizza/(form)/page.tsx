@@ -28,7 +28,7 @@ async function getData<T extends ZodSchema>(pathName: string, schema: T): Promis
       });
     }
 
-    throw new Error(`Unknown error in fetching or parsing ${pathName}}`);
+    throw new Error(`Unknown error when fetching or parsing ${pathName}`);
   }
 }
 
