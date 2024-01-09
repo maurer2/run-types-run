@@ -1,11 +1,10 @@
 'use client'
 
 import type { FormEvent } from 'react';
-import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clsx } from 'clsx';
-import React, { useEffect } from 'react';
+import React, { useEffect , useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import type { FormValues } from '../../types/pizza';
@@ -45,10 +44,10 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     // https://github.com/vercel/next.js/discussions/51371#discussioncomment-7152123
     setIsPending(true);
 
-    const errors = await handleFormValuesSubmit(formValues);
+    const currentServerSideErrors = await handleFormValuesSubmit(formValues);
 
     setIsPending(false);
-    setServerSideErrors(errors?.errors);
+    setServerSideErrors(currentServerSideErrors?.errors);
   };
 
   const handleReset = (event: FormEvent<HTMLFormElement>): void => {

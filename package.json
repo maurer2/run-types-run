@@ -5,8 +5,7 @@
   "author": "Martin",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "next dev",
-    "dev2": "turbo dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

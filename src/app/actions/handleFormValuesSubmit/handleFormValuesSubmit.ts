@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 
 import type { FormValues } from '../../../types/pizza';
+
 import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 
 export async function handleFormValuesSubmit(formValues: FormValues) {
@@ -16,5 +17,5 @@ export async function handleFormValuesSubmit(formValues: FormValues) {
     }
   }
 
-  redirect('/pizza/success');
+  return redirect('/pizza/success');
 }
