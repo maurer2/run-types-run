@@ -10,7 +10,7 @@ describe('settings', () => {
   const correctValues: FormSettings = {
     amount: 1,
     doughs: [...DOUGH],
-    id: faker.random.alphaNumeric(5),
+    id: faker.string.alphanumeric(5),
     priceRangeClasses: [...PRICE_RANGE_CLASS],
     toppings: [...TOPPINGS],
   };
