@@ -9,7 +9,7 @@ import { pizzaFormValidationSchema } from './validation';
 describe('validation.ts', () => {
   const correctValues: FormValues = {
     amount: 1,
-    id: faker.random.alphaNumeric(5),
+    id: faker.string.alphanumeric(5),
     priceRangeClass: 'Standard',
     selectedDough: 'Standard',
     selectedToppings: ['Tomato', 'Pepperoni'],

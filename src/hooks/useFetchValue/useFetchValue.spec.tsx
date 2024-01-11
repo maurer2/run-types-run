@@ -1,14 +1,15 @@
 import type { ReactNode } from 'react';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
-import { SWRConfig } from 'swr';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 
 import type { Fail, Loading, Success } from './types';
 
 import useFetchValue from '.';
-import * as fetcherModule from '../../helpers/fetcher';
+import { queryClientConfig } from '../../app/providers';
+import * as helpers from './helpers';
 
 // vi.mock('../../helpers/fetcher', () => ({
 //   fetcher: vi.fn().mockResolvedValue({ test: 'test' }),
@@ -24,17 +25,12 @@ describe('useFetchStartValues', () => {
     vi.clearAllMocks();
   });
 
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <SWRConfig
-      value={{
-        dedupingInterval: 0,
-        provider: () => new Map(),
-        revalidateOnFocus: false,
-      }}
-    >
-      {children}
-    </SWRConfig>
-  );
+  const wrapper = ({ children }: { children: ReactNode }) => {
+    const queryClient = new QueryClient(queryClientConfig);
+
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  };
+
   const url = '/api';
   const schema = z
     .object({
@@ -45,9 +41,9 @@ describe('useFetchStartValues', () => {
 
   describe('loading', () => {
     it('should have loading state by default', async () => {
-      const mockFetcher = vi.spyOn(fetcherModule, 'fetcher').mockReturnValue(new Promise(vi.fn()));
+      const mockFetcher = vi.spyOn(helpers, 'fetchValues').mockReturnValue(new Promise(vi.fn()));
 
-      const { result } = renderHook(() => useFetchValue<Schema>(url, schema), { wrapper });
+      const { result } = renderHook(() => useFetchValue<Schema>(['key'], url, schema), { wrapper });
 
       await waitFor(async () => {
         await expect(mockFetcher).toHaveBeenCalled();
@@ -61,9 +57,9 @@ describe('useFetchStartValues', () => {
 
   describe('success', () => {
     it("payload is correct e.g. schema parsing doesn't fail", async () => {
-      const mockFetcher = vi.spyOn(fetcherModule, 'fetcher').mockResolvedValue({ name: 'Mittens' });
+      const mockFetcher = vi.spyOn(helpers, 'fetchValues').mockResolvedValue({ name: 'Mittens' });
 
-      const { result } = renderHook(() => useFetchValue<Schema>(url, schema), { wrapper });
+      const { result } = renderHook(() => useFetchValue<Schema>(['key'], url, schema), { wrapper });
 
       await waitFor(async () => {
         await expect(mockFetcher).toHaveBeenCalled();
@@ -78,9 +74,9 @@ describe('useFetchStartValues', () => {
 
   describe('fail', () => {
     it('no response', async () => {
-      const mockFetcher = vi.spyOn(fetcherModule, 'fetcher').mockResolvedValue(null);
+      const mockFetcher = vi.spyOn(helpers, 'fetchValues').mockResolvedValue(null);
 
-      const { result } = renderHook(() => useFetchValue<Schema>(url, schema), { wrapper });
+      const { result } = renderHook(() => useFetchValue<Schema>(['key'], url, schema), { wrapper });
 
       await waitFor(async () => {
         await expect(mockFetcher).toHaveBeenCalled();
@@ -93,14 +89,20 @@ describe('useFetchStartValues', () => {
     });
 
     it('error response', async () => {
-      const mockFetcher = vi.spyOn(fetcherModule, 'fetcher').mockRejectedValue(new Error('404'));
+      const mockFetcher = vi.spyOn(helpers, 'fetchValues').mockRejectedValue(new Error('404'));
 
-      const { result } = renderHook(() => useFetchValue<Schema>(url, schema), { wrapper });
+      const { result } = renderHook(() => useFetchValue<Schema>(['key'], url, schema), { wrapper });
 
       await waitFor(async () => {
         await expect(mockFetcher).toHaveBeenCalled();
       });
 
+      await waitFor(async () => {
+        expect(result.current.status).not.toBe('loading');
+      });
+
+      expect(mockFetcher).rejects.toBeTruthy();
+      expect(mockFetcher).rejects.toEqual(new Error('404'));
       expect(result.current).toMatchObject({
         errors: '404',
         status: 'fail',
@@ -108,11 +110,9 @@ describe('useFetchStartValues', () => {
     });
 
     it('payload is incorrect e.g. schema parsing fails', async () => {
-      const mockFetcher = vi
-        .spyOn(fetcherModule, 'fetcher')
-        .mockResolvedValue({ nayme: 'Mittens' });
+      const mockFetcher = vi.spyOn(helpers, 'fetchValues').mockResolvedValue({ nayme: 'Mittens' });
 
-      const { result } = renderHook(() => useFetchValue<Schema>(url, schema), { wrapper });
+      const { result } = renderHook(() => useFetchValue<Schema>(['key'], url, schema), { wrapper });
 
       await waitFor(async () => {
         await expect(mockFetcher).toHaveBeenCalled();

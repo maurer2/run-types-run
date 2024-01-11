@@ -5,19 +5,11 @@ import { fromZodError } from 'zod-validation-error';
 
 import type { Fail, Loading, OptionsFromZodError, Success } from './types';
 
+import { fetchValues } from './helpers';
+
 const zodErrorOptions: OptionsFromZodError = {
   prefix: 'Error',
   unionSeparator: 'or' // disable Oxford comma
-};
-
-export const fetchFormValues = async <T>(url: string): Promise<T> => {
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(response?.statusText || `Error fetching ${url}}`);
-  }
-
-  return response.json();
 };
 
 function useFetchValue<T>(key: string[], url: string, schema: z.ZodTypeAny) {
@@ -28,7 +20,7 @@ function useFetchValue<T>(key: string[], url: string, schema: z.ZodTypeAny) {
     isFetching,
     isLoading
   } = useQuery({
-    queryFn: () => <T>fetchFormValues(url),
+    queryFn: () => <T>fetchValues(url),
     queryKey: key,
   });
 

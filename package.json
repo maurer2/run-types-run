@@ -11,7 +11,6 @@
     "lint": "next lint",
     "test": "vitest",
     "test:schema": "vitest './src/schema/'",
-    "test:validation": "vitest pages/pizza/*.spec.ts",
     "test:types": "tsc --noEmit",
     "test:components": "cypress run --component",
     "test:components:visual": "cypress open"
