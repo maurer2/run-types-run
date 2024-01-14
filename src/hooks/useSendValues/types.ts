@@ -1,14 +1,17 @@
-export type Sending = {
-  payload?: unknown;
-  status: 'sending';
+export type Idle = {
+  status: 'idle';
+};
+
+export type Pending = {
+  status: 'pending';
 };
 
 export type Success = {
+  payload?: unknown;
   status: 'success';
 };
 
 export type Fail = {
-  errors: string;
-  status: 'fail';
+  error: unknown;
+  status: 'error';
 };
-
