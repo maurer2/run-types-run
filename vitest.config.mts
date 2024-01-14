@@ -6,15 +6,11 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
+    // testNamePattern: '*.vi.spec.{ts,tsx,mts}',
     // exclude playwright files
     exclude: [
       ...configDefaults.exclude,
-      'src/components/ControlledInput/ControlledInput.spec.tsx',
-      // workaround for ()
-      'src/app/pizza/*form*/page.spec.tsx',
-      'src/components/UncontrolledRadioCheckbox/UncontrolledRadioCheckbox.spec.tsx',
-      'src/components/UncontrolledInput/UncontrolledInput.spec.tsx',
-      'src/components/Preloader/Preloader.spec.tsx'
+      '**/*.pw.spec.tsx'
     ],
   },
 });

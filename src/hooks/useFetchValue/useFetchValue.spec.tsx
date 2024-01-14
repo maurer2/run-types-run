@@ -11,15 +11,6 @@ import useFetchValue from '.';
 import { queryClientConfig } from '../../app/providers';
 import * as helpers from './helpers';
 
-// vi.mock('../../helpers/fetcher', () => ({
-//   fetcher: vi.fn().mockResolvedValue({ test: 'test' }),
-// }));
-
-// vi.mock('../../helpers/fetcher', async () => ({
-//   ...(await vi.importActual<any>('../../helpers/fetcher')),
-//   fetcher: vi.fn().mockResolvedValue({ test: 'test' }),
-// }));
-
 describe('useFetchStartValues', () => {
   afterEach(() => {
     vi.clearAllMocks();

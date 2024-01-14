@@ -1,11 +1,17 @@
 import { expect, test } from '@playwright/experimental-ct-react';
-// import type { FieldError } from 'react-hook-form';
 
-import Component from '.';
+import ControlledInput from '.';
 
-test.describe(() => {
-  test('test', async ({ mount }) => {
-    const component = await mount(<Component error={undefined} htmlLabel="Label" />);
+test.describe('ControlledInput', () => {
+  test('default', async ({ mount }) => {
+    const component = await mount(
+      <ControlledInput
+        error={undefined}
+        label="Label"
+        name="Fieldname"
+        register={(name) => ({ name })} // todo
+      />
+    );
 
     await expect(component.locator('label')).toContainText('Label');
     await expect(component.locator('input')).toHaveValue('');

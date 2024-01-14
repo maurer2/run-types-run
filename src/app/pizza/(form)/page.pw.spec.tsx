@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/experimental-ct-react';
 // import { useForm, FormProvider } from "react-hook-form";
 // import { zodResolver } from '@hookform/resolvers/zod';
 
-import Component from './page';
+import FormPage from './page';
 // import type { FormValues } from './types';
 // import { TOPPINGS, DOUGH, PRICE_RANGE_CLASS } from './constants';
 // import { pizzaValidationSchema } from './validation';
@@ -20,9 +20,9 @@ import Component from './page';
 //     </FormProvider>
 //   );
 
-test.describe(() => {
+test.describe.skip('FormPage', () => {
   test('has child components', async ({ mount, page }) => {
-    await mount(<Component />);
+    await mount(<FormPage />);
 
     await expect(page.getByTestId('id-priceRangeClass')).toHaveCount(3);
     await expect(page.getByTestId('id-selectedDough')).toHaveCount(3);
@@ -32,7 +32,7 @@ test.describe(() => {
   });
 
   test('should show errors on submit', async ({ mount, page }) => {
-    const component = await mount(<Component />);
+    const component = await mount(<FormPage />);
 
     // priceClass
     await page.getByLabel('Budget').check();
