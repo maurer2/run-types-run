@@ -1,27 +1,22 @@
-import React from 'react'
-import { FormProvider, useForm } from 'react-hook-form';
+import React from 'react';
 
-import UncontrolledRadioCheckbox from './UncontrolledRadioCheckbox'
+import { FormWrapper } from '../../../cypress/support/wrappers/FormWrapper';
+import UncontrolledRadioCheckbox from './UncontrolledRadioCheckbox';
 
-describe('<UncontrolledRadioCheckbox />', () => {
+describe('UncontrolledRadioCheckbox', () => {
   it('renders', () => {
-    // const formMethods = useForm({
-    //   defaultValues: {
-    //     name: ['one', two', 'three'],
-    //   },
-    //   mode: 'onChange',
-    // });
-
-    const getFieldStateMock = cy.stub().returns(true);
-    const registerMock = cy.stub();
-
     cy.mount(
-      <FormProvider getFieldState={getFieldStateMock} register={registerMock}>
-        <UncontrolledRadioCheckbox name="name" type='radio' values={['one', 'two', 'three']} />
-      </FormProvider>
+      <FormWrapper defaultValues={['one', 'two', 'three']}>
+        <UncontrolledRadioCheckbox
+          label="name"
+          name="name"
+          type="radio"
+          values={['one', 'two', 'three']}
+        />
+      </FormWrapper>,
     );
 
-    cy.findByText('Select name').should('exist');
+    cy.get('legend').findByText('name').should('exist');
 
     cy.findByLabelText('one').should('exist');
     cy.findByLabelText('two').should('exist');
@@ -30,5 +25,5 @@ describe('<UncontrolledRadioCheckbox />', () => {
     cy.findAllByDisplayValue('one').should('exist');
     cy.findAllByDisplayValue('two').should('exist');
     cy.findAllByDisplayValue('three').should('exist');
-  })
-})
+  });
+});

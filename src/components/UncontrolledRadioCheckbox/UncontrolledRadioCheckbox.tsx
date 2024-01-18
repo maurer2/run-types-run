@@ -34,7 +34,6 @@ const UncontrolledRadioCheckbox = <T extends Array<string>>({
                   'checkbox-primary': !isRadio,
                   'checkbox-sm': !isRadio,
                   radio: isRadio,
-                  // 'radio-primary': isRadio,
                   'radio-sm': isRadio,
                 })}
                 data-testid={`id-${name}`}
