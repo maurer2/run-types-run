@@ -9,7 +9,7 @@ import { apiRoutes } from '../../../constants/pizza/urls';
 import { pizzaSettingsSchema } from '../../../schema/pizza/settings';
 import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 
-const url = 'http://localhost:3000';
+const url = process.env.NEXT_PUBLIC_VERCEL_URL;
 
 async function getData<T extends ZodSchema>(pathName: string, schema: T): Promise<z.infer<T>> {
   try {
@@ -33,7 +33,7 @@ async function getData<T extends ZodSchema>(pathName: string, schema: T): Promis
 }
 
 export default async function Pizza() {
-  const formSettings = await getData(apiRoutes.formSettings, pizzaSettingsSchema) satisfies FormSettings;
+  const formSettings = await getData(apiRoutes.formSettings, pizzaSettingsSchema) satisfies Error | FormSettings;
   const defaultValues = await getData(apiRoutes.defaultValues, pizzaFormValidationSchema) satisfies Error | FormValues;
 
   return (
