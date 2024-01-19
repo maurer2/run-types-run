@@ -23,9 +23,8 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     resolver: zodResolver(pizzaFormValidationSchema),
   });
   const {
-    formState: { errors, isValid },
+    formState: { isValid },
     handleSubmit,
-    register,
     reset,
     trigger,
     watch,
@@ -69,10 +68,18 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
   return (
     <FormProvider {...formMethods}>
       <form onReset={handleReset} onSubmit={handleSubmit(onSubmit)}>
-        <UncontrolledInput error={errors.id} label={formLabels.id} name='id' register={register} />
+        <UncontrolledInput
+          label={formLabels.id}
+          name="id"
+          type="text"
+        />
         <div className="divider" />
 
-        <UncontrolledInput error={errors.amount} label={formLabels.amount} name='amount' register={register} />
+        <UncontrolledInput
+          label={formLabels.amount}
+          name="amount"
+          type="text"
+        />
         <div className="divider" />
 
         <UncontrolledRadioCheckbox

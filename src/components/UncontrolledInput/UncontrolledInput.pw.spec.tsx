@@ -1,16 +1,17 @@
 import { expect, test } from '@playwright/experimental-ct-react';
 
 import ControlledInput from '.';
+import { FormWrapper } from '../../../playwright/wrappers/FormWrapper';
 
-test.describe('ControlledInput', () => {
+test.describe('UncontrolledInput', () => {
   test('default', async ({ mount }) => {
     const component = await mount(
-      <ControlledInput
-        error={undefined}
-        label="Label"
-        name="Fieldname"
-        register={(name) => ({ name })} // todo
-      />
+      <FormWrapper>
+        <ControlledInput
+          label="Label"
+          name="Fieldname"
+        />
+      </FormWrapper>
     );
 
     await expect(component.locator('label')).toContainText('Label');

@@ -1,41 +1,33 @@
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
 
+import { FormWrapper } from '../../../cypress/support/wrappers/FormWrapper';
 import UncontrolledInput from './UncontrolledInput';
 
-describe.skip('UncontrolledInput', () => {
+describe('UncontrolledInput', () => {
   it('renders', () => {
-    const formMethods = useForm({
-      defaultValues: {
-        name: ''
-      },
-      mode: 'onSubmit',
-    });
-    const { handleSubmit, register } = formMethods;
-
     cy.mount(
-      <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(() => {})}>
-          <UncontrolledInput error={undefined} label='name' name="name" register={register} type='text' />);
+      <FormWrapper defaultValues=''>
+        <form onSubmit={() => {}}>
+          <UncontrolledInput label='Label' name="Fieldname" type='text' />);
         </form>
-      </FormProvider>
+      </FormWrapper>,
     );
 
-    // cy.mount(
-    //   <FormProvider {...methods}>
-    //     <UncontrolledInput label='name' name="name" register={{...methods.register('name')}} type='text'  />);
-    //   </FormProvider>
-    // )
-
-    // cy.findByText('Label').should('exist');
-    // cy.findByRole('textbox').should('exist');
-    // cy.findAllByRole('paragraph').should('not.exist');
+    cy.findByLabelText('Label').should('exist');
+    cy.findByRole('textbox').should('exist');
+    cy.findByRole('paragraph').should('not.exist');
   });
 
-  // it('should update value when typing', () => {
-  //   cy.mount(<UncontrolledInput error={undefined} htmlLabel="Label" />);
+  it('should update value when typing', () => {
+    cy.mount(
+      <FormWrapper defaultValues=''>
+        <form onSubmit={() => {}}>
+          <UncontrolledInput label='Label' name="name" type='text' />);
+        </form>
+      </FormWrapper>,
+    );
 
-  //   cy.findByRole('textbox').type('value');
-  //   cy.findByRole('textbox').should('have.value', 'value');
-  // });
+    cy.findByRole('textbox').type('value');
+    cy.findByRole('textbox').should('have.value', 'value');
+  });
 });
