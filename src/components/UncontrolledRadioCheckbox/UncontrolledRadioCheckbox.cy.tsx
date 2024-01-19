@@ -10,8 +10,8 @@ describe('UncontrolledRadioCheckbox', () => {
         <UncontrolledRadioCheckbox
           label="name"
           name="name"
+          options={['one', 'two', 'three']}
           type="radio"
-          values={['one', 'two', 'three']}
         />
       </FormWrapper>,
     );

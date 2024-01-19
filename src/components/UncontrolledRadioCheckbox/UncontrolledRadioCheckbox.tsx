@@ -6,29 +6,32 @@ import { useFormContext } from 'react-hook-form';
 
 import type { UncontrolledRadioCheckboxProps } from './types';
 
-const UncontrolledRadioCheckbox = <T extends Array<string>>({
+const UncontrolledRadioCheckbox = <T extends string[]>({
   label,
   name,
+  options,
   type,
-  values,
 }: UncontrolledRadioCheckboxProps<T>): ReactElement => {
   const { getFieldState, register } = useFormContext();
 
   const fieldState = getFieldState(name);
   const isRadio = type === 'radio';
+  const hasError = Boolean(fieldState.error?.message?.length);
+  const errorId = `${name}-error`;
 
   return (
     <fieldset aria-describedby={`id-${name}`}>
       <legend className="mb-4" id={`id-${name}`}>
-        {label ?? name}
+        {label}
       </legend>
       <ul>
-        {values.map((value) => (
-          <li className="form-control" key={value}>
-            <label className="label-text cursor-pointer mt-2" htmlFor={`${name}-${value}`}>
+        {options.map((option) => (
+          <li className="form-control" key={option}>
+            <label className="label-text cursor-pointer mt-2" htmlFor={`${name}-${option}`}>
               <input
                 {...register(name)}
-                aria-invalid={fieldState.error ? 'true' : 'false'}
+                aria-describedby={hasError ? errorId : undefined}
+                aria-invalid={hasError}
                 className={clsx('checked:bg-primary-500', {
                   checkbox: !isRadio,
                   'checkbox-primary': !isRadio,
@@ -37,17 +40,17 @@ const UncontrolledRadioCheckbox = <T extends Array<string>>({
                   'radio-sm': isRadio,
                 })}
                 data-testid={`id-${name}`}
-                id={`${name}-${value}`}
+                id={`${name}-${option}`}
                 type={type}
-                value={value}
+                value={option}
               />
-              <span className="label-text ml-4">{value}</span>
+              <span className="label-text ml-4">{option}</span>
             </label>
           </li>
         ))}
       </ul>
-      {Boolean(fieldState.error) && (
-        <p className="mt-2 text-red-500">{fieldState.error?.message?.toString()}</p>
+      {hasError && (
+        <p className="mt-2 text-red-500" id={errorId}>{fieldState.error?.message}</p>
       )}
     </fieldset>
   );

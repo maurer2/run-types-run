@@ -8,8 +8,8 @@ test.describe.skip('UncontrolledRadioCheckbox', () => {
       <UncontrolledRadioCheckbox
         label='Label'
         name='Name'
+        options={['one, two, three']}
         type='radio'
-        values={['one, two, three']}
       />
     );
 

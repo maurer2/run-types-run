@@ -78,24 +78,24 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
         <UncontrolledRadioCheckbox
           label={formLabels.priceRangeClass}
           name="priceRangeClass"
+          options={formSettings.priceRangeClasses}
           type="radio"
-          values={[...formSettings.priceRangeClasses]}
         />
         <div className="divider" />
 
         <UncontrolledRadioCheckbox
           label={formLabels.selectedDough}
           name="selectedDough"
+          options={formSettings.doughs}
           type="radio"
-          values={[...formSettings.doughs]}
         />
         <div className="divider" />
 
         <UncontrolledRadioCheckbox
           label={formLabels.selectedToppings}
           name="selectedToppings"
+          options={formSettings.toppings}
           type="checkbox"
-          values={[...formSettings.toppings]}
         />
         <div className="divider" />
 
