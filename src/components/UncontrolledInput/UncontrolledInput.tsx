@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
 import { clsx } from 'clsx';
-import React, { useId } from 'react';
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import type { UncontrolledInputProps } from './types';
@@ -13,15 +13,15 @@ const UncontrolledInput = <T extends FieldValues>({
   type = 'text',
 }: UncontrolledInputProps<T>): ReactElement => {
   const { getFieldState, register } = useFormContext();
-  const htmlId = useId();
 
   const fieldState = getFieldState(name);
   const hasError = Boolean(fieldState.error?.message?.length);
   const errorId = `${name}-error`;
+  const id = `id-${name}`;
 
   return (
     <fieldset className="form-control w-full max-w-xs">
-      <label className="label" htmlFor={htmlId}>
+      <label className="label" htmlFor={id}>
         <span className="label-text">{label}</span>
       </label>
       <input
@@ -31,8 +31,7 @@ const UncontrolledInput = <T extends FieldValues>({
         className={clsx('input', 'input-primary', 'input-bordered', 'w-full', 'max-w-xs', {
           'input-error': hasError,
         })}
-        id={htmlId}
-        name={htmlId}
+        id={id}
         type={type}
       />
       {hasError && (

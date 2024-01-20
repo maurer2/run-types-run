@@ -19,8 +19,6 @@ const UncontrolledRadioCheckbox = <T extends string[]>({
   const hasError = Boolean(fieldState.error?.message?.length);
   const errorId = `${name}-error`;
 
-  console.log(options.length)
-
   return (
     <fieldset aria-describedby={`id-${name}`}>
       <legend className="mb-4" id={`id-${name}`}>

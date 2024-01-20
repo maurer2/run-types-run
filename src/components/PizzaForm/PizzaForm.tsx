@@ -2,6 +2,7 @@
 
 import type { FormEvent } from 'react';
 
+// import { DevTool } from "@hookform/devtools";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clsx } from 'clsx';
 import React, { useEffect , useState } from 'react';
@@ -23,7 +24,9 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     resolver: zodResolver(pizzaFormValidationSchema),
   });
   const {
-    formState: { isValid },
+    // formState error object needs to be subscribed to so that getFieldState errors trigger a rerender: https://github.com/orgs/react-hook-form/discussions/7638
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    formState: { errors, isValid },
     handleSubmit,
     reset,
     trigger,
@@ -143,6 +146,7 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
           </div>
         )}
       </form>
+      {/* <DevTool control={control} /> */}
     </FormProvider>
   );
 };
