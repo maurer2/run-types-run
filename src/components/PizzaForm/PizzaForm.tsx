@@ -5,8 +5,8 @@ import type { FormEvent } from 'react';
 // import { DevTool } from "@hookform/devtools";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clsx } from 'clsx';
-import React, { useEffect , useState, } from 'react';
-import { type FieldErrors, FormProvider, useForm} from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import { type FieldErrors, FormProvider, useForm } from 'react-hook-form';
 
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
@@ -120,7 +120,12 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
         </div>
 
         <pre className='mt-4 mockup-code bg-primary text-primary-content'>
-          <code className="pl-6 whitespace-pre">{JSON.stringify(errors, null, 4)}</code>
+          <code className="pl-6 whitespace-pre">{JSON.stringify(errors, (key, value) => {
+            if (key === 'ref') {
+              return undefined
+            }
+            return value;
+          }, 4)}</code>
         </pre>
       </form>
       {/* <DevTool control={control} /> */}
