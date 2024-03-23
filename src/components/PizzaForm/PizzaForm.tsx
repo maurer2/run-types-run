@@ -6,7 +6,7 @@ import type { FormEvent } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clsx } from 'clsx';
 import React, { useEffect , useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { type FieldErrors, FormProvider, useForm } from 'react-hook-form';
 
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
@@ -18,10 +18,12 @@ import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
 
 const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
+  const [serverSideErrors, setServerSideErrors] = useState<FieldErrors>({});
   const formMethods = useForm<FormValues>({
     defaultValues,
+    errors: serverSideErrors?.errors, // https://github.com/react-hook-form/react-hook-form/pull/11188
     mode: 'onChange',
-    resolver: zodResolver(pizzaFormValidationSchema),
+    resolver: zodResolver(pizzaFormValidationSchema)
   });
   const {
     // formState error object needs to be subscribed to so that getFieldState errors trigger a rerender: https://github.com/orgs/react-hook-form/discussions/7638
@@ -33,7 +35,6 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     watch,
   } = formMethods;
   const [isPending, setIsPending] = useState(false);
-  const [serverSideErrors, setServerSideErrors] = useState<Record<string, string[]>|undefined>(undefined); // todo: improve typings
 
   const priceRangeClassValue = watch('priceRangeClass');
 
@@ -49,7 +50,7 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     const currentServerSideErrors = await handleFormValuesSubmit(formValues);
 
     setIsPending(false);
-    setServerSideErrors(currentServerSideErrors?.errors);
+    setServerSideErrors(currentServerSideErrors);
   };
 
   const handleReset = (event: FormEvent<HTMLFormElement>): void => {
@@ -57,16 +58,8 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
 
     reset({ ...defaultValues });
     setIsPending(false);
-    setServerSideErrors(undefined);
+    setServerSideErrors({});
   };
-
-  const hasServerSideErrors = serverSideErrors !== undefined && (
-    Object.hasOwn(serverSideErrors, 'amount')
-    || Object.hasOwn(serverSideErrors, 'id')
-    || Object.hasOwn(serverSideErrors, 'priceRangeClass')
-    || Object.hasOwn(serverSideErrors, 'selectedDough')
-    || Object.hasOwn(serverSideErrors, 'selectedToppings')
-  );
 
   return (
     <FormProvider {...formMethods}>
@@ -127,24 +120,10 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
           </button>
         </div>
 
-        {hasServerSideErrors && (
-          <div className="alert alert-warning shadow-lg mt-8">
-            <svg
-              className="stroke-current shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-              />
-            </svg>
-            <code className="whitespace-pre">{JSON.stringify(serverSideErrors, null, 4)}</code>
-          </div>
-        )}
+        <div>
+          <code className="whitespace-pre">{JSON.stringify(serverSideErrors, null, 4)}</code>
+        </div>
+
       </form>
       {/* <DevTool control={control} /> */}
     </FormProvider>
