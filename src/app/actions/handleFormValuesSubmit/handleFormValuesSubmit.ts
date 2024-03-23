@@ -1,33 +1,32 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { type FieldError, type FieldErrors } from 'react-hook-form';
-
-import type { FormValues } from '../../../types/pizza';
+import { type FieldError, type FieldErrors, type FieldValues } from 'react-hook-form';
 
 import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 
-export async function handleFormValuesSubmit(formValues: FormValues) {
-  const formValueParsingResult = pizzaFormValidationSchema.safeParse({});
+export async function handleFormValuesSubmit(formValues: FieldValues) {
+  // debug
+  const formValuesTest = structuredClone(formValues);
+  formValuesTest.amount = 'test';
+
+  const formValueParsingResult = pizzaFormValidationSchema.safeParse(formValuesTest);
   // const formValueParsingResult = pizzaFormValidationSchema.safeParse(formValues);
 
-  console.log(`Form values received: ${JSON.stringify(formValues, null, 4)}`);
-
   if (!formValueParsingResult.success) {
-    const errorList = Object.entries(formValueParsingResult.error.flatten().fieldErrors).map(([fieldName, errorMessages]) => {
+    const errorsList = Object.entries(formValueParsingResult.error.flatten().fieldErrors).map(
+      ([name, messages]) => {
+        const error: FieldError = {
+          message: messages[0],
+          type: 'server',
+        };
+        return [name, error];
+      },
+    );
 
-      const error: FieldError = {
-        message: errorMessages[0],
-        type: 'value',
-      }
-      return [fieldName, error];
-    })
+    const errors: FieldErrors = Object.fromEntries(errorsList);
 
-    const errors: FieldErrors = Object.fromEntries(errorList);
-
-    return {
-      errors,
-    }
+    return errors;
   }
 
   return redirect('/pizza/success');

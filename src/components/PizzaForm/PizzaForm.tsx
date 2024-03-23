@@ -5,8 +5,8 @@ import type { FormEvent } from 'react';
 // import { DevTool } from "@hookform/devtools";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clsx } from 'clsx';
-import React, { useEffect , useState } from 'react';
-import { type FieldErrors, FormProvider, useForm } from 'react-hook-form';
+import React, { useEffect , useState, } from 'react';
+import { type FieldErrors, FormProvider, useForm} from 'react-hook-form';
 
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
@@ -18,10 +18,10 @@ import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
 
 const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
-  const [serverSideErrors, setServerSideErrors] = useState<FieldErrors>({});
+  const [serverSideErrors, setServerSideErrors] = useState<FieldErrors<FormValues>>({});
   const formMethods = useForm<FormValues>({
     defaultValues,
-    errors: serverSideErrors?.errors, // https://github.com/react-hook-form/react-hook-form/pull/11188
+    errors: serverSideErrors, // https://github.com/react-hook-form/react-hook-form/pull/11188
     mode: 'onChange',
     resolver: zodResolver(pizzaFormValidationSchema)
   });
@@ -35,7 +35,6 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     watch,
   } = formMethods;
   const [isPending, setIsPending] = useState(false);
-
   const priceRangeClassValue = watch('priceRangeClass');
 
   // custom validation trigger for dough and toppings when price range changes
@@ -47,10 +46,10 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     // https://github.com/vercel/next.js/discussions/51371#discussioncomment-7152123
     setIsPending(true);
 
-    const currentServerSideErrors = await handleFormValuesSubmit(formValues);
+    const newServerSideErrors = await handleFormValuesSubmit(formValues);
 
     setIsPending(false);
-    setServerSideErrors(currentServerSideErrors);
+    setServerSideErrors(newServerSideErrors);
   };
 
   const handleReset = (event: FormEvent<HTMLFormElement>): void => {
@@ -120,10 +119,9 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
           </button>
         </div>
 
-        <div>
-          <code className="whitespace-pre">{JSON.stringify(serverSideErrors, null, 4)}</code>
-        </div>
-
+        <pre className='mt-4 mockup-code bg-primary text-primary-content'>
+          <code className="pl-6 whitespace-pre">{JSON.stringify(errors, null, 4)}</code>
+        </pre>
       </form>
       {/* <DevTool control={control} /> */}
     </FormProvider>
