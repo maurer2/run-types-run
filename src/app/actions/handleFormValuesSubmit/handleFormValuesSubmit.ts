@@ -3,6 +3,7 @@
 import type { FieldError, FieldErrors, FieldValues } from 'react-hook-form';
 
 import { redirect } from 'next/navigation';
+import z from 'zod';
 
 import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 
@@ -17,12 +18,23 @@ export async function handleFormValuesSubmit(formValues: FieldValues): Promise<F
   // const formValuesTest = structuredClone(formValues);
   // formValuesTest.amount = 'test';
 
-  const pizzaFormValidationSchemaAugmented = pizzaFormValidationSchema.refine(
-    async ({ amount }) => amount <= await getMaxAvailableAmount(),
-    ({ amount }) => ({
-      message: `Amount of ${amount} exceeds available amount of ???`, // todo
-      path: ['amount'],
-    })
+  const pizzaFormValidationSchemaAugmented = pizzaFormValidationSchema.superRefine(
+    async ({ amount }, ctx) => {
+      const maxAvailableAmount = await getMaxAvailableAmount();
+
+      if (amount > maxAvailableAmount) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.too_big,
+          inclusive: true, // ??
+          maximum: maxAvailableAmount,
+          message: `Amount of ${amount} exceeds currently available amount of ${maxAvailableAmount}`,
+          path: ['amount'],
+          type: 'number',
+        });
+      }
+
+      return true;
+    },
   );
 
   const formValueParsingResult = await pizzaFormValidationSchemaAugmented.safeParseAsync(
