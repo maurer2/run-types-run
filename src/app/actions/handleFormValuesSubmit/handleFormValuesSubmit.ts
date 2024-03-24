@@ -1,16 +1,33 @@
 'use server';
 
+import type { FieldError, FieldErrors, FieldValues } from 'react-hook-form';
+
 import { redirect } from 'next/navigation';
-import { type FieldError, type FieldErrors, type FieldValues } from 'react-hook-form';
 
 import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 
-export async function handleFormValuesSubmit(formValues: FieldValues) {
-  // debug
-  const formValuesTest = structuredClone(formValues);
-  formValuesTest.amount = 'test';
+async function getMaxAvailableAmount(): Promise<number> {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(5), 1000);
+  });
+}
 
-  const formValueParsingResult = pizzaFormValidationSchema.safeParse(formValuesTest);
+export async function handleFormValuesSubmit(formValues: FieldValues): Promise<FieldErrors> {
+  // debug
+  // const formValuesTest = structuredClone(formValues);
+  // formValuesTest.amount = 'test';
+
+  const pizzaFormValidationSchemaAugmented = pizzaFormValidationSchema.refine(
+    async ({ amount }) => amount <= await getMaxAvailableAmount(),
+    ({ amount }) => ({
+      message: `Amount of ${amount} exceeds available amount of ???`, // todo
+      path: ['amount'],
+    })
+  );
+
+  const formValueParsingResult = await pizzaFormValidationSchemaAugmented.safeParseAsync(
+    formValues,
+  );
   // const formValueParsingResult = pizzaFormValidationSchema.safeParse(formValues);
 
   if (!formValueParsingResult.success) {
@@ -23,7 +40,6 @@ export async function handleFormValuesSubmit(formValues: FieldValues) {
         return [name, error];
       },
     );
-
     const errors: FieldErrors = Object.fromEntries(errorsList);
 
     return errors;

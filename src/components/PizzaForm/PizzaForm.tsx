@@ -120,12 +120,14 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
         </div>
 
         <pre className='mt-4 mockup-code bg-primary text-primary-content'>
-          <code className="pl-6 whitespace-pre">{JSON.stringify(errors, (key, value) => {
-            if (key === 'ref') {
-              return undefined
-            }
-            return value;
-          }, 4)}</code>
+          <code className="pl-6 whitespace-pre">
+            {JSON.stringify(errors, (key, value) => {
+              if (key === 'ref') {
+                return undefined
+              }
+              return value;
+            }, 4)}
+          </code>
         </pre>
       </form>
       {/* <DevTool control={control} /> */}
