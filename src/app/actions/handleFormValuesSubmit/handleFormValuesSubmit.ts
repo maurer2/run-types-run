@@ -13,7 +13,8 @@ async function getMaxAvailableAmount(): Promise<number> {
   });
 }
 
-export async function handleFormValuesSubmit(formValues: FieldValues): Promise<FieldErrors> {
+// returns undefined when redirect happens
+export async function handleFormValuesSubmit(formValues: FieldValues): Promise<FieldErrors | undefined> {
   // debug
   // const formValuesTest = structuredClone(formValues);
   // formValuesTest.amount = 'test';

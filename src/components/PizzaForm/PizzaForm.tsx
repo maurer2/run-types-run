@@ -47,9 +47,11 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     setIsPending(true);
 
     const newServerSideErrors = await handleFormValuesSubmit(formValues);
-
     setIsPending(false);
-    setServerSideErrors(newServerSideErrors);
+
+    if (typeof newServerSideErrors !== 'undefined') {
+      setServerSideErrors(newServerSideErrors);
+    }
   };
 
   const handleReset = (event: FormEvent<HTMLFormElement>): void => {
