@@ -13,3 +13,16 @@ export async function POST() {
   );
   return response;
 }
+
+export async function GET() {
+  const response: NextResponse<{ message: string }> = new NextResponse(
+    JSON.stringify({ message: getReasonPhrase(StatusCodes.NOT_FOUND) }),
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      status: StatusCodes.NOT_FOUND,
+    },
+  );
+  return response;
+}

@@ -1,9 +1,10 @@
-'use client'
+'use client';
 
 import type { FormEvent } from 'react';
 
 // import { DevTool } from "@hookform/devtools";
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { clsx } from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { type FieldErrors, FormProvider, useForm } from 'react-hook-form';
@@ -11,19 +12,37 @@ import { type FieldErrors, FormProvider, useForm } from 'react-hook-form';
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
 
-import { handleFormValuesSubmit } from '../../app/actions/handleFormValuesSubmit/handleFormValuesSubmit';
-import { formLabels } from '../../constants/pizza/labels'
+// import { handleFormValuesSubmit } from '../../app/actions/handleFormValuesSubmit/handleFormValuesSubmit';
+import { formLabels } from '../../constants/pizza/labels';
+import { sendValues } from '../../hooks/useSendValues/helpers';
 import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
 import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
 
 const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
-  const [serverSideErrors, setServerSideErrors] = useState<FieldErrors<FormValues>>({});
+  const {
+    data: validationData,
+    mutateAsync,
+    reset: resetValidationData,
+  } = useMutation({
+    mutationFn: async (formValues: FormValues) => {
+      try {
+        return await sendValues('/api/pizza/validate-form-values', formValues);
+      } catch (error) {
+        if (error instanceof Error && Object.hasOwn(error, 'cause')) {
+          return error.cause;
+        }
+        throw error;
+      }
+    },
+    mutationKey: ['form-validation'],
+  });
+  // const [serverSideErrors, setServerSideErrors] = useState<FieldErrors<FormValues>>({});
   const formMethods = useForm<FormValues>({
     defaultValues,
-    errors: serverSideErrors, // https://github.com/react-hook-form/react-hook-form/pull/11188
+    errors: validationData, // https://github.com/react-hook-form/react-hook-form/pull/11188
     mode: 'onChange',
-    resolver: zodResolver(pizzaFormValidationSchema)
+    resolver: zodResolver(pizzaFormValidationSchema),
   });
   const {
     // formState error object needs to be subscribed to so that getFieldState errors trigger a rerender: https://github.com/orgs/react-hook-form/discussions/7638
@@ -46,12 +65,13 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     // https://github.com/vercel/next.js/discussions/51371#discussioncomment-7152123
     setIsPending(true);
 
-    const newServerSideErrors = await handleFormValuesSubmit(formValues);
+    // const newServerSideErrors = await handleFormValuesSubmit(formValues);
+    await mutateAsync(formValues);
     setIsPending(false);
 
-    if (typeof newServerSideErrors !== 'undefined') {
-      setServerSideErrors(newServerSideErrors);
-    }
+    // if (typeof newServerSideErrors !== 'undefined') {
+    //   setServerSideErrors(newServerSideErrors);
+    // }
   };
 
   const handleReset = (event: FormEvent<HTMLFormElement>): void => {
@@ -59,24 +79,17 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
 
     reset({ ...defaultValues });
     setIsPending(false);
-    setServerSideErrors({});
+    resetValidationData();
+    // setServerSideErrors({});
   };
 
   return (
     <FormProvider {...formMethods}>
       <form onReset={handleReset} onSubmit={handleSubmit(onSubmit)}>
-        <UncontrolledInput
-          label={formLabels.id}
-          name="id"
-          type="text"
-        />
+        <UncontrolledInput label={formLabels.id} name="id" type="text" />
         <div className="divider" />
 
-        <UncontrolledInput
-          label={formLabels.amount}
-          name="amount"
-          type="text"
-        />
+        <UncontrolledInput label={formLabels.amount} name="amount" type="text" />
         <div className="divider" />
 
         <UncontrolledRadioCheckbox
@@ -121,14 +134,18 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
           </button>
         </div>
 
-        <pre className='mt-4 mockup-code bg-primary text-primary-content'>
+        <pre className="mt-4 mockup-code bg-primary text-primary-content">
           <code className="pl-6 whitespace-pre">
-            {JSON.stringify(errors, (key, value) => {
-              if (key === 'ref') {
-                return undefined
-              }
-              return value;
-            }, 4)}
+            {JSON.stringify(
+              errors,
+              (key, value) => {
+                if (key === 'ref') {
+                  return undefined;
+                }
+                return value;
+              },
+              4,
+            )}
           </code>
         </pre>
       </form>
