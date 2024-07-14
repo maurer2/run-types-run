@@ -26,21 +26,11 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     mutateAsync,
     reset: resetValidationErrors,
   } = useMutation({
-    mutationFn: async (formValues: FormValues) => {
-      try {
-        return await sendValues('/api/pizza/validate-form-values', formValues);
-      } catch (error) {
-        debugger
-        if (error instanceof Error && Object.hasOwn(error, 'cause')) {
-          return error.cause;
-        }
-        throw error;
-      }
-    },
+    mutationFn: async (formValues: FormValues) => sendValues('/api/pizza/validate-form-values', formValues),
     mutationKey: ['validation-errors'],
-    onSuccess: (data: FieldErrors) => {
+    onSuccess: (errors: FieldErrors) => {
       // no validation errors
-      if (Object.keys(data).length === 0) {
+      if (Object.keys(errors).length === 0) {
         router.push('/pizza/success');
       }
     },

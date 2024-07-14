@@ -15,6 +15,7 @@ async function getMaxAvailableAmount(): Promise<number> {
   });
 }
 
+// todo: change to GET
 export async function POST(request: NextRequest) {
   const pizzaFormValidationSchemaAugmented = pizzaFormValidationSchema.superRefine(
     async ({ amount }, ctx) => {
@@ -50,32 +51,14 @@ export async function POST(request: NextRequest) {
         },
       );
       const errors: FieldErrors = Object.fromEntries(errorsList);
-      const response: NextResponse = new NextResponse(JSON.stringify(errors), {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        status: StatusCodes.BAD_REQUEST,
-      });
 
-      return response;
+      // one or more fields invalid
+      return NextResponse.json(errors, { status: StatusCodes.OK });
     }
   } catch {
-    const response: NextResponse = new NextResponse(null, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      status: StatusCodes.BAD_REQUEST,
-    });
-
-    return response;
+    return NextResponse.json(null, { status: StatusCodes.BAD_REQUEST });
   }
 
-  const response: NextResponse = new NextResponse(JSON.stringify({}), {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    status: StatusCodes.OK,
-  });
-
-  return response;
+  // fields valid
+  return NextResponse.json({}, { status: StatusCodes.OK });
 }
