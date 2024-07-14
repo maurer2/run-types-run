@@ -6,13 +6,13 @@ import type { FormEvent } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { clsx } from 'clsx';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { type FieldErrors, FormProvider, useForm } from 'react-hook-form';
 
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
 
-// import { handleFormValuesSubmit } from '../../app/actions/handleFormValuesSubmit/handleFormValuesSubmit';
 import { formLabels } from '../../constants/pizza/labels';
 import { sendValues } from '../../hooks/useSendValues/helpers';
 import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
@@ -20,27 +20,34 @@ import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
 
 const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
+  const router = useRouter();
   const {
-    data: validationData,
+    data: validationErrors,
     mutateAsync,
-    reset: resetValidationData,
+    reset: resetValidationErrors,
   } = useMutation({
     mutationFn: async (formValues: FormValues) => {
       try {
         return await sendValues('/api/pizza/validate-form-values', formValues);
       } catch (error) {
+        debugger
         if (error instanceof Error && Object.hasOwn(error, 'cause')) {
           return error.cause;
         }
         throw error;
       }
     },
-    mutationKey: ['form-validation'],
+    mutationKey: ['validation-errors'],
+    onSuccess: (data: FieldErrors) => {
+      // no validation errors
+      if (Object.keys(data).length === 0) {
+        router.push('/pizza/success');
+      }
+    },
   });
-  // const [serverSideErrors, setServerSideErrors] = useState<FieldErrors<FormValues>>({});
   const formMethods = useForm<FormValues>({
     defaultValues,
-    errors: validationData, // https://github.com/react-hook-form/react-hook-form/pull/11188
+    errors: validationErrors, // https://github.com/react-hook-form/react-hook-form/pull/11188
     mode: 'onChange',
     resolver: zodResolver(pizzaFormValidationSchema),
   });
@@ -64,23 +71,16 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
   const onSubmit = async (formValues: FormValues): Promise<void> => {
     // https://github.com/vercel/next.js/discussions/51371#discussioncomment-7152123
     setIsPending(true);
-
-    // const newServerSideErrors = await handleFormValuesSubmit(formValues);
     await mutateAsync(formValues);
     setIsPending(false);
-
-    // if (typeof newServerSideErrors !== 'undefined') {
-    //   setServerSideErrors(newServerSideErrors);
-    // }
   };
 
   const handleReset = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
     reset({ ...defaultValues });
+    resetValidationErrors();
     setIsPending(false);
-    resetValidationData();
-    // setServerSideErrors({});
   };
 
   return (

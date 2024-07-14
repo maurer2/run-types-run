@@ -3,17 +3,41 @@ import type { FieldError, FieldErrors } from 'react-hook-form';
 
 import { StatusCodes } from 'http-status-codes';
 import { NextResponse } from 'next/server';
+import z from 'zod';
 
 import type { FormValues } from '../../../../types/pizza';
 
 import { pizzaFormValidationSchema } from '../../../../schema/pizza/validation';
 
+async function getMaxAvailableAmount(): Promise<number> {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(5), 1000);
+  });
+}
+
 export async function POST(request: NextRequest) {
+  const pizzaFormValidationSchemaAugmented = pizzaFormValidationSchema.superRefine(
+    async ({ amount }, ctx) => {
+      const maxAvailableAmount = await getMaxAvailableAmount();
+
+      if (amount > maxAvailableAmount) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.too_big,
+          inclusive: true, // ??
+          maximum: maxAvailableAmount,
+          message: `Amount of ${amount} exceeds currently available amount of ${maxAvailableAmount}`,
+          path: ['amount'],
+          type: 'number',
+        });
+      }
+
+      return true;
+    },
+  );
+
   try {
     const payload: FormValues = await request.json();
-    // @ts-expect-error testing
-    payload.amount = 'test';
-    const formValueParsingResult = await pizzaFormValidationSchema.safeParseAsync(payload);
+    const formValueParsingResult = await pizzaFormValidationSchemaAugmented.safeParseAsync(payload);
 
     if (!formValueParsingResult.success) {
       const errorsList = Object.entries(formValueParsingResult.error.flatten().fieldErrors).map(
@@ -26,8 +50,6 @@ export async function POST(request: NextRequest) {
         },
       );
       const errors: FieldErrors = Object.fromEntries(errorsList);
-
-      console.log(errors);
       const response: NextResponse = new NextResponse(JSON.stringify(errors), {
         headers: {
           'Content-Type': 'application/json',
