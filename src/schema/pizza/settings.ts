@@ -21,7 +21,7 @@ export const pizzaSettingsSchema = z
     // #region doughs
     doughs: z.array(
       z.enum([...DOUGH], {
-        invalid_type_error: `Dough must contain  ${listFormatterAnd([...DOUGH])}}`,
+        invalid_type_error: `Dough must contain ${listFormatterAnd([...DOUGH])}}`,
         required_error: 'Dough is required',
       }))
       .length(DOUGH.length, `Dough must have exactly ${DOUGH.length} entries`)

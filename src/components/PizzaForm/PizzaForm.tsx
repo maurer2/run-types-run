@@ -1,25 +1,43 @@
-'use client'
+'use client';
 
 import type { FormEvent } from 'react';
 
 // import { DevTool } from "@hookform/devtools";
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { clsx } from 'clsx';
-import React, { useEffect , useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { type FieldErrors, FormProvider, useForm } from 'react-hook-form';
 
 import type { FormValues } from '../../types/pizza';
 import type { PizzaFormProps } from './types';
 
-import { handleFormValuesSubmit } from '../../app/actions/handleFormValuesSubmit/handleFormValuesSubmit';
-import { formLabels } from '../../constants/pizza/labels'
+import { formLabels } from '../../constants/pizza/labels';
+import { sendValues } from '../../hooks/useSendValues/helpers';
 import { pizzaFormValidationSchema } from '../../schema/pizza/validation';
 import UncontrolledInput from '../UncontrolledInput';
 import UncontrolledRadioCheckbox from '../UncontrolledRadioCheckbox';
 
 const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
+  const router = useRouter();
+  const {
+    data: validationErrors,
+    mutateAsync,
+    reset: resetValidationErrors,
+  } = useMutation({
+    mutationFn: async (formValues: FormValues) => sendValues('/api/pizza/validate-form-values', formValues),
+    mutationKey: ['validation-errors'],
+    onSuccess: (errors: FieldErrors) => {
+      // no validation errors
+      if (Object.keys(errors).length === 0) {
+        router.push('/pizza/success');
+      }
+    },
+  });
   const formMethods = useForm<FormValues>({
     defaultValues,
+    errors: validationErrors, // https://github.com/react-hook-form/react-hook-form/pull/11188
     mode: 'onChange',
     resolver: zodResolver(pizzaFormValidationSchema),
   });
@@ -33,8 +51,6 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     watch,
   } = formMethods;
   const [isPending, setIsPending] = useState(false);
-  const [serverSideErrors, setServerSideErrors] = useState<Record<string, string[]>|undefined>(undefined); // todo: improve typings
-
   const priceRangeClassValue = watch('priceRangeClass');
 
   // custom validation trigger for dough and toppings when price range changes
@@ -45,44 +61,25 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
   const onSubmit = async (formValues: FormValues): Promise<void> => {
     // https://github.com/vercel/next.js/discussions/51371#discussioncomment-7152123
     setIsPending(true);
-
-    const currentServerSideErrors = await handleFormValuesSubmit(formValues);
-
+    await mutateAsync(formValues);
     setIsPending(false);
-    setServerSideErrors(currentServerSideErrors?.errors);
   };
 
   const handleReset = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
     reset({ ...defaultValues });
+    resetValidationErrors();
     setIsPending(false);
-    setServerSideErrors(undefined);
   };
-
-  const hasServerSideErrors = serverSideErrors !== undefined && (
-    Object.hasOwn(serverSideErrors, 'amount')
-    || Object.hasOwn(serverSideErrors, 'id')
-    || Object.hasOwn(serverSideErrors, 'priceRangeClass')
-    || Object.hasOwn(serverSideErrors, 'selectedDough')
-    || Object.hasOwn(serverSideErrors, 'selectedToppings')
-  );
 
   return (
     <FormProvider {...formMethods}>
       <form onReset={handleReset} onSubmit={handleSubmit(onSubmit)}>
-        <UncontrolledInput
-          label={formLabels.id}
-          name="id"
-          type="text"
-        />
+        <UncontrolledInput label={formLabels.id} name="id" type="text" />
         <div className="divider" />
 
-        <UncontrolledInput
-          label={formLabels.amount}
-          name="amount"
-          type="text"
-        />
+        <UncontrolledInput label={formLabels.amount} name="amount" type="text" />
         <div className="divider" />
 
         <UncontrolledRadioCheckbox
@@ -127,24 +124,20 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
           </button>
         </div>
 
-        {hasServerSideErrors && (
-          <div className="alert alert-warning shadow-lg mt-8">
-            <svg
-              className="stroke-current shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-              />
-            </svg>
-            <code className="whitespace-pre">{JSON.stringify(serverSideErrors, null, 4)}</code>
-          </div>
-        )}
+        <pre className="mt-4 mockup-code bg-primary text-primary-content">
+          <code className="pl-6 whitespace-pre">
+            {JSON.stringify(
+              errors,
+              (key, value) => {
+                if (key === 'ref') {
+                  return undefined;
+                }
+                return value;
+              },
+              4,
+            )}
+          </code>
+        </pre>
       </form>
       {/* <DevTool control={control} /> */}
     </FormProvider>
