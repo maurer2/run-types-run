@@ -1,10 +1,16 @@
 import React from 'react';
 
 export default async function DeepDishPizza() {
-  const testServerAction = async () => {
+  const testServerAction1 = async () => {
     'use server';
 
-    console.log('test');
+    console.log('testServerAction 1');
+  };
+
+  const testServerAction2 = async () => {
+    'use server';
+
+    console.log('testServerAction 2');
   };
 
   return (
@@ -15,7 +21,26 @@ export default async function DeepDishPizza() {
           <button className="btn btn-neutral normal-case" form="test-form" type="submit">
             Trigger server action
           </button>
-          <form action={testServerAction} id="test-form" />
+
+          <hr className="my-4" />
+
+          <form id="test-form-2" aria-label="Test Form 2">
+            <button
+              className="btn btn-neutral normal-case"
+              formAction={testServerAction1}
+              type="submit"
+            >
+              Trigger server action 1
+            </button>
+
+            <button
+              className="btn btn-neutral normal-case"
+              formAction={testServerAction2}
+              type="submit"
+            >
+              Trigger server action 2
+            </button>
+          </form>
         </div>
       </div>
     </article>
