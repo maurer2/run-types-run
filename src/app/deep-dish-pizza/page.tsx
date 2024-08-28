@@ -18,13 +18,14 @@ export default async function DeepDishPizza() {
       <div className="mockup-window border border-base-300">
         <div className="px-4 py-16 bg-base-200">
           <h1 className="mb-4 text-2xl">Deep Dish Pizza</h1>
-          <button className="btn btn-neutral normal-case" form="test-form" type="submit">
+          <button className="btn btn-neutral normal-case" form="test-form-1" type="submit">
             Trigger server action
           </button>
+          <form action={testServerAction1} id="test-form-1" />
 
           <hr className="my-4" />
 
-          <form id="test-form-2" aria-label="Test Form 2">
+          <form aria-label="Test Form 2" id="test-form-2">
             <button
               className="btn btn-neutral normal-case"
               formAction={testServerAction1}
