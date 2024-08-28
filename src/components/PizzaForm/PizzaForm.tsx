@@ -6,12 +6,13 @@ import type { FormEvent } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { clsx } from 'clsx';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { type FieldErrors, FormProvider, useForm } from 'react-hook-form';
+import z from 'zod';
 
 import type { FormValues } from '../../types/pizza';
-import type { PizzaFormProps } from './types';
+import type { PizzaFormProps, PizzaFormResolverContext } from './types';
 
 import { formLabels } from '../../constants/pizza/labels';
 import { sendValues } from '../../hooks/useSendValues/helpers';
@@ -26,7 +27,8 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     mutateAsync,
     reset: resetValidationErrors,
   } = useMutation({
-    mutationFn: async (formValues: FormValues) => sendValues('/api/pizza/validate-form-values', formValues),
+    mutationFn: async (formValues: FormValues) =>
+      sendValues('/api/pizza/validate-form-values', formValues),
     mutationKey: ['validation-errors'],
     onSuccess: (errors: FieldErrors) => {
       // no validation errors
@@ -35,11 +37,44 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
       }
     },
   });
-  const formMethods = useForm<FormValues>({
+  const searchParams = useSearchParams();
+  const formMethods = useForm<FormValues, PizzaFormResolverContext>({
+    context: {
+      minAmount: parseInt(searchParams.get('min-amount') ?? '', 10) || null, // treat zero as null
+    },
     defaultValues,
     errors: validationErrors, // https://github.com/react-hook-form/react-hook-form/pull/11188
     mode: 'onChange',
-    resolver: zodResolver(pizzaFormValidationSchema),
+    resolver: (formValues, resolverContext, options) => {
+      // don't add dynamic rules when context is missing
+      if (!resolverContext) {
+        return zodResolver(pizzaFormValidationSchema)(formValues, resolverContext, options);
+      }
+
+      // treat 0 as unrestricted
+      const { minAmount } = resolverContext;
+
+      if (!!minAmount && minAmount > formValues.amount) {
+        console.log(minAmount);
+
+        const pizzaFormValidationSchemaExtended = pizzaFormValidationSchema.superRefine(
+          (_, ctx) => {
+            ctx.addIssue({
+              code: z.ZodIssueCode.too_small,
+              inclusive: true,
+              message: `Amount must be at least ${minAmount}`,
+              minimum: minAmount,
+              path: ['amount'],
+              type: 'number',
+            });
+          },
+        );
+
+        return zodResolver(pizzaFormValidationSchemaExtended)(formValues, resolverContext, options);
+      }
+
+      return zodResolver(pizzaFormValidationSchema)(formValues, resolverContext, options);
+    },
   });
   const {
     // formState error object needs to be subscribed to so that getFieldState errors trigger a rerender: https://github.com/orgs/react-hook-form/discussions/7638
@@ -111,10 +146,9 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
             Reset
           </button>
           <button
-            aria-disabled={!isValid || !isPending}
+            aria-disabled={!isPending}
             className={clsx('btn btn-neutral normal-case join-item', {
-              'btn-disabled': !isValid || isPending,
-              'cursor-not-allowed': !isValid || isPending,
+              'btn-disabled': isPending,
               'cursor-wait': isPending,
             })}
             type="submit"
