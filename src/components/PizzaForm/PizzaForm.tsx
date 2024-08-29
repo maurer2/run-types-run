@@ -46,34 +46,30 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
     errors: validationErrors, // https://github.com/react-hook-form/react-hook-form/pull/11188
     mode: 'onChange',
     resolver: (formValues, resolverContext, options) => {
-      // don't add dynamic rules when context is missing
-      if (!resolverContext) {
-        return zodResolver(pizzaFormValidationSchema)(formValues, resolverContext, options);
-      }
+      const pizzaFormValidationSchemaExtended = pizzaFormValidationSchema.superRefine((_, ctx) => {
+        // don't add any dynamic rules when context is missing
+        if (!resolverContext) {
+          return;
+        }
 
-      // treat 0 as unrestricted
-      const { minAmount } = resolverContext;
+        // treat 0 as unrestricted
+        const { minAmount } = resolverContext;
 
-      if (!!minAmount && minAmount > formValues.amount) {
-        console.log(minAmount);
+        if (!!minAmount && minAmount > formValues.amount) {
+          console.log(minAmount);
 
-        const pizzaFormValidationSchemaExtended = pizzaFormValidationSchema.superRefine(
-          (_, ctx) => {
-            ctx.addIssue({
-              code: z.ZodIssueCode.too_small,
-              inclusive: true,
-              message: `Amount must be at least ${minAmount}`,
-              minimum: minAmount,
-              path: ['amount'],
-              type: 'number',
-            });
-          },
-        );
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_small,
+            inclusive: true,
+            message: `Amount must be at least ${minAmount}`,
+            minimum: minAmount,
+            path: ['amount'],
+            type: 'number',
+          });
+        }
+      });
 
-        return zodResolver(pizzaFormValidationSchemaExtended)(formValues, resolverContext, options);
-      }
-
-      return zodResolver(pizzaFormValidationSchema)(formValues, resolverContext, options);
+      return zodResolver(pizzaFormValidationSchemaExtended)(formValues, resolverContext, options);
     },
   });
   const {
