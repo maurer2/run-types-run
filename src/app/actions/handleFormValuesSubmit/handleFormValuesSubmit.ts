@@ -7,10 +7,15 @@ import z from 'zod';
 
 import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 
-async function getMaxAvailableAmount(): Promise<number> {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(5), 1000);
-  });
+
+async function getCurrentMaxAvailableAmount(): Promise<number> {
+  const { promise, resolve } = Promise.withResolvers<number>();
+
+  setTimeout(() => {
+    resolve(5);
+  }, 1000);
+
+  return promise;
 }
 
 // returns undefined when redirect happens
@@ -21,7 +26,7 @@ export async function handleFormValuesSubmit(formValues: FieldValues): Promise<F
 
   const pizzaFormValidationSchemaAugmented = pizzaFormValidationSchema.superRefine(
     async ({ amount }, ctx) => {
-      const maxAvailableAmount = await getMaxAvailableAmount();
+      const maxAvailableAmount = await getCurrentMaxAvailableAmount();
 
       if (amount > maxAvailableAmount) {
         ctx.addIssue({
