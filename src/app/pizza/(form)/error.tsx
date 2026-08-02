@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
 type ErrorPageProps = {
   error: Error & { digest?: string };
   reset: () => void;
-}
+};
 
 export default function Error({ error, reset }: ErrorPageProps) {
   return (
@@ -14,6 +14,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
           fill="none"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
         >
           <path
             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
@@ -27,10 +28,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
           <code className="whitespace-pre">{error.message}</code>
         </div>
       </div>
-      <button
-        className="btn btn-neutral normal-case"
-        onClick={() => reset()}
-      >
+      <button className="btn btn-neutral normal-case" onClick={() => reset()}>
         Try again
       </button>
     </>
