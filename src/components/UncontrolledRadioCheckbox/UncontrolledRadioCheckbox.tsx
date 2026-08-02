@@ -26,8 +26,8 @@ const UncontrolledRadioCheckbox = <T extends string[]>({
       </legend>
       <ul>
         {options.map((option) => (
-          <li className="form-control" key={option}>
-            <label className="label-text cursor-pointer mt-2" htmlFor={`${name}-${option}`}>
+          <li className="flex flex-col" key={option}>
+            <label className="label cursor-pointer mt-2" htmlFor={`${name}-${option}`}>
               <input
                 {...register(name)}
                 aria-describedby={hasError ? errorId : undefined}
@@ -44,7 +44,7 @@ const UncontrolledRadioCheckbox = <T extends string[]>({
                 type={type}
                 value={option}
               />
-              <span className="label-text ml-4">{option}</span>
+              <span className="ml-4">{option}</span>
             </label>
           </li>
         ))}

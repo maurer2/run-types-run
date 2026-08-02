@@ -20,15 +20,15 @@ const UncontrolledInput = <T extends FieldValues>({
   const id = `id-${name}`;
 
   return (
-    <fieldset className="form-control w-full max-w-xs">
+    <fieldset className="flex flex-col w-full max-w-xs">
       <label className="label" htmlFor={id}>
-        <span className="label-text">{label}</span>
+        <span>{label}</span>
       </label>
       <input
         {...register(name)}
         aria-describedby={hasError ? errorId : undefined}
         aria-invalid={hasError}
-        className={clsx('input', 'input-primary', 'input-bordered', 'w-full', 'max-w-xs', {
+        className={clsx('input', 'input-primary', 'w-full', 'max-w-xs', {
           'input-error': hasError,
         })}
         id={id}

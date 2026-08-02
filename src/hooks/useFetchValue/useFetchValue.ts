@@ -20,7 +20,7 @@ function useFetchValue<T>(key: string[], url: string, schema: z.ZodTypeAny) {
     isFetching,
     isLoading
   } = useQuery({
-    queryFn: () => <T>fetchValues(url),
+    queryFn: () => fetchValues(url) as T,
     queryKey: key,
   });
 

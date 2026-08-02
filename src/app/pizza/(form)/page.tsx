@@ -10,6 +10,9 @@ import { pizzaFormValidationSchema } from '../../../schema/pizza/validation';
 import { defaults } from '../../config/defaults';
 import { settings } from '../../config/settings';
 
+// todo: add suspense boundary
+export const dynamic = 'force-dynamic';
+
 const url = process.env.NEXT_PUBLIC_VERCEL_URL;
 
 async function getData<T1, T2 extends ZodSchema>(config: T1, schema: T2): Promise<z.infer<T2>> {
@@ -32,10 +35,5 @@ export default async function Pizza() {
 
   console.log('NEXT_PUBLIC_VERCEL_URL', url);
 
-  return (
-    <PizzaForm
-      defaultValues={defaultValues}
-      formSettings={formSettings}
-    />
-  )
+  return <PizzaForm defaultValues={defaultValues} formSettings={formSettings} />;
 }

@@ -142,14 +142,14 @@ const PizzaForm = ({ defaultValues, formSettings }: PizzaFormProps) => {
             Reset
           </button>
           <button
-            aria-disabled={!isPending}
+            aria-disabled={isPending}
             className={clsx('btn btn-neutral normal-case join-item', {
               'btn-disabled': isPending,
               'cursor-wait': isPending,
             })}
             type="submit"
           >
-            {isPending && <span className="loading loading-spinner" />}
+            {isPending ? <span className="loading loading-spinner" /> : null}
             Send
           </button>
         </div>
